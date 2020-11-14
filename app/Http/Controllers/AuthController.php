@@ -43,7 +43,7 @@ class AuthController extends Controller
 
         $token = auth()->attempt($payload);
 
-        abort_if(! $token, 422, 'Bad credentials');
+        abort_if(! $token, 422, 'Incorrect password');
 
         return response()->json([
             'token' => $token,
