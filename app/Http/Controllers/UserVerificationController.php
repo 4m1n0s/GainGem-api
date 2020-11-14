@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\UrlToken;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class UserVerificationController extends Controller
         $user->incrementPoints(2);
 
         return response()->json([
-            'user' => $user
+            'user' => new UserResource($user),
         ]);
     }
 }

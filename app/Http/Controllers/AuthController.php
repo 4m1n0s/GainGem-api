@@ -54,7 +54,7 @@ class AuthController extends Controller
     public function getAuthUser(): JsonResponse
     {
         return response()->json([
-            'user' => auth()->user(),
+            'user' => new UserResource(auth()->user()),
         ]);
     }
 }
