@@ -73,9 +73,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UrlToken::class);
     }
 
-    public function markUnreadNotificationAsRead(string $token): void
+    public function markUnreadNotificationAsRead(int $urlTokenId): void
     {
-        $unreadNotification = $this->unreadNotifications()->where('data->token', $token)->first();
+        $unreadNotification = $this->unreadNotifications()->where('data->url_token_id', $urlTokenId)->first();
 
         if ($unreadNotification) {
             $unreadNotification->markAsRead();

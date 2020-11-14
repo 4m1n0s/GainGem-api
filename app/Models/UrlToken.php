@@ -29,7 +29,7 @@ class UrlToken extends Model
 
     public function getVerificationUrl(): string
     {
-        return url("/verify?token={$this->token}", [], Str::startsWith(config('app.url'), 'https'));
+        return config('app.user_url')."/verify?token={$this->token}";
     }
 
     public function getForgotPasswordUrl(): string
