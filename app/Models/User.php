@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -80,5 +81,15 @@ class User extends Authenticatable implements JWTSubject
         if ($unreadNotification) {
             $unreadNotification->markAsRead();
         }
+    }
+
+    public function incrementPoints(int $pointsAmount)
+    {
+        $this->update([
+            'points' => $this->points + $pointsAmount,
+            'total_points_earned' => $this->total_points_earned + $pointsAmount,
+        ]);
+
+        $this->refresh();
     }
 }

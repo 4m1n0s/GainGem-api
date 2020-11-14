@@ -21,8 +21,7 @@ class UserVerificationController extends Controller
 
         $user->markUnreadNotificationAsRead($urlToken->id);
         $user->markEmailAsVerified();
-        $user->increment('points', 2);
-        $user->increment('total_points_earned', 2);
+        $user->incrementPoints(2);
 
         return response()->json([
             'user' => $user

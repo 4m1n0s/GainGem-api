@@ -30,7 +30,7 @@ class RegisterRequest extends FormRequest
             'referred_by' => [
                 'nullable',
                 'integer',
-                Rule::exists('users', 'id'),
+                Rule::exists('users', 'id')->whereNull('banned_at'),
             ],
         ];
     }
