@@ -9,7 +9,7 @@ use App\Notifications\VerifyUserNotification;
 use App\Models\UrlToken;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use App\Http\Resources\User as UserResource;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {

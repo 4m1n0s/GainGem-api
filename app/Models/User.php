@@ -34,8 +34,6 @@ class User extends Authenticatable implements JWTSubject
 
     protected $casts = [
         'password' => Bcrypt::class,
-        'points' => 'integer',
-        'total_points_earned' => 'integer',
         'email_verified_at' => 'datetime',
         'banned_at' => 'datetime',
     ];
