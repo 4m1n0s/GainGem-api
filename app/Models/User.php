@@ -18,8 +18,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property Bcrypt $password
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property int $points
- * @property int $total_points_earned
  * @property string $role
  * @property string|null $ip
  * @property int|null $referred_by
@@ -27,11 +25,15 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string|null $ban_reason
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
+ * @property-read int|null $completed_tasks_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
  * @property-read User|null $referredBy
  * @property-read \Illuminate\Database\Eloquent\Collection|User[] $referredUsers
  * @property-read int|null $referred_users_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
+ * @property-read int|null $transactions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UrlToken[] $urlTokens
  * @property-read int|null $url_tokens_count
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
@@ -45,10 +47,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePoints($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereReferredBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRole($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereTotalPointsEarned($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  * @mixin \Eloquent
