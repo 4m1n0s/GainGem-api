@@ -111,6 +111,16 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(self::class, 'referred_by');
     }
 
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function completedTasks(): HasMany
+    {
+        return $this->hasMany(CompletedTask::class);
+    }
+
     public function urlTokens(): HasMany
     {
         return $this->hasMany(UrlToken::class);
