@@ -19,7 +19,7 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'email' => $this->email,
             'points' => $this->points,
-            'total_points_earned' => $this->total_points_earned,
+            'total_points' => $this->total_points,
             'referred_by' => $this->referred_by,
             'banned_at' => $this->banned_at,
             'ban_reason' => $this->ban_reason,

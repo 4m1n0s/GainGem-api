@@ -33,6 +33,13 @@ class GiftCard extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'country',
+        'code',
+        'provider',
+        'value',
+    ];
+
     public function transaction(): HasOne
     {
         return $this->hasOne(Transaction::class);

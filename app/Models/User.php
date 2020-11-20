@@ -27,6 +27,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
+ * @property-read int $points
+ * @property-read int $total_points
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
  * @property-read User|null $referredBy
@@ -64,8 +66,6 @@ class User extends Authenticatable implements JWTSubject
         'username',
         'password',
         'email',
-        'points',
-        'total_points_earned',
         'role',
         'ip',
         'referred_by',
@@ -79,6 +79,11 @@ class User extends Authenticatable implements JWTSubject
         'password' => Bcrypt::class,
         'email_verified_at' => 'datetime',
         'banned_at' => 'datetime',
+    ];
+
+    protected $appends = [
+        'points',
+        'total_points'
     ];
 
     public function getJWTIdentifier()
@@ -124,6 +129,16 @@ class User extends Authenticatable implements JWTSubject
     public function urlTokens(): HasMany
     {
         return $this->hasMany(UrlToken::class);
+    }
+
+    public function getPointsAttribute(): int
+    {
+        return $this->total_points - $this->transactions()->sum('points');
+    }
+
+    public function getTotalPointsAttribute(): int
+    {
+        return $this->completedTasks()->sum('points');
     }
 
     public function markUnreadNotificationAsRead(int $urlTokenId): void

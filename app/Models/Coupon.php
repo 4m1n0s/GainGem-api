@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $code
  * @property int $points
  * @property int $max_usages
- * @property string $expires_at
+ * @property \Illuminate\Support\Carbon $expires_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
@@ -33,6 +33,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Coupon extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'code',
+        'points',
+        'max_usages',
+        'expires_at',
+    ];
+
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
 
     public function completedTasks(): HasMany
     {

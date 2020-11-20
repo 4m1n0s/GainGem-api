@@ -38,6 +38,15 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'type',
+        'user_id',
+        'points',
+        'gift_card_id',
+        'destination',
+        'value',
+    ];
+
     public function giftCard(): BelongsTo
     {
         return $this->belongsTo(GiftCard::class);

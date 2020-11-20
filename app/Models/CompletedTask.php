@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $provider
  * @property int $user_id
  * @property int $points
- * @property mixed|null $data
+ * @property array|null $data
  * @property int|null $coupon_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -37,6 +37,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CompletedTask extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'type',
+        'provider',
+        'user_id',
+        'points',
+        'data',
+        'coupon_id',
+    ];
+
+    protected $casts = [
+        'data' => 'array',
+    ];
 
     public function coupon(): BelongsTo
     {
