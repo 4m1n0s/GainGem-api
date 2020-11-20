@@ -16,12 +16,10 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
+            $table->string('username')->unique()->index();
             $table->string('password');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->unsignedBigInteger('points')->default(0);
-            $table->unsignedBigInteger('total_points_earned')->default(0);
             $table->string('role')->default(User::ROLE_USER)->index();
             $table->string('ip')->nullable();
             $table->unsignedBigInteger('referred_by')->nullable();
