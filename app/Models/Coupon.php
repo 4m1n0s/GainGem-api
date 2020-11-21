@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property string $code
- * @property string $points
+ * @property float $points
  * @property int $max_usages
  * @property \Illuminate\Support\Carbon $expires_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -43,6 +43,7 @@ class Coupon extends Model
 
     protected $casts = [
         'expires_at' => 'datetime',
+        'points' => 'float',
     ];
 
     public function completedTasks(): HasMany

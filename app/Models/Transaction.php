@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property string $type
  * @property int $user_id
- * @property string $points
+ * @property float $points
  * @property int|null $gift_card_id
  * @property string|null $destination
  * @property int|null $value
@@ -49,6 +49,10 @@ class Transaction extends Model
         'gift_card_id',
         'destination',
         'value',
+    ];
+
+    protected $casts = [
+        'points' => 'float',
     ];
 
     public function giftCard(): BelongsTo

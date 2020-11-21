@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $type
  * @property string|null $provider
  * @property int $user_id
- * @property string $points
+ * @property float $points
  * @property array|null $data
  * @property int|null $coupon_id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -54,6 +54,7 @@ class CompletedTask extends Model
 
     protected $casts = [
         'data' => 'array',
+        'points' => 'float',
     ];
 
     public function coupon(): BelongsTo
