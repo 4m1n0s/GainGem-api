@@ -66,4 +66,24 @@ class CompletedTask extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function isTypeEmailVerification(): bool
+    {
+        return $this->type === self::TYPE_EMAIL_VERIFICATION;
+    }
+
+    public function isTypeGiveAway(): bool
+    {
+        return $this->type === self::TYPE_GIVEAWAY;
+    }
+
+    public function isTypeCoupon(): bool
+    {
+        return $this->type === self::TYPE_COUPON;
+    }
+
+    public function isTypeReferralIncome(): bool
+    {
+        return $this->type === self::TYPE_REFERRAL_INCOME;
+    }
 }

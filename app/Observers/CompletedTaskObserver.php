@@ -9,10 +9,9 @@ class CompletedTaskObserver
 {
     public function created(CompletedTask $completedTask)
     {
-        /** @var User $completedTaskByUser */
         $completedTaskByUser = $completedTask->user;
 
-        if (auth()->id() !== $completedTaskByUser->id || is_null($completedTaskByUser->referred_by)) {
+        if (is_null($completedTaskByUser->referred_by) || $completedTask->isTypeCoupon() || $completedTask->isTypeReferralIncome()) {
             return;
         }
 

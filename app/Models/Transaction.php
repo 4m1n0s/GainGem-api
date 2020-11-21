@@ -64,4 +64,19 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function isTypeGiftCard(): bool
+    {
+        return $this->type === self::TYPE_GIFT_CARD;
+    }
+
+    public function isTypeBitcoin(): bool
+    {
+        return $this->type === self::TYPE_BITCOIN;
+    }
+
+    public function isTypeRoblox(): bool
+    {
+        return $this->type === self::TYPE_ROBLOX;
+    }
 }
