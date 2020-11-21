@@ -19,6 +19,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property Bcrypt $password
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property string $profile_image
  * @property string $role
  * @property string|null $ip
  * @property int|null $referred_by
@@ -50,6 +51,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereProfileImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereReferredBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
@@ -67,6 +69,7 @@ class User extends Authenticatable implements JWTSubject
         'username',
         'password',
         'email',
+        'profile_image',
         'role',
         'ip',
         'referred_by',

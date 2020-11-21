@@ -16,6 +16,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request): JsonResponse
     {
         $payload = $request->validated();
+        $payload['profile_image'] = asset('assets/user.png');
         $payload['ip'] = Helper::instance()->getIp();
 
         $user = User::create($payload);

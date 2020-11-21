@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('profile_image');
             $table->string('role')->default(User::ROLE_USER)->index();
             $table->string('ip')->nullable();
             $table->unsignedBigInteger('referred_by')->nullable();
