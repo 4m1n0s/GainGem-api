@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\CompletedTask;
+use App\Observers\CompletedTaskObserver;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        CompletedTask::observe(CompletedTaskObserver::class);
     }
 }

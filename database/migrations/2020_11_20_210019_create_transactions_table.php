@@ -17,7 +17,7 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->string('type');
             $table->unsignedBigInteger('user_id')->index();
-            $table->unsignedInteger('points');
+            $table->unsignedDecimal('points');
             $table->unsignedBigInteger('gift_card_id')->nullable();
             $table->string('destination')->nullable();
             $table->unsignedBigInteger('value')->nullable();

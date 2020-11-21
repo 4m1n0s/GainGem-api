@@ -18,7 +18,7 @@ class CreateCompletedTasksTable extends Migration
             $table->string('type');
             $table->string('provider')->nullable();
             $table->unsignedBigInteger('user_id')->index();
-            $table->unsignedInteger('points');
+            $table->unsignedDecimal('points');
             $table->json('data')->nullable();
             $table->unsignedBigInteger('coupon_id')->nullable();
             $table->timestamps();

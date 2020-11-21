@@ -6,7 +6,7 @@ use App\Http\Controllers\UserVerificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('resend-verification', [ResendVerificationController::class, '__invoke']);
-Route::post('verify', [UserVerificationController::class, '__invoke']);
+Route::get('verify', [UserVerificationController::class, '__invoke']);
 
 Route::group(['prefix' => 'auth'], static function () {
     Route::post('register', [AuthController::class, 'register']);

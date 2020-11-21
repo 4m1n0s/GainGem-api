@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Models\CompletedTask;
 use App\Models\UrlToken;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,10 @@ class UserVerificationController extends Controller
 
         $user->markUnreadNotificationAsRead($urlToken->id);
         $user->markEmailAsVerified();
-        $user->incrementPoints(2);
+        $user->completedTasks()->create([
+            'type' => CompletedTask::TYPE_EMAIL_VERIFICATION,
+            'points' => 2,
+        ]);
 
         return response()->json([
             'user' => new UserResource($user),
