@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property string $type
  * @property int $user_id
- * @property int $points
+ * @property string $points
  * @property int|null $gift_card_id
  * @property string|null $destination
  * @property int|null $value
@@ -37,6 +37,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Transaction extends Model
 {
     use HasFactory;
+
+    const TYPE_GIFT_CARD = 'gift_card';
+    const TYPE_BITCOIN = 'bitcoin';
+    const TYPE_ROBLOX = 'roblox';
 
     protected $fillable = [
         'type',

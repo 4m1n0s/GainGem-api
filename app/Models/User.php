@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use phpDocumentor\Reflection\Types\Float_;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -27,8 +28,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
- * @property-read int $points
- * @property-read int $total_points
+ * @property-read float $points
+ * @property-read float $total_points
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
  * @property-read User|null $referredBy
@@ -131,12 +132,12 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UrlToken::class);
     }
 
-    public function getPointsAttribute(): int
+    public function getPointsAttribute(): Float
     {
         return $this->total_points - $this->transactions()->sum('points');
     }
 
-    public function getTotalPointsAttribute(): int
+    public function getTotalPointsAttribute(): Float
     {
         return $this->completedTasks()->sum('points');
     }
@@ -148,15 +149,5 @@ class User extends Authenticatable implements JWTSubject
         if ($unreadNotification) {
             $unreadNotification->markAsRead();
         }
-    }
-
-    public function incrementPoints(int $pointsAmount)
-    {
-        $this->update([
-            'points' => $this->points + $pointsAmount,
-            'total_points_earned' => $this->total_points_earned + $pointsAmount,
-        ]);
-
-        $this->refresh();
     }
 }

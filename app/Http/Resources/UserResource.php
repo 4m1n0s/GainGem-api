@@ -27,7 +27,8 @@ class UserResource extends JsonResource
             'updated_at' => $this->updated_at,
         ];
 
-        if (! $this->isAdminRole() || ! auth()->user()->isAdminRole()) {
+
+        if (! $this->resource->isAdminRole() || (auth()->check() && ! auth()->user()->isAdminRole())) {
             return $cols;
         }
 

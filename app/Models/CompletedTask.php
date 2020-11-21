@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $type
  * @property string|null $provider
  * @property int $user_id
- * @property int $points
+ * @property string $points
  * @property array|null $data
  * @property int|null $coupon_id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -37,6 +37,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CompletedTask extends Model
 {
     use HasFactory;
+
+    const TYPE_EMAIL_VERIFICATION = 'email_verification';
+    const TYPE_GIVEAWAY = 'giveaway';
+    const TYPE_COUPON = 'coupon';
+    const TYPE_REFERRAL_INCOME = 'referral_income';
 
     protected $fillable = [
         'type',
