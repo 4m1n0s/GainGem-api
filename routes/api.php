@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\UserVerificationController;
 use Illuminate\Support\Facades\Route;
@@ -15,5 +16,5 @@ Route::group(['prefix' => 'auth'], static function () {
 });
 
 Route::group(['middleware' => 'auth:api'], static function () {
-    //
+    Route::post('redeem', [CouponController::class, 'redeem']);
 });
