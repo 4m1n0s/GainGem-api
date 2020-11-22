@@ -16,5 +16,7 @@ Route::group(['prefix' => 'auth'], static function () {
 });
 
 Route::group(['middleware' => 'auth:api'], static function () {
-    Route::post('redeem', [CouponController::class, 'redeem']);
+    Route::group(['prefix' => 'coupons'], static function () {
+        Route::post('redeem', [CouponController::class, 'redeem']);
+    });
 });
