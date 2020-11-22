@@ -16,4 +16,12 @@ class RedeemCouponRequest extends FormRequest
             ],
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'code.required' => 'You must enter a promo code.',
+            'code.exists' => 'Invalid promo code.',
+        ];
+    }
 }
