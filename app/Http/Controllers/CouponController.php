@@ -6,19 +6,25 @@ use App\Http\Requests\RedeemCouponRequest;
 use App\Models\CompletedTask;
 use App\Models\Coupon;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 
 class CouponController extends Controller
 {
-    public function redeem(RedeemCouponRequest $request)
+    public function redeem(RedeemCouponRequest $request): JsonResponse
     {
         $payload = $request->validated();
 
-        $coupon = Coupon::whereCode($payload['code'])->whereRaw('expires_at > now()')->with('completedTasks')->first();
+        $coupon = Coupon::whereCode($payload['code'])->where('expires_at', '>=', now())->with('completedTasks')->first();
 
         /** @var User $user */
         $user = auth()->user();
+        $hasCompletedOfferThisWeek = $user->completedTasks()
+            ->where('created_at', '>=', now()->subWeek())
+            ->whereTypesAvailableForReferring()
+            ->exists();
 
         abort_if($coupon === null, 422, 'Promo code has expired!');
+        abort_if(! $hasCompletedOfferThisWeek, 422, 'You must complete at least 1 offer this week!');
         abort_if($coupon->max_usages !== 0 && $coupon->completedTasks()->count() >= $coupon->max_usages, 422, 'Promo code has reached its max usages!');
         abort_if($coupon->completedTasks()->where('user_id', $user->id)->exists(), 422, "You've already redeemed this promo code!");
 

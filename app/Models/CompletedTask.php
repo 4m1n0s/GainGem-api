@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * App\Models\CompletedTask
@@ -20,18 +21,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Coupon|null $coupon
  * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask query()
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask whereCouponId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask whereData($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask wherePoints($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask whereProvider($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedTask whereUserId($value)
+ * @method static Builder|CompletedTask newModelQuery()
+ * @method static Builder|CompletedTask newQuery()
+ * @method static Builder|CompletedTask query()
+ * @method static Builder|CompletedTask whereCouponId($value)
+ * @method static Builder|CompletedTask whereCreatedAt($value)
+ * @method static Builder|CompletedTask whereData($value)
+ * @method static Builder|CompletedTask whereId($value)
+ * @method static Builder|CompletedTask wherePoints($value)
+ * @method static Builder|CompletedTask whereProvider($value)
+ * @method static Builder|CompletedTask whereType($value)
+ * @method static Builder|CompletedTask whereTypesAvailableForReferring()
+ * @method static Builder|CompletedTask whereUpdatedAt($value)
+ * @method static Builder|CompletedTask whereUserId($value)
  * @mixin \Eloquent
  */
 class CompletedTask extends Model
@@ -85,5 +87,15 @@ class CompletedTask extends Model
     public function isTypeReferralIncome(): bool
     {
         return $this->type === self::TYPE_REFERRAL_INCOME;
+    }
+
+    public function isTypeAvailableForReferring(): bool
+    {
+        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome();
+    }
+
+    public function scopeWhereTypesAvailableForReferring(Builder $query): Builder
+    {
+        return $query->whereNotIn('type', [self::TYPE_REFERRAL_INCOME, self::TYPE_COUPON]);
     }
 }

@@ -11,7 +11,7 @@ class CompletedTaskObserver
     {
         $completedTaskByUser = $completedTask->user;
 
-        if (is_null($completedTaskByUser->referred_by) || $completedTask->isTypeCoupon() || $completedTask->isTypeReferralIncome()) {
+        if (is_null($completedTaskByUser->referred_by) || ! $completedTask->isTypeAvailableForReferring()) {
             return;
         }
 
