@@ -19,7 +19,7 @@ class CouponController extends Controller
         $user = auth()->user();
 
         abort_if($coupon === null, 422, 'Promo code has expired!');
-        abort_if($coupon->completedTasks()->count() >= $coupon->max_usages, 422, 'Promo code has reached its max usages!');
+        abort_if($coupon->max_usages !== 0 && $coupon->completedTasks()->count() >= $coupon->max_usages, 422, 'Promo code has reached its max usages!');
         abort_if($coupon->completedTasks()->where('user_id', $user->id)->exists(), 422, "You've already redeemed this promo code!");
 
         $user->completedTasks()->create([
