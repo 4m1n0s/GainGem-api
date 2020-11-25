@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ResendVerificationRequest;
+use App\Models\UrlToken;
 use App\Models\User;
 use App\Notifications\VerifyUserNotification;
-use App\Models\UrlToken;
 
 class ResendVerificationController extends Controller
 {

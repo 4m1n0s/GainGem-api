@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Models\CompletedTask;
-use App\Models\User;
 
 class CompletedTaskObserver
 {
@@ -22,6 +21,5 @@ class CompletedTaskObserver
                 'completed_task_id' => $completedTask->id,
             ],
         ]);
-
     }
 }

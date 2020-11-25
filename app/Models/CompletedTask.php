@@ -2,39 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
- * App\Models\CompletedTask
- *
- * @property int $id
- * @property string $type
- * @property string|null $provider
- * @property int $user_id
- * @property float $points
- * @property array|null $data
- * @property int|null $coupon_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Coupon|null $coupon
- * @property-read \App\Models\User $user
- * @method static Builder|CompletedTask newModelQuery()
- * @method static Builder|CompletedTask newQuery()
- * @method static Builder|CompletedTask query()
- * @method static Builder|CompletedTask whereCouponId($value)
- * @method static Builder|CompletedTask whereCreatedAt($value)
- * @method static Builder|CompletedTask whereData($value)
- * @method static Builder|CompletedTask whereId($value)
- * @method static Builder|CompletedTask wherePoints($value)
- * @method static Builder|CompletedTask whereProvider($value)
- * @method static Builder|CompletedTask whereType($value)
- * @method static Builder|CompletedTask whereTypesAvailableForReferring()
- * @method static Builder|CompletedTask whereUpdatedAt($value)
- * @method static Builder|CompletedTask whereUserId($value)
- * @mixin \Eloquent
+ * @mixin IdeHelperCompletedTask
  */
 class CompletedTask extends Model
 {

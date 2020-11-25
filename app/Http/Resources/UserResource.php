@@ -23,12 +23,12 @@ class UserResource extends JsonResource
             'points' => $this->points,
             'total_points' => $this->total_points,
             'referred_by' => $this->referred_by,
+            'referral_token' => $this->referral_token,
             'banned_at' => $this->banned_at,
             'ban_reason' => $this->ban_reason,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
-
 
         if (! $this->resource->isAdminRole() || (auth()->check() && ! auth()->user()->isAdminRole())) {
             return $cols;

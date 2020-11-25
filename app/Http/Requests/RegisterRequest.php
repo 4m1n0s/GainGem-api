@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class RegisterRequest extends FormRequest
 {
@@ -27,10 +26,9 @@ class RegisterRequest extends FormRequest
                 'email',
                 'max:255',
             ],
-            'referred_by' => [
+            'referral_token' => [
                 'nullable',
-                'integer',
-                Rule::exists('users', 'id')->whereNull('banned_at'),
+                'string',
             ],
         ];
     }

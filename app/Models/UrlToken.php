@@ -7,27 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 /**
- * App\Models\UrlToken
- *
- * @property int $id
- * @property string $type
- * @property string $token
- * @property int $user_id
- * @property \Illuminate\Support\Carbon|null $expires_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|UrlToken newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UrlToken newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UrlToken query()
- * @method static \Illuminate\Database\Eloquent\Builder|UrlToken whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UrlToken whereExpiresAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UrlToken whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UrlToken whereToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UrlToken whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UrlToken whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UrlToken whereUserId($value)
- * @mixin \Eloquent
+ * @mixin IdeHelperUrlToken
  */
 class UrlToken extends Model
 {
