@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use App\Casts\Bcrypt;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -42,8 +46,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     protected $appends = [
-        'points',
-        'total_points',
+        'available_points',
     ];
 
     public function getJWTIdentifier()
@@ -91,14 +94,47 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UrlToken::class);
     }
 
-    public function getPointsAttribute(): Float
+    public function scopeWithTotalPoints(Builder $query): void
     {
-        return $this->total_points - $this->transactions()->sum('points');
+        $query->withSum('completedTasks as total_points', 'points');
     }
 
-    public function getTotalPointsAttribute(): Float
+    public function scopeWithWastedPoints(Builder $query): void
     {
-        return $this->completedTasks()->sum('points');
+        $query->withSum('transactions as wasted_points', 'points');
+    }
+
+    public function scopeWithAvailablePoints(Builder $query): void
+    {
+        $query->withTotalPoints()->withWastedPoints();
+    }
+
+    public function getTotalPointsAttribute(): ?float
+    {
+        if (!Arr::has($this->getAttributes(), 'total_points')) {
+            return null;
+        }
+
+        return (float) $this->getAttributes()['total_points'];
+    }
+
+    public function getWastedPointsAttribute(): ?float
+    {
+        if (!Arr::has($this->getAttributes(), 'wasted_points')) {
+            return null;
+        }
+
+        return (float) $this->getAttributes()['wasted_points'];
+    }
+
+    public function getAvailablePointsAttribute(): ?float
+    {
+        $attributes = $this->getAttributes();
+        if (!Arr::has($attributes, 'total_points') || !Arr::has($attributes, 'wasted_points')) {
+            return null;
+        }
+
+        return $this->total_points - $this->wasted_points;
     }
 
     public function markUnreadNotificationAsRead(int $urlTokenId): void

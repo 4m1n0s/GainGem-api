@@ -10,6 +10,7 @@ use App\Models\UrlToken;
 use App\Models\User;
 use App\Notifications\VerifyUserNotification;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
@@ -20,19 +21,18 @@ class AuthController extends Controller
         $payload['profile_image'] = asset('assets/user.png');
         $payload['ip'] = Helper::instance()->getIp();
 
-        if ($payload['referral_token']) {
-            $referredBy = User::whereReferralToken($payload['referral_token'])->first();
+        if (Arr::get($payload, 'referral_token')) {
+            $referredBy = User::where('referral_token', $payload['referral_token'])->first();
+            $payload['referred_by'] =
+
+
+
+                optional($referredBy)->id;
         }
-
-        $payload['referred_by'] = $referredBy->id ?? null;
-
-//        $referredBy = $payload['referral_token'] ? User::whereReferralToken($payload['referral_token'])->first() : null;
-//
-//        $payload['referred_by'] = $referredBy->id ?? null;
 
         do {
             $referralToken = Str::random(5);
-            $isReferralTokenExists = User::whereReferralToken($referralToken)->exists();
+            $isReferralTokenExists = User::where('referral_token', $referralToken)->exists();
         } while ($isReferralTokenExists);
 
         $payload['referral_token'] = $referralToken;
