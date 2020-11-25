@@ -52,12 +52,12 @@ class UrlToken extends Model
 
     public function getVerificationUrl(): string
     {
-        return config('app.user_url')."/verify?token={$this->token}";
+        return config('app.user_app_url')."/verify?token={$this->token}";
     }
 
     public function getForgotPasswordUrl(): string
     {
-        return config('app.user_url')."/reset-password?token={$this->token}";
+        return config('app.user_app_url')."/reset-password?token={$this->token}";
     }
 
     public function user(): BelongsTo

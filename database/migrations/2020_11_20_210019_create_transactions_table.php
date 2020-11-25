@@ -16,15 +16,12 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('type');
-            $table->unsignedBigInteger('user_id')->index();
-            $table->unsignedDecimal('points');
-            $table->unsignedBigInteger('gift_card_id')->nullable();
+            $table->foreignId('user_id')->index()->constrained()->onDelete('cascade');
+            $table->unsignedDecimal('points')->index();
+            $table->foreignId('gift_card_id')->nullable()->constrained()->onDelete('set null');
             $table->string('destination')->nullable();
             $table->unsignedBigInteger('value')->nullable();
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('gift_card_id')->references('id')->on('gift_cards')->onDelete('set null');
         });
     }
 

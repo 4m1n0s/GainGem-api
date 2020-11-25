@@ -23,12 +23,11 @@ class CreateUsersTable extends Migration
             $table->string('profile_image');
             $table->string('role')->default(User::ROLE_USER)->index();
             $table->string('ip')->nullable();
-            $table->unsignedBigInteger('referred_by')->nullable();
+            $table->foreignId('referred_by')->nullable()->index()->constrained('users')->onDelete('set null');
+            $table->string('referral_token');
             $table->timestamp('banned_at')->nullable();
             $table->string('ban_reason')->nullable();
             $table->timestamps();
-
-            $table->foreign('referred_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 
