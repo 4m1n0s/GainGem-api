@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RedeemCouponRequest;
+use App\Http\Resources\UserResource;
 use App\Models\CompletedTask;
 use App\Models\Coupon;
 use App\Models\User;
@@ -35,7 +36,7 @@ class CouponController extends Controller
         ]);
 
         return response()->json([
-            'user' => $user,
+            'user' => new UserResource($user->withAvailablePoints()),
         ]);
     }
 }

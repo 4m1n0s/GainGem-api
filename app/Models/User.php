@@ -7,11 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -109,9 +107,24 @@ class User extends Authenticatable implements JWTSubject
         $query->withTotalPoints()->withWastedPoints();
     }
 
+    public function withTotalPoints(): self
+    {
+        return $this->loadSum('completedTasks as total_points', 'points');
+    }
+
+    public function withWastedPoints(): self
+    {
+        return $this->loadSum('transactions as wasted_points', 'points');
+    }
+
+    public function withAvailablePoints(): self
+    {
+        return $this->withTotalPoints()->withWastedPoints();
+    }
+
     public function getTotalPointsAttribute(): ?float
     {
-        if (!Arr::has($this->getAttributes(), 'total_points')) {
+        if (! Arr::has($this->getAttributes(), 'total_points')) {
             return null;
         }
 
@@ -120,7 +133,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getWastedPointsAttribute(): ?float
     {
-        if (!Arr::has($this->getAttributes(), 'wasted_points')) {
+        if (! Arr::has($this->getAttributes(), 'wasted_points')) {
             return null;
         }
 
@@ -130,7 +143,7 @@ class User extends Authenticatable implements JWTSubject
     public function getAvailablePointsAttribute(): ?float
     {
         $attributes = $this->getAttributes();
-        if (!Arr::has($attributes, 'total_points') || !Arr::has($attributes, 'wasted_points')) {
+        if (! Arr::has($attributes, 'total_points') || ! Arr::has($attributes, 'wasted_points')) {
             return null;
         }
 

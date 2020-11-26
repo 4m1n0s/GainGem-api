@@ -20,7 +20,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'email_verified_at' => $this->email_verified_at,
             'profile_image' => $this->profile_image,
-            'points' => $this->points,
+            'points' => $this->available_points,
             'total_points' => $this->total_points,
             'referred_by' => $this->referred_by,
             'referral_token' => $this->referral_token,

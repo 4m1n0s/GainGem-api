@@ -23,11 +23,7 @@ class AuthController extends Controller
 
         if (Arr::get($payload, 'referral_token')) {
             $referredBy = User::where('referral_token', $payload['referral_token'])->first();
-            $payload['referred_by'] =
-
-
-
-                optional($referredBy)->id;
+            $payload['referred_by'] = optional($referredBy)->id;
         }
 
         do {
@@ -37,7 +33,7 @@ class AuthController extends Controller
 
         $payload['referral_token'] = $referralToken;
 
-        $user = User::create($payload);
+        $user = User::create($payload)->withAvailablePoints();
 
         /** @var UrlToken $urlToken */
         $urlToken = $user->urlTokens()->create([
@@ -66,14 +62,14 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'user' => new UserResource(auth()->user()),
+            'user' => new UserResource(auth()->user()->withAvailablePoints()),
         ]);
     }
 
     public function getAuthUser(): JsonResponse
     {
         return response()->json([
-            'user' => new UserResource(auth()->user()),
+            'user' => new UserResource(auth()->user()->withAvailablePoints()),
         ]);
     }
 }
