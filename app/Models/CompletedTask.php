@@ -14,6 +14,7 @@ class CompletedTask extends Model
 {
     use HasFactory;
 
+    const TYPE_OFFER = 'offer';
     const TYPE_EMAIL_VERIFICATION = 'email_verification';
     const TYPE_GIVEAWAY = 'giveaway';
     const TYPE_COUPON = 'coupon';
@@ -46,6 +47,11 @@ class CompletedTask extends Model
     public function isTypeEmailVerification(): bool
     {
         return $this->type === self::TYPE_EMAIL_VERIFICATION;
+    }
+
+    public function isTypeOffer(): bool
+    {
+        return $this->type === self::TYPE_OFFER;
     }
 
     public function isTypeGiveAway(): bool
