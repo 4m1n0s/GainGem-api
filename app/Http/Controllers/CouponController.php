@@ -19,9 +19,10 @@ class CouponController extends Controller
 
         /** @var User $user */
         $user = auth()->user();
+
         $hasCompletedOfferThisWeek = $user->completedTasks()
             ->where('created_at', '>=', now()->subWeek())
-            ->whereTypesAvailableForReferring()
+            ->availableForReferring()
             ->exists();
 
         abort_if($coupon === null, 422, 'Promo code has expired!');

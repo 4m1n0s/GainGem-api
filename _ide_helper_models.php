@@ -25,6 +25,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Coupon|null $coupon
  * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask availableForReferring()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask query()
@@ -35,7 +36,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask wherePoints($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereProvider($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereTypesAvailableForReferring()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereUserId($value)
  * @mixin \Eloquent

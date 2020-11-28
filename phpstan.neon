@@ -1,0 +1,19 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+parameters:
+    level: max
+    paths:
+        - app
+        - database
+        - routes
+        - config
+        - tests
+    ignoreErrors:
+        -
+            message: "#Call to an undefined method Illuminate\\\\Support\\\\Fluent::onDelete#"
+            path: ./database/migrations
+        -
+            message: "#PHPDoc tag @mixin contains unknown class App\\\\Models\\\\#"
+            path: ./app/Models
+    checkModelProperties: true
+    checkMissingIterableValueType: false

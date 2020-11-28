@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RedeemCouponRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         return [
             'code' => [
@@ -17,7 +17,7 @@ class RedeemCouponRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'code.required' => 'You must enter a promo code!',

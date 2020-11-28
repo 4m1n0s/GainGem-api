@@ -25,6 +25,7 @@
         "matt-allan/laravel-code-style": "^0.6.0",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
+        "nunomaduro/larastan": "^0.6.10",
         "phpunit/phpunit": "^9.3.3"
     },
     "config": {
@@ -65,6 +66,7 @@
             "@php artisan key:generate --ansi"
         ],
         "style-lint": "php-cs-fixer fix --diff --dry-run --allow-risky=yes",
-        "style-fix": "php-cs-fixer fix --config=.php_cs --allow-risky=yes"
+        "style-fix": "php-cs-fixer fix --config=.php_cs --allow-risky=yes",
+        "static-code-analysis": "phpstan analyse --memory-limit=2G"
     }
 }

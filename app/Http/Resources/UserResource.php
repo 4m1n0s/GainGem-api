@@ -2,10 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
+    /** @var User */
+    public $resource;
+
     /**
      * Transform the resource into an array.
      *
@@ -14,7 +18,7 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        $cols = [
+        $response = [
             'id' => $this->id,
             'username' => $this->username,
             'email' => $this->email,
@@ -30,16 +34,16 @@ class UserResource extends JsonResource
             'updated_at' => $this->updated_at,
         ];
 
-        if (! $this->resource->isAdminRole() || (auth()->check() && ! auth()->user()->isAdminRole())) {
-            return $cols;
+        $user = auth()->user();
+
+        if ($this->resource->isAdminRole() && ($user && $user->isAdminRole())) {
+            $response = array_merge($response, [
+                'email_verified_at' => $this->email_verified_at,
+                'ip' => $this->ip,
+                'role' => $this->role,
+            ]);
         }
 
-        $adminCols = [
-            'email_verified_at' => $this->email_verified_at,
-            'ip' => $this->ip,
-            'role' => $this->role,
-        ];
-
-        return array_merge($cols, $adminCols);
+        return $response;
     }
 }

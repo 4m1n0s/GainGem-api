@@ -6,11 +6,11 @@ use App\Models\CompletedTask;
 
 class CompletedTaskObserver
 {
-    public function created(CompletedTask $completedTask)
+    public function created(CompletedTask $completedTask): void
     {
         $completedTaskByUser = $completedTask->user;
 
-        if (is_null($completedTaskByUser->referred_by) || ! $completedTask->isTypeAvailableForReferring()) {
+        if (!$completedTaskByUser->referred_by || ! $completedTask->isTypeAvailableForReferring()) {
             return;
         }
 

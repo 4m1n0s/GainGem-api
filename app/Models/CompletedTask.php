@@ -74,7 +74,7 @@ class CompletedTask extends Model
         return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome();
     }
 
-    public function scopeWhereTypesAvailableForReferring(Builder $query): Builder
+    public function scopeAvailableForReferring(Builder $query): Builder
     {
         return $query->whereNotIn('type', [self::TYPE_REFERRAL_INCOME, self::TYPE_COUPON]);
     }

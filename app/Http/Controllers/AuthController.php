@@ -60,16 +60,22 @@ class AuthController extends Controller
 
         abort_if(! $token, 422, 'Incorrect password');
 
+        /** @var User $user */
+        $user = auth()->user();
+
         return response()->json([
             'token' => $token,
-            'user' => new UserResource(auth()->user()->withAvailablePoints()),
+            'user' => new UserResource($user->withAvailablePoints()),
         ]);
     }
 
     public function getAuthUser(): JsonResponse
     {
+        /** @var User $user */
+        $user = auth()->user();
+
         return response()->json([
-            'user' => new UserResource(auth()->user()->withAvailablePoints()),
+            'user' => new UserResource($user->withAvailablePoints()),
         ]);
     }
 }
