@@ -26,7 +26,7 @@ class UpdateUserDataMiddleware
     {
         $data = [];
 
-        $ip = $request->ip();
+        $ip = get_ip();
 
         if ($user->ip !== $ip) {
             $data['ip'] = $ip;

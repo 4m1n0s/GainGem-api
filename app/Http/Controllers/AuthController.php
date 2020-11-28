@@ -18,7 +18,7 @@ class AuthController extends Controller
     {
         $payload = $request->validated();
         $payload['profile_image'] = asset('assets/user.png'); // @TODO should be in storage/public, not in assets
-        $payload['ip'] = $request->ip();
+        $payload['ip'] = get_ip();
 
         if (Arr::get($payload, 'referral_token')) {
             $referredBy = User::where('referral_token', $payload['referral_token'])->first();
