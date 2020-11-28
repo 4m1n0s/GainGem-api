@@ -15,5 +15,8 @@ function get_ip(): string
         }
     }
 
-    return Request::ip();
+    /** @var string $ip */
+    $ip = request()->ip();
+
+    return $ip;
 }
