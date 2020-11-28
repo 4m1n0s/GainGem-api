@@ -11,11 +11,9 @@ class ResendVerificationController extends Controller
 {
     public function __invoke(ResendVerificationRequest $request): void
     {
-        $payload = $request->validated();
-
-        $user = User::whereEmail($payload['email'])->firstOrFail();
-
-        abort_if((bool) $user->email_verified_at, 422, 'verified');
+        $user = User::where('email', $request->get('email'))
+            ->whereNull('email_verified_at')
+            ->firstOrFail();
 
         /** @var UrlToken $urlToken */
         $urlToken = $user->urlTokens()->create([

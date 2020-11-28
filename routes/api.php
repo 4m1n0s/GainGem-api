@@ -16,7 +16,7 @@ Route::group(['prefix' => 'auth'], static function () {
     Route::post('user', [AuthController::class, 'getAuthUser']);
 });
 
-Route::get('stats', [StatsController::class, 'index']);
+Route::get('stats', StatsController::class);
 
 Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'coupons'], static function () {

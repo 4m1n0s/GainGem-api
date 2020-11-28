@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Arr;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -192,8 +193,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->total_points - $this->wasted_points;
     }
 
-    public function markUnreadNotificationAsRead(int $urlTokenId): void
+    public function markVerificationNotificationAsRead(int $urlTokenId): void
     {
+        /** @var DatabaseNotification|null $unreadNotification */
         $unreadNotification = $this->unreadNotifications()->where('data->url_token_id', $urlTokenId)->first();
 
         if ($unreadNotification) {

@@ -2,30 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Builders\UserBuilder;
+use App\Http\Requests\UserVerificationRequest;
 use App\Http\Resources\UserResource;
 use App\Models\CompletedTask;
 use App\Models\UrlToken;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class UserVerificationController extends Controller
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(UserVerificationRequest $request): JsonResponse
     {
-        $urlToken = UrlToken::whereToken($request->token)
-            ->whereType(UrlToken::TYPE_VERIFICATION)
+        $urlToken = UrlToken::whereToken($request->get('token'))
+            ->where('type', UrlToken::TYPE_VERIFICATION)
             ->where('expires_at', '>', now())
+            ->whereHas('user', static function (UserBuilder $userBuilder) {
+                $userBuilder->whereNull('email_verified_at');
+            })
             ->firstOrFail();
 
         $user = $urlToken->user;
 
-        abort_if((bool) $user->email_verified_at, 422, 'verified');
-
-        $user->markUnreadNotificationAsRead($urlToken->id);
+        $user->markVerificationNotificationAsRead($urlToken->id);
         $user->markEmailAsVerified();
         $user->completedTasks()->create([
             'type' => CompletedTask::TYPE_EMAIL_VERIFICATION,
-            'points' => 2,
+            'points' => CompletedTask::POINTS_EMAIL_VERIFICATION,
         ]);
 
         return response()->json([

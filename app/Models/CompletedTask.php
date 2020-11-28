@@ -45,6 +45,10 @@ class CompletedTask extends Model
     const TYPE_COUPON = 'coupon';
     const TYPE_REFERRAL_INCOME = 'referral_income';
 
+    const POINTS_EMAIL_VERIFICATION = 2;
+
+    const COMMISSION_PERCENT_REFERRAL = 0.1;
+
     protected $fillable = [
         'type',
         'provider',

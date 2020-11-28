@@ -16,7 +16,7 @@ class CompletedTaskObserver
 
         $completedTaskByUser->referredBy->completedTasks()->create([
             'type' => CompletedTask::TYPE_REFERRAL_INCOME,
-            'points' => $completedTask->points / 10,
+            'points' => $completedTask->points * CompletedTask::COMMISSION_PERCENT_REFERRAL,
             'data' => [
                 'completed_task_id' => $completedTask->id,
             ],
