@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RedeemCouponRequest;
 use App\Http\Resources\UserResource;
 use App\Models\CompletedTask;
 use App\Models\Coupon;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
-class CouponRedeemsController extends Controller
+class CouponRedeemController extends Controller
 {
     public function store(Coupon $coupon): JsonResponse
     {
