@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Helpers\Helper;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
@@ -27,7 +26,7 @@ class UpdateUserDataMiddleware
     {
         $data = [];
 
-        $ip = Helper::instance()->getIp();
+        $ip = $request->ip();
 
         if ($user->ip !== $ip) {
             $data['ip'] = $ip;

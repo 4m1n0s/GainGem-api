@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CouponRedeemsController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\UserVerificationController;
@@ -20,6 +20,6 @@ Route::get('stats', [StatsController::class, 'index']);
 
 Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'coupons'], static function () {
-        Route::post('redeem', [CouponController::class, 'redeem']);
+        Route::post('{coupon:code}/redeems', [CouponRedeemsController::class, 'store']);
     });
 });

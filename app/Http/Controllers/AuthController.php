@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Helper;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
@@ -19,7 +18,7 @@ class AuthController extends Controller
     {
         $payload = $request->validated();
         $payload['profile_image'] = asset('assets/user.png');
-        $payload['ip'] = Helper::instance()->getIp();
+        $payload['ip'] = $request->ip();
 
         if (Arr::get($payload, 'referral_token')) {
             $referredBy = User::where('referral_token', $payload['referral_token'])->first();
@@ -58,7 +57,7 @@ class AuthController extends Controller
 
         $token = auth()->attempt($payload);
 
-        abort_if(! $token, 422, 'Incorrect password');
+        abort_if(! $token, 422, 'Incorrect email or password');
 
         /** @var User $user */
         $user = auth()->user();

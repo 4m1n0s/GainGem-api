@@ -21,10 +21,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Coupon|null $coupon
  * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask availableForReferring()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask query()
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newModelQuery()
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newQuery()
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereCouponId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereData($value)
