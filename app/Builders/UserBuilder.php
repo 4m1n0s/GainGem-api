@@ -6,21 +6,21 @@ use Illuminate\Database\Eloquent\Builder;
 
 class UserBuilder extends Builder
 {
-    public function WithTotalPoints(): self
+    public function withTotalPoints(): self
     {
         $this->withSum('completedTasks as total_points', 'points');
 
         return $this;
     }
 
-    public function WithWastedPoints(): self
+    public function withWastedPoints(): self
     {
         $this->withSum('transactions as wasted_points', 'points');
 
         return $this;
     }
 
-    public function WithAvailablePoints(): self
+    public function withAvailablePoints(): self
     {
         $this->withTotalPoints()->withWastedPoints();
 

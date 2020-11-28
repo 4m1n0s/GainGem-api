@@ -20,7 +20,8 @@ class CouponController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $hasCompletedOfferThisWeek = $user->completedTasks()
+        $hasCompletedOfferThisWeek = CompletedTask::query()
+            ->where('user_id', $user->id)
             ->where('created_at', '>=', now()->subWeek())
             ->availableForReferring()
             ->exists();
