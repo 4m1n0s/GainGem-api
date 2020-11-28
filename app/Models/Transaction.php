@@ -7,7 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @mixin IdeHelperTransaction
+ * App\Models\Transaction.
+ *
+ * @property int $id
+ * @property string $type
+ * @property int $user_id
+ * @property float $points
+ * @property int|null $gift_card_id
+ * @property string|null $destination
+ * @property int|null $value
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\GiftCard|null $giftCard
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereDestination($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereGiftCardId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction wherePoints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereValue($value)
+ * @mixin \Eloquent
  */
 class Transaction extends Model
 {

@@ -16,7 +16,7 @@ class GenerateModelsIdeHelperListener
 
         Artisan::call('ide-helper:models', [
             '--reset' => true,
-            '--write-mixin' => true,
+            '--write' => true,
         ]);
     }
 }

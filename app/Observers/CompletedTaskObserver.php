@@ -10,7 +10,7 @@ class CompletedTaskObserver
     {
         $completedTaskByUser = $completedTask->user;
 
-        if (!$completedTaskByUser->referred_by || ! $completedTask->isTypeAvailableForReferring()) {
+        if (! $completedTaskByUser->referredBy || ! $completedTask->isTypeAvailableForReferring()) {
             return;
         }
 

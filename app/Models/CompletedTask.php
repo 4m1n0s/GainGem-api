@@ -2,13 +2,39 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
+use App\Builders\CompletedTaskBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @mixin IdeHelperCompletedTask
+ * App\Models\CompletedTask.
+ *
+ * @property int $id
+ * @property string $type
+ * @property string|null $provider
+ * @property int $user_id
+ * @property float $points
+ * @property array|null $data
+ * @property int|null $coupon_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Coupon|null $coupon
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask availableForReferring()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereCouponId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask wherePoints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereProvider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereUserId($value)
+ * @mixin \Eloquent
  */
 class CompletedTask extends Model
 {
@@ -33,6 +59,16 @@ class CompletedTask extends Model
         'data' => 'array',
         'points' => 'float',
     ];
+
+    public static function query() : CompletedTaskBuilder
+    {
+        return parent::query();
+    }
+
+    public function newEloquentBuilder($query)
+    {
+        return new CompletedTaskBuilder($query);
+    }
 
     public function coupon(): BelongsTo
     {
@@ -72,10 +108,5 @@ class CompletedTask extends Model
     public function isTypeAvailableForReferring(): bool
     {
         return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome();
-    }
-
-    public function scopeAvailableForReferring(Builder $query): Builder
-    {
-        return $query->whereNotIn('type', [self::TYPE_REFERRAL_INCOME, self::TYPE_COUPON]);
     }
 }
