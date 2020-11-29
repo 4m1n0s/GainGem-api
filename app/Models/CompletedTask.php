@@ -63,11 +63,6 @@ class CompletedTask extends Model
         'points' => 'float',
     ];
 
-    public static function query() : CompletedTaskBuilder
-    {
-        return parent::query();
-    }
-
     public function newEloquentBuilder($query)
     {
         return new CompletedTaskBuilder($query);

@@ -105,11 +105,6 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public static function query() : UserBuilder
-    {
-        return parent::query();
-    }
-
     public function newEloquentBuilder($query)
     {
         return new UserBuilder($query);
