@@ -12,8 +12,5 @@ parameters:
         -
             message: "#Call to an undefined method Illuminate\\\\Support\\\\Fluent::onDelete#"
             path: ./database/migrations
-        -
-            message: "#Method App\\\\Models\\\\.+::query\\(\\) should return App\\\\Builders\\\\.+Builder but returns Illuminate\\\\Database\\\\Eloquent\\\\Builder#"
-            path: ./app/Models
     checkModelProperties: true
     checkMissingIterableValueType: false
