@@ -25,3 +25,10 @@ php artisan jwt:secret
 ```bash
 php artisan migrate
 ```
+
+
+5. Run storage link
+
+```bash
+php artisan storage:link
+```
