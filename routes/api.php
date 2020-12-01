@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CouponRedeemController;
-use App\Http\Controllers\DailyTasksController;
+use App\Http\Controllers\DailyTaskController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\UserVerificationController;
@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth:api'], static function () {
     });
 
     Route::group(['prefix' => 'daily-tasks'], static function () {
-        Route::get('', [DailyTasksController::class, 'index']);
-        Route::post('redeems', [DailyTasksController::class, 'store']);
+        Route::get('', [DailyTaskController::class, 'index']);
+        Route::post('', [DailyTaskController::class, 'store']);
     });
 });

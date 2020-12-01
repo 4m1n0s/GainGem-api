@@ -6,6 +6,7 @@ use App\Builders\CompletedTaskBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Arr;
 
 /**
  * App\Models\CompletedTask.
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Coupon|null $coupon
+ * @property-read int|null $offers_count
  * @property-read \App\Models\User $user
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newModelQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newQuery()
@@ -42,7 +44,7 @@ class CompletedTask extends Model
     const TYPE_OFFER = 'offer';
     const TYPE_EMAIL_VERIFICATION = 'email_verification';
     const TYPE_GIVEAWAY = 'giveaway';
-    const TYPE_TASK = 'task';
+    const TYPE_DAILY_TASK = 'daily_task';
     const TYPE_COUPON = 'coupon';
     const TYPE_REFERRAL_INCOME = 'referral_income';
 
@@ -50,7 +52,7 @@ class CompletedTask extends Model
 
     const COMMISSION_PERCENT_REFERRAL = 0.1;
 
-    const TASKS = [
+    const DAILY_TASK_OFFERS_OPTIONS = [
         1 => 0.25,
         3 => 1.00,
         5 => 2.00,
@@ -103,7 +105,7 @@ class CompletedTask extends Model
 
     public function isTypeTask(): bool
     {
-        return $this->type === self::TYPE_TASK;
+        return $this->type === self::TYPE_DAILY_TASK;
     }
 
     public function isTypeCoupon(): bool
@@ -119,5 +121,10 @@ class CompletedTask extends Model
     public function isTypeAvailableForReferring(): bool
     {
         return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeTask();
+    }
+
+    public function getOffersCountAttribute(): ?int
+    {
+        return Arr::get($this, 'data.offers_count');
     }
 }
