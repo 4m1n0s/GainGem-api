@@ -6,6 +6,7 @@ use App\Builders\CompletedTaskBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Arr;
 
 /**
  * App\Models\CompletedTask.
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Coupon|null $coupon
+ * @property-read int|null $offers_count
  * @property-read \App\Models\User $user
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newModelQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newQuery()
@@ -42,12 +44,25 @@ class CompletedTask extends Model
     const TYPE_OFFER = 'offer';
     const TYPE_EMAIL_VERIFICATION = 'email_verification';
     const TYPE_GIVEAWAY = 'giveaway';
+    const TYPE_DAILY_TASK = 'daily_task';
     const TYPE_COUPON = 'coupon';
     const TYPE_REFERRAL_INCOME = 'referral_income';
 
     const POINTS_EMAIL_VERIFICATION = 2;
 
     const COMMISSION_PERCENT_REFERRAL = 0.1;
+
+    /*
+     * The keys are referenced to the amount of offers that must be completed
+     * in order to redeem a task.
+     * The values are the points for each task completion.
+     */
+    const DAILY_TASK_OFFERS_OPTIONS = [
+        1 => 0.25,
+        3 => 1.00,
+        5 => 2.00,
+        10 => 4.00,
+    ];
 
     protected $fillable = [
         'type',
@@ -93,6 +108,11 @@ class CompletedTask extends Model
         return $this->type === self::TYPE_GIVEAWAY;
     }
 
+    public function isTypeDailyTask(): bool
+    {
+        return $this->type === self::TYPE_DAILY_TASK;
+    }
+
     public function isTypeCoupon(): bool
     {
         return $this->type === self::TYPE_COUPON;
@@ -103,8 +123,13 @@ class CompletedTask extends Model
         return $this->type === self::TYPE_REFERRAL_INCOME;
     }
 
-    public function isTypeAvailableForReferring(): bool
+    public function isAvailableForReferring(): bool
     {
-        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome();
+        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeDailyTask();
+    }
+
+    public function getOffersCountAttribute(): ?int
+    {
+        return Arr::get($this, 'data.offers_count');
     }
 }
