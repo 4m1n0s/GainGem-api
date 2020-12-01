@@ -73,6 +73,8 @@ class AuthController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
+        abort_if(! $user, 422, 'Invalid token!');
+
         return response()->json([
             'user' => new UserResource($user->withAvailablePoints()),
         ]);

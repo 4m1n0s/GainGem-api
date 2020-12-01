@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CouponRedeemController;
+use App\Http\Controllers\DailyTasksController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\UserVerificationController;
@@ -21,5 +22,10 @@ Route::get('stats', StatsController::class);
 Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'coupons'], static function () {
         Route::post('{coupon:code}/redeems', [CouponRedeemController::class, 'store']);
+    });
+
+    Route::group(['prefix' => 'daily-tasks'], static function () {
+        Route::get('', [DailyTasksController::class, 'index']);
+        Route::post('redeems', [DailyTasksController::class, 'store']);
     });
 });

@@ -42,12 +42,20 @@ class CompletedTask extends Model
     const TYPE_OFFER = 'offer';
     const TYPE_EMAIL_VERIFICATION = 'email_verification';
     const TYPE_GIVEAWAY = 'giveaway';
+    const TYPE_TASK = 'task';
     const TYPE_COUPON = 'coupon';
     const TYPE_REFERRAL_INCOME = 'referral_income';
 
     const POINTS_EMAIL_VERIFICATION = 2;
 
     const COMMISSION_PERCENT_REFERRAL = 0.1;
+
+    const TASKS = [
+        1 => 0.25,
+        3 => 1.00,
+        5 => 2.00,
+        10 => 4.00,
+    ];
 
     protected $fillable = [
         'type',
@@ -93,6 +101,11 @@ class CompletedTask extends Model
         return $this->type === self::TYPE_GIVEAWAY;
     }
 
+    public function isTypeTask(): bool
+    {
+        return $this->type === self::TYPE_TASK;
+    }
+
     public function isTypeCoupon(): bool
     {
         return $this->type === self::TYPE_COUPON;
@@ -105,6 +118,6 @@ class CompletedTask extends Model
 
     public function isTypeAvailableForReferring(): bool
     {
-        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome();
+        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeTask();
     }
 }
