@@ -103,7 +103,7 @@ class CompletedTask extends Model
         return $this->type === self::TYPE_GIVEAWAY;
     }
 
-    public function isTypeTask(): bool
+    public function isTypeDailyTask(): bool
     {
         return $this->type === self::TYPE_DAILY_TASK;
     }
@@ -120,7 +120,7 @@ class CompletedTask extends Model
 
     public function isTypeAvailableForReferring(): bool
     {
-        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeTask();
+        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeDailyTask();
     }
 
     public function getOffersCountAttribute(): ?int
