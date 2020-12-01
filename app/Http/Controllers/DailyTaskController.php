@@ -18,6 +18,7 @@ class DailyTaskController extends Controller
         return response()->json([
             'completed_offers_count' => CompletedTask::query()->where('user_id', $user->id)->todayOffers()->count(),
             'completed_daily_tasks' => CompletedTask::query()->where('user_id', $user->id)->todayDailyTasks()->get()->pluck('offers_count'),
+            'daily_tasks_options' => CompletedTask::DAILY_TASK_OFFERS_OPTIONS,
         ]);
     }
 
