@@ -14,7 +14,7 @@ Route::post('verify', UserVerificationController::class);
 Route::group(['prefix' => 'auth'], static function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('user', [AuthController::class, 'getAuthUser']);
+    Route::post('user', [AuthController::class, 'getAuthUser'])->middleware('auth:api');
 });
 
 Route::get('stats', StatsController::class);

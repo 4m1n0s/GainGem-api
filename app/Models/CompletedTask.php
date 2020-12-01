@@ -52,6 +52,11 @@ class CompletedTask extends Model
 
     const COMMISSION_PERCENT_REFERRAL = 0.1;
 
+    /*
+     * The keys are referenced to the amount of offers that must be completed
+     * in order to redeem a task.
+     * The values are the points for each task completion.
+     */
     const DAILY_TASK_OFFERS_OPTIONS = [
         1 => 0.25,
         3 => 1.00,
@@ -118,7 +123,7 @@ class CompletedTask extends Model
         return $this->type === self::TYPE_REFERRAL_INCOME;
     }
 
-    public function isTypeAvailableForReferring(): bool
+    public function isAvailableForReferring(): bool
     {
         return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeDailyTask();
     }
