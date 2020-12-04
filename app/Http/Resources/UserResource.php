@@ -22,23 +22,22 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'username' => $this->username,
             'email' => $this->email,
-            'email_verified_at' => $this->email_verified_at,
+            'email_verified_at' => is_null($this->email_verified_at) ? $this->email_verified_at : $this->email_verified_at->format('M d Y'),
             'profile_image' => $this->profile_image,
             'points' => $this->available_points,
             'total_points' => $this->total_points,
             'referred_by' => $this->referred_by,
             'referral_token' => $this->referral_token,
-            'banned_at' => $this->banned_at,
+            'banned_at' => is_null($this->banned_at) ? $this->banned_at : $this->banned_at->format('M d Y'),
             'ban_reason' => $this->ban_reason,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at->format('M d Y'),
+            'updated_at' => $this->updated_at->format('M d Y'),
         ];
 
         $user = auth()->user();
 
         if ($this->resource->isAdminRole() && ($user && $user->isAdminRole())) {
             $response = array_merge($response, [
-                'email_verified_at' => $this->email_verified_at,
                 'ip' => $this->ip,
                 'role' => $this->role,
             ]);
