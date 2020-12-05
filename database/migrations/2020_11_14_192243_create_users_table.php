@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('profile_image');
+            $table->string('profile_image')->nullable();
             $table->string('role')->default(User::ROLE_USER)->index();
             $table->string('ip')->nullable();
             $table->foreignId('referred_by')->nullable()->index()->constrained('users')->onDelete('set null');

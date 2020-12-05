@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -21,7 +22,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property \App\Casts\Bcrypt $password
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property string $profile_image
+ * @property string|null $profile_image
  * @property string $role
  * @property string|null $ip
  * @property int|null $referred_by
@@ -33,6 +34,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
  * @property-read float|null $available_points
+ * @property-read string $profile_image_url
  * @property-read float|null $total_points
  * @property-read float|null $wasted_points
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
@@ -74,6 +76,7 @@ class User extends Authenticatable implements JWTSubject
         'username',
         'password',
         'email',
+        'email_verified_at',
         'profile_image',
         'role',
         'ip',
@@ -93,6 +96,7 @@ class User extends Authenticatable implements JWTSubject
 
     protected $appends = [
         'available_points',
+        'profile_image_url',
     ];
 
     public function getJWTIdentifier()
@@ -186,6 +190,15 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return $this->total_points - $this->wasted_points;
+    }
+
+    public function getProfileImageUrlAttribute(): string
+    {
+        if (! $this->profile_image || ! Storage::exists($this->profile_image)) {
+            return asset('storage/assets/user.png');
+        }
+
+        return Storage::url($this->profile_image);
     }
 
     public function markVerificationNotificationAsRead(int $urlTokenId): void
