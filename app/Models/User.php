@@ -22,7 +22,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property \App\Casts\Bcrypt $password
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property string $profile_image
+ * @property string|null $profile_image
  * @property string $role
  * @property string|null $ip
  * @property int|null $referred_by
@@ -34,6 +34,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
  * @property-read float|null $available_points
+ * @property-read string $profile_image_url
  * @property-read float|null $total_points
  * @property-read float|null $wasted_points
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications

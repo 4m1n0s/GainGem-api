@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ImageOrPath implements Rule
 {
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         $isImage = Validator::make(['value' => $value], ['value' => 'image'])->passes();
 
@@ -23,7 +23,7 @@ class ImageOrPath implements Rule
         return Storage::exists(explode('storage/', $value)[1]);
     }
 
-    public function message()
+    public function message(): string
     {
         return 'The :attribute is invalid image';
     }

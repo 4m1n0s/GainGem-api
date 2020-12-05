@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateUserRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         return [
             'password' => [
