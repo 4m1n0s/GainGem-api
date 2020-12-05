@@ -23,7 +23,7 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'email' => $this->email,
             'email_verified_at' => is_null($this->email_verified_at) ? $this->email_verified_at : $this->email_verified_at->format('M d Y'),
-            'profile_image' => $this->profile_image,
+            'profile_image' => $this->profile_image_url,
             'points' => $this->available_points,
             'total_points' => $this->total_points,
             'referred_by' => $this->referred_by,

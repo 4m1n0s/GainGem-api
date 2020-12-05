@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -74,6 +75,7 @@ class User extends Authenticatable implements JWTSubject
         'username',
         'password',
         'email',
+        'email_verified_at',
         'profile_image',
         'role',
         'ip',
@@ -93,6 +95,7 @@ class User extends Authenticatable implements JWTSubject
 
     protected $appends = [
         'available_points',
+        'profile_image_url',
     ];
 
     public function getJWTIdentifier()
@@ -186,6 +189,15 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return $this->total_points - $this->wasted_points;
+    }
+
+    public function getProfileImageUrlAttribute(): string
+    {
+        if (! $this->profile_image || ! Storage::exists($this->profile_image)) {
+            return asset('storage/assets/user.png');
+        }
+
+        return Storage::url($this->profile_image);
     }
 
     public function markVerificationNotificationAsRead(int $urlTokenId): void

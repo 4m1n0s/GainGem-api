@@ -17,7 +17,6 @@ class AuthController extends Controller
     public function register(RegisterRequest $request): JsonResponse
     {
         $payload = $request->validated();
-        $payload['profile_image'] = asset('storage/assets/user.png');
         $payload['ip'] = get_ip();
 
         if (Arr::get($payload, 'referral_token')) {
