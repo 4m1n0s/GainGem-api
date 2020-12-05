@@ -17,4 +17,5 @@ return (new MattAllan\LaravelCodeStyle\Config())
     ->setRules([
         '@Laravel' => true,
         '@Laravel:risky' => true,
+        'phpdoc_to_comment' => false,
     ]);

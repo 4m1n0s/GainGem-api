@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
         CompletedTask::observe(CompletedTaskObserver::class);
 
         Builder::macro('whereLike', function (string $attribute, string $searchTerm) {
-            /* @var Builder $this */
+            /** @var Builder $this */
             return $this->where($attribute, 'LIKE', "%{$searchTerm}%");
         });
     }
