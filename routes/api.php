@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementBannerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CouponRedeemController;
 use App\Http\Controllers\DailyTaskController;
@@ -33,5 +34,10 @@ Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'users'], static function () {
         Route::get('', [UserController::class, 'index'])->middleware('role:admin');
         Route::put('{user}', [UserController::class, 'update']);
+    });
+
+    Route::group(['prefix' => 'announcement-banner'], static function () {
+        Route::get('', [AnnouncementBannerController::class, 'index']);
+        Route::post('', [AnnouncementBannerController::class, 'store'])->middleware('role:admin');
     });
 });
