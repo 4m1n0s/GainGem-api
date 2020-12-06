@@ -16,8 +16,8 @@ class UserReferralController extends Controller
             ->withTotalPoints()
             ->get()
             ->each(static function (User $referredUser) {
-                $referredUser->formatted_created_at = $referredUser->created_at->format('M d Y');
-                $referredUser->formatted_total_points = $referredUser->total_points * CompletedTask::COMMISSION_PERCENT_REFERRAL;
+                $referredUser['formatted_created_at'] = $referredUser->created_at ? $referredUser->created_at->format('M d Y') : $referredUser->created_at;
+                $referredUser['formatted_total_points'] = $referredUser->total_points * CompletedTask::COMMISSION_PERCENT_REFERRAL;
             });
 
         return response()->json([

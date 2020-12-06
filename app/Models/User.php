@@ -189,7 +189,7 @@ class User extends Authenticatable implements JWTSubject
             return null;
         }
 
-        return number_format($this->total_points - $this->wasted_points, 2);
+        return (float) number_format($this->total_points - $this->wasted_points, 2);
     }
 
     public function getProfileImageUrlAttribute(): string

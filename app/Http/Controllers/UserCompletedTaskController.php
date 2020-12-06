@@ -15,7 +15,7 @@ class UserCompletedTaskController extends Controller
         $completedTasks = $user->completedTasks()
             ->get()
             ->each(static function (CompletedTask $completedTask) {
-                $completedTask->formatted_created_at = $completedTask->created_at->format('M d Y');
+                $completedTask['formatted_created_at'] = $completedTask->created_at ? $completedTask->created_at->format('M d Y') : $completedTask->created_at;
             });
 
         return response()->json([

@@ -16,8 +16,8 @@ class UserTransactionController extends Controller
             ->with('giftCard')
             ->get(['id', 'type', 'points', 'gift_card_id', 'created_at'])
             ->each(static function (Transaction $transaction) {
-                $transaction->formatted_created_at = $transaction->created_at->format('M d Y');
-                $transaction->formatted_provider = $transaction->gift_card_id ? $transaction->giftCard->formatted_provider : ucfirst($transaction->type);
+                $transaction['formatted_created_at'] = $transaction->created_at ? $transaction->created_at->format('M d Y') : $transaction->created_at;
+                $transaction['formatted_provider'] = $transaction->giftCard ? $transaction->giftCard->formatted_provider : ucfirst($transaction->type);
             });
 
         return response()->json([
