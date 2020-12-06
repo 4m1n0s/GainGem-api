@@ -9,7 +9,7 @@ class StoreAnnouncementBannerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'is_disabled' => [
+            'is_enabled' => [
                 'required',
                 'boolean',
             ],

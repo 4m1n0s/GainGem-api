@@ -18,7 +18,7 @@ class AnnouncementBannerController extends Controller
     public function store(StoreAnnouncementBannerRequest $request): JsonResponse
     {
         $payload = $request->validated();
-        $payload['is_disabled'] = $request->boolean('is_disabled');
+        $payload['is_enabled'] = $request->boolean('is_enabled');
 
         Cache::forget('announcement-banner');
 
