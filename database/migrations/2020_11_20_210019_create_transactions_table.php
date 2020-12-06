@@ -18,7 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->string('type');
             $table->foreignId('user_id')->index()->constrained()->onDelete('cascade');
             $table->unsignedDecimal('points')->index();
-            $table->foreignId('gift_card_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('gift_card_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('destination')->nullable();
             $table->unsignedBigInteger('value')->nullable();
             $table->timestamps();

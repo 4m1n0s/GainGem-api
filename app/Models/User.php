@@ -170,7 +170,7 @@ class User extends Authenticatable implements JWTSubject
             return null;
         }
 
-        return (float) $this->getAttributes()['total_points'];
+        return (float) number_format($this->getAttributes()['total_points'], 2);
     }
 
     public function getWastedPointsAttribute(): ?float
@@ -179,7 +179,7 @@ class User extends Authenticatable implements JWTSubject
             return null;
         }
 
-        return (float) $this->getAttributes()['wasted_points'];
+        return (float) number_format($this->getAttributes()['wasted_points'], 2);
     }
 
     public function getAvailablePointsAttribute(): ?float
@@ -189,7 +189,7 @@ class User extends Authenticatable implements JWTSubject
             return null;
         }
 
-        return $this->total_points - $this->wasted_points;
+        return number_format($this->total_points - $this->wasted_points, 2);
     }
 
     public function getProfileImageUrlAttribute(): string

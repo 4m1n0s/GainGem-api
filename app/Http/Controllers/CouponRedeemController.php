@@ -30,7 +30,7 @@ class CouponRedeemController extends Controller
         abort_if($coupon->completedTasks()->where('user_id', $user->id)->exists(), 422, "You've already redeemed this promo code!");
 
         $user->completedTasks()->create([
-            'type' => CompletedTask::TYPE_COUPON,
+            'type' => CompletedTask::TYPE_PROMO_CODE,
             'points' => $coupon->points,
             'coupon_id' => $coupon->id,
         ]);
