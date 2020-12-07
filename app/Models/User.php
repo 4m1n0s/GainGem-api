@@ -34,6 +34,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
  * @property-read float|null $available_points
+ * @property-read string $formatted_created_at
  * @property-read string $profile_image_url
  * @property-read float|null $total_points
  * @property-read float|null $wasted_points
@@ -49,6 +50,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \App\Builders\UserBuilder|\App\Models\User newModelQuery()
  * @method static \App\Builders\UserBuilder|\App\Models\User newQuery()
  * @method static \App\Builders\UserBuilder|\App\Models\User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User search($term)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereBanReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereBannedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
@@ -67,7 +69,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, FullTextSearch;
 
     const ROLE_USER = 'user';
     const ROLE_ADMIN = 'admin';
@@ -97,6 +99,11 @@ class User extends Authenticatable implements JWTSubject
     protected $appends = [
         'available_points',
         'profile_image_url',
+        'formatted_created_at',
+    ];
+
+    protected array $searchable = [
+        'username',
     ];
 
     public function getJWTIdentifier()
@@ -209,5 +216,10 @@ class User extends Authenticatable implements JWTSubject
         if ($unreadNotification) {
             $unreadNotification->markAsRead();
         }
+    }
+
+    public function getFormattedCreatedAtAttribute(): string
+    {
+        return optional($this->created_at)->format('M d Y');
     }
 }

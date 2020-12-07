@@ -29,6 +29,8 @@ class CreateUsersTable extends Migration
             $table->string('ban_reason')->nullable();
             $table->timestamps();
         });
+
+        DB::statement('ALTER TABLE users ADD FULLTEXT fulltext_index (username)');
     }
 
     /**

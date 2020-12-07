@@ -16,7 +16,7 @@ class UserController extends Controller
     {
         $payload = $request->validated();
 
-        return User::when(isset($payload['username']), static fn ($query) => $query->whereLike('username', $payload['username']))
+        return User::when(isset($payload['username']), static fn ($query) => $query->search($payload['username']))
             ->withAvailablePoints()
             ->get();
     }

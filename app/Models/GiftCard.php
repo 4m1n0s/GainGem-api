@@ -61,7 +61,7 @@ class GiftCard extends Model
 
     public function getFormattedProviderAttribute(): string
     {
-        if ($this->provider === 'xbox' || $this->provider === 'psn') {
+        if (in_array($this->provider, [self::PROVIDER_XBOX, self::PROVIDER_PSN])) {
             return strtoupper($this->provider);
         }
 

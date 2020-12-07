@@ -21,6 +21,7 @@ use Illuminate\Support\Arr;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Coupon|null $coupon
+ * @property-read string $formatted_created_at
  * @property-read string $formatted_type
  * @property-read int|null $offers_count
  * @property-read \App\Models\User $user
@@ -80,6 +81,7 @@ class CompletedTask extends Model
     ];
 
     protected $appends = [
+        'formatted_created_at',
         'formatted_type',
     ];
 
@@ -136,6 +138,11 @@ class CompletedTask extends Model
     public function getOffersCountAttribute(): ?int
     {
         return Arr::get($this, 'data.offers_count');
+    }
+
+    public function getFormattedCreatedAtAttribute(): string
+    {
+        return optional($this->created_at)->format('M d Y');
     }
 
     public function getFormattedTypeAttribute(): string
