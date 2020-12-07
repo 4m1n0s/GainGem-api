@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth:api'], static function () {
         Route::get('{user}/transactions', [UserTransactionController::class, 'show']);
         Route::get('{user}/activities', [UserCompletedTaskController::class, 'show']);
         Route::get('{user}/referrals', [UserReferralController::class, 'show']);
+        Route::get('{user}/referrals/stats', [UserReferralController::class, 'stats']);
         Route::put('{user}', [UserController::class, 'update']);
     });
 

@@ -23,4 +23,20 @@ class UserReferralController extends Controller
             'referrals' => $referrals,
         ]);
     }
+
+    public function stats(User $user): JsonResponse
+    {
+        $this->authorize('update', $user);
+
+        $user->loadCount('referredUsers');
+
+        $totalRevenue = $user->completedTasks()
+            ->where('type', CompletedTask::TYPE_REFERRAL_INCOME)
+            ->sum('points');
+
+        return response()->json([
+            'total_referrals' => $user->referred_users_count,
+            'total_revenue' => (float) number_format($totalRevenue, 2),
+        ]);
+    }
 }
