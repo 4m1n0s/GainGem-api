@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Builders;
 
 use Illuminate\Database\Eloquent\Builder;
 
-trait FullTextSearch
+class FullTextSearchBuilder extends Builder
 {
-    protected function fullTextWildcards(string $term): string
+    private function fullTextWildcards(string $term): string
     {
         $reservedSymbols = ['-', '+', '<', '>', '@', '(', ')', '~'];
         $term = str_replace($reservedSymbols, '', $term);
@@ -22,12 +22,12 @@ trait FullTextSearch
         return implode(' ', $words);
     }
 
-    public function scopeSearch(Builder $query, string $term): Builder
+    public function search(array $columns, string $term): self
     {
-        $columns = implode(',', $this->searchable);
+        $columns = implode(',', $columns);
 
-        $query->whereRaw("MATCH ({$columns}) AGAINST (? IN BOOLEAN MODE)", $this->fullTextWildcards($term));
+        $this->whereRaw("MATCH ({$columns}) AGAINST (? IN BOOLEAN MODE)", $this->fullTextWildcards($term));
 
-        return $query;
+        return $this;
     }
 }

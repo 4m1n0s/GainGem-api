@@ -50,7 +50,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \App\Builders\UserBuilder|\App\Models\User newModelQuery()
  * @method static \App\Builders\UserBuilder|\App\Models\User newQuery()
  * @method static \App\Builders\UserBuilder|\App\Models\User query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User search($term)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereBanReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereBannedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
@@ -69,7 +68,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, FullTextSearch;
+    use HasFactory, Notifiable;
 
     const ROLE_USER = 'user';
     const ROLE_ADMIN = 'admin';
@@ -100,10 +99,6 @@ class User extends Authenticatable implements JWTSubject
         'available_points',
         'profile_image_url',
         'formatted_created_at',
-    ];
-
-    protected array $searchable = [
-        'username',
     ];
 
     public function getJWTIdentifier()

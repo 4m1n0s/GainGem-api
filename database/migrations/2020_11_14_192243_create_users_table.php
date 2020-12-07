@@ -30,7 +30,7 @@ class CreateUsersTable extends Migration
             $table->timestamps();
         });
 
-        DB::statement('ALTER TABLE users ADD FULLTEXT fulltext_index (username)');
+        DB::statement('ALTER TABLE users ADD FULLTEXT users_username_full_text_index (username)');
     }
 
     /**
