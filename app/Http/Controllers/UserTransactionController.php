@@ -12,7 +12,7 @@ class UserTransactionController extends Controller
         $this->authorize('update', $user);
 
         $transactions = $user->transactions()
-            ->with('giftCard')
+            ->with('giftCard:id,provider')
             ->get(['id', 'type', 'points', 'gift_card_id', 'created_at']);
 
         return response()->json([

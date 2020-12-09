@@ -29,12 +29,14 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string $referral_token
  * @property \Illuminate\Support\Carbon|null $banned_at
  * @property string|null $ban_reason
+ * @property \Illuminate\Support\Carbon|null $registered_giveaway_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
  * @property-read float|null $available_points
- * @property-read string $formatted_created_at
+ * @property-read string|null $formatted_created_at
+ * @property-read string|null $formatted_registered_giveaway_at
  * @property-read string $profile_image_url
  * @property-read float|null $total_points
  * @property-read float|null $wasted_points
@@ -61,6 +63,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereProfileImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereReferralToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereReferredBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRegisteredGiveawayAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUsername($value)
@@ -83,6 +86,9 @@ class User extends Authenticatable implements JWTSubject
         'ip',
         'referred_by',
         'referral_token',
+        'banned_at',
+        'ban_reason',
+        'registered_giveaway_at',
     ];
 
     protected $hidden = [
@@ -93,11 +99,13 @@ class User extends Authenticatable implements JWTSubject
         'password' => Bcrypt::class,
         'email_verified_at' => 'datetime',
         'banned_at' => 'datetime',
+        'registered_giveaway_at' => 'datetime',
     ];
 
     protected $appends = [
         'available_points',
         'profile_image_url',
+        'formatted_registered_giveaway_at',
         'formatted_created_at',
     ];
 
@@ -213,7 +221,12 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
-    public function getFormattedCreatedAtAttribute(): string
+    public function getFormattedRegisteredGiveawayAtAttribute(): ?string
+    {
+        return optional($this->registered_giveaway_at)->diffForHumans();
+    }
+
+    public function getFormattedCreatedAtAttribute(): ?string
     {
         return optional($this->created_at)->format('M d Y');
     }

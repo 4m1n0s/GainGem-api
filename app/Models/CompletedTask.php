@@ -14,7 +14,7 @@ use Illuminate\Support\Arr;
  * @property int $id
  * @property string $type
  * @property string|null $provider
- * @property int $user_id
+ * @property int|null $user_id
  * @property float $points
  * @property array|null $data
  * @property int|null $coupon_id
@@ -24,7 +24,8 @@ use Illuminate\Support\Arr;
  * @property-read string $formatted_created_at
  * @property-read string $formatted_type
  * @property-read int|null $offers_count
- * @property-read \App\Models\User $user
+ * @property-read string|null $won_at
+ * @property-read \App\Models\User|null $user
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newModelQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask query()
@@ -143,6 +144,11 @@ class CompletedTask extends Model
     public function getFormattedCreatedAtAttribute(): string
     {
         return optional($this->created_at)->format('M d Y');
+    }
+
+    public function getWonAtAttribute(): ?string
+    {
+        return $this->isTypeGiveAway() ? optional($this->created_at)->addHour()->diffForHumans() : null;
     }
 
     public function getFormattedTypeAttribute(): string
