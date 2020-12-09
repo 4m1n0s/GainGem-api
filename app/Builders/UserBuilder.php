@@ -2,9 +2,7 @@
 
 namespace App\Builders;
 
-use Illuminate\Database\Eloquent\Builder;
-
-class UserBuilder extends Builder
+class UserBuilder extends FullTextSearchBuilder
 {
     public function withTotalPoints(): self
     {

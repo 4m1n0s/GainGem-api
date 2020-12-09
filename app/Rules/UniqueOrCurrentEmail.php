@@ -12,9 +12,11 @@ class UniqueOrCurrentEmail implements Rule
         /** @var User $user */
         $user = request()->route('user');
 
-        return ! User::where('email', $value)
-            ->whereNotIn('id', [$user->id])
-            ->exists();
+        if ($user->email === $value) {
+            return true;
+        }
+
+        return ! User::where('email', $value)->exists();
     }
 
     public function message(): string

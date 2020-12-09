@@ -34,6 +34,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
  * @property-read float|null $available_points
+ * @property-read string $formatted_created_at
  * @property-read string $profile_image_url
  * @property-read float|null $total_points
  * @property-read float|null $wasted_points
@@ -97,6 +98,7 @@ class User extends Authenticatable implements JWTSubject
     protected $appends = [
         'available_points',
         'profile_image_url',
+        'formatted_created_at',
     ];
 
     public function getJWTIdentifier()
@@ -170,7 +172,7 @@ class User extends Authenticatable implements JWTSubject
             return null;
         }
 
-        return (float) $this->getAttributes()['total_points'];
+        return (float) number_format($this->getAttributes()['total_points'], 2);
     }
 
     public function getWastedPointsAttribute(): ?float
@@ -179,7 +181,7 @@ class User extends Authenticatable implements JWTSubject
             return null;
         }
 
-        return (float) $this->getAttributes()['wasted_points'];
+        return (float) number_format($this->getAttributes()['wasted_points'], 2);
     }
 
     public function getAvailablePointsAttribute(): ?float
@@ -189,7 +191,7 @@ class User extends Authenticatable implements JWTSubject
             return null;
         }
 
-        return $this->total_points - $this->wasted_points;
+        return (float) number_format($this->total_points - $this->wasted_points, 2);
     }
 
     public function getProfileImageUrlAttribute(): string
@@ -209,5 +211,10 @@ class User extends Authenticatable implements JWTSubject
         if ($unreadNotification) {
             $unreadNotification->markAsRead();
         }
+    }
+
+    public function getFormattedCreatedAtAttribute(): string
+    {
+        return optional($this->created_at)->format('M d Y');
     }
 }

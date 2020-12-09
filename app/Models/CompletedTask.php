@@ -21,6 +21,8 @@ use Illuminate\Support\Arr;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Coupon|null $coupon
+ * @property-read string $formatted_created_at
+ * @property-read string $formatted_type
  * @property-read int|null $offers_count
  * @property-read \App\Models\User $user
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newModelQuery()
@@ -45,7 +47,7 @@ class CompletedTask extends Model
     const TYPE_EMAIL_VERIFICATION = 'email_verification';
     const TYPE_GIVEAWAY = 'giveaway';
     const TYPE_DAILY_TASK = 'daily_task';
-    const TYPE_COUPON = 'coupon';
+    const TYPE_PROMO_CODE = 'promo_code';
     const TYPE_REFERRAL_INCOME = 'referral_income';
 
     const POINTS_EMAIL_VERIFICATION = 2;
@@ -76,6 +78,11 @@ class CompletedTask extends Model
     protected $casts = [
         'data' => 'array',
         'points' => 'float',
+    ];
+
+    protected $appends = [
+        'formatted_created_at',
+        'formatted_type',
     ];
 
     public function newEloquentBuilder($query)
@@ -115,7 +122,7 @@ class CompletedTask extends Model
 
     public function isTypeCoupon(): bool
     {
-        return $this->type === self::TYPE_COUPON;
+        return $this->type === self::TYPE_PROMO_CODE;
     }
 
     public function isTypeReferralIncome(): bool
@@ -131,5 +138,15 @@ class CompletedTask extends Model
     public function getOffersCountAttribute(): ?int
     {
         return Arr::get($this, 'data.offers_count');
+    }
+
+    public function getFormattedCreatedAtAttribute(): string
+    {
+        return optional($this->created_at)->format('M d Y');
+    }
+
+    public function getFormattedTypeAttribute(): string
+    {
+        return str_replace('_', ' ', ucwords($this->type, '_'));
     }
 }
