@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserRegisteredGiveaway;
 use App\Http\Resources\UserResource;
 use App\Models\CompletedTask;
 use App\Models\User;
@@ -18,7 +19,6 @@ class GiveawayController extends Controller
             ->first();
         $recentGiveawayEntries = User::whereNotNull('registered_giveaway_at')
             ->orderByDesc('registered_giveaway_at')
-            ->limit(10)
             ->get(['username', 'profile_image', 'registered_giveaway_at']);
         $recentGiveawayWinners = CompletedTask::where('type', CompletedTask::TYPE_GIVEAWAY)
             ->whereNotNull('user_id')
@@ -45,7 +45,9 @@ class GiveawayController extends Controller
         $user->update([
             'registered_giveaway_at' => now(),
         ]);
-        // @todo websockets
+
+        UserRegisteredGiveaway::dispatch();
+
         return response()->json([
             'user' => new UserResource($user->withAvailablePoints()),
         ]);
