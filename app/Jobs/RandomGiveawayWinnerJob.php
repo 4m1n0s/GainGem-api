@@ -15,7 +15,7 @@ class RandomGiveawayWinnerJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function handle()
+    public function handle(): void
     {
         $winUser = User::whereNotNull('registered_giveaway_at')->inRandomOrder()->first();
 
