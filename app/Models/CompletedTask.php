@@ -149,11 +149,6 @@ class CompletedTask extends Model
         return optional($this->created_at)->format('M d Y');
     }
 
-    public function getWonAtAttribute(): ?string
-    {
-        return optional($this->updated_at)->diffForHumans();
-    }
-
     public function getFormattedTypeAttribute(): string
     {
         return str_replace('_', ' ', ucwords($this->type, '_'));

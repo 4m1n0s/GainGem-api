@@ -13,15 +13,11 @@ class UserRegisteredGiveaway implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public array $recent_giveaway_entries;
+    public User $user;
 
-    public function __construct()
+    public function __construct(User $user)
     {
-        $this->recent_giveaway_entries = User::whereNotNull('registered_giveaway_at')
-            ->orderByDesc('registered_giveaway_at')
-            ->limit(10)
-            ->get(['username', 'profile_image', 'registered_giveaway_at'])
-            ->toArray();
+        $this->user = $user;
     }
 
     public function broadcastOn(): Channel

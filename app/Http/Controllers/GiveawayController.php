@@ -25,8 +25,7 @@ class GiveawayController extends Controller
             ->with('user:id,username,profile_image')
             ->orderByDesc('id')
             ->limit(10)
-            ->get(['type', 'user_id', 'points', 'updated_at'])
-            ->append('won_at');
+            ->get(['type', 'user_id', 'points', 'updated_at']);
 
         return response()->json([
             'current_giveaway' => $currentGiveaway,
@@ -46,7 +45,7 @@ class GiveawayController extends Controller
             'registered_giveaway_at' => now(),
         ]);
 
-        UserRegisteredGiveaway::dispatch();
+        UserRegisteredGiveaway::dispatch($user);
 
         return response()->json([
             'user' => new UserResource($user->withAvailablePoints()),

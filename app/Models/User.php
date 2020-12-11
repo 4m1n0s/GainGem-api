@@ -105,7 +105,6 @@ class User extends Authenticatable implements JWTSubject
     protected $appends = [
         'available_points',
         'profile_image_url',
-        'formatted_registered_giveaway_at',
         'formatted_created_at',
     ];
 
@@ -219,11 +218,6 @@ class User extends Authenticatable implements JWTSubject
         if ($unreadNotification) {
             $unreadNotification->markAsRead();
         }
-    }
-
-    public function getFormattedRegisteredGiveawayAtAttribute(): ?string
-    {
-        return optional($this->registered_giveaway_at)->diffForHumans();
     }
 
     public function getFormattedCreatedAtAttribute(): ?string

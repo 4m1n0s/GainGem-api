@@ -26,7 +26,6 @@ class GiveawayCreated implements ShouldBroadcast
             ->orderByDesc('id')
             ->limit(10)
             ->get(['type', 'user_id', 'points', 'updated_at'])
-            ->append('won_at')
             ->toArray();
     }
 
