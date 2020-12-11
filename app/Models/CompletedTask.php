@@ -144,14 +144,14 @@ class CompletedTask extends Model
         return Arr::get($this, 'data.offers_count');
     }
 
-    public function getFormattedCreatedAtAttribute(): string
+    public function getFormattedCreatedAtAttribute(): ?string
     {
         return optional($this->created_at)->format('M d Y');
     }
 
     public function getWonAtAttribute(): ?string
     {
-        return $this->isTypeGiveAway() ? optional($this->created_at)->addHour()->diffForHumans() : null;
+        return optional($this->updated_at)->diffForHumans();
     }
 
     public function getFormattedTypeAttribute(): string

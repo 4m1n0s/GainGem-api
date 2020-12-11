@@ -25,7 +25,7 @@ class GiveawayController extends Controller
             ->with('user:id,username,profile_image')
             ->orderByDesc('id')
             ->limit(10)
-            ->get(['type', 'user_id', 'points', 'created_at'])
+            ->get(['type', 'user_id', 'points', 'updated_at'])
             ->append('won_at');
 
         return response()->json([
