@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
             $table->string('referral_token');
             $table->timestamp('banned_at')->nullable();
             $table->string('ban_reason')->nullable();
+            $table->timestamp('registered_giveaway_at')->index()->nullable();
             $table->timestamps();
         });
 

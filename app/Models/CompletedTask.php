@@ -14,7 +14,7 @@ use Illuminate\Support\Arr;
  * @property int $id
  * @property string $type
  * @property string|null $provider
- * @property int $user_id
+ * @property int|null $user_id
  * @property float $points
  * @property array|null $data
  * @property int|null $coupon_id
@@ -24,7 +24,8 @@ use Illuminate\Support\Arr;
  * @property-read string $formatted_created_at
  * @property-read string $formatted_type
  * @property-read int|null $offers_count
- * @property-read \App\Models\User $user
+ * @property-read string|null $won_at
+ * @property-read \App\Models\User|null $user
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newModelQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask query()
@@ -53,6 +54,9 @@ class CompletedTask extends Model
     const POINTS_EMAIL_VERIFICATION = 2;
 
     const COMMISSION_PERCENT_REFERRAL = 0.1;
+
+    const GIVEAWAY_MIN_POINTS = 10;
+    const GIVEAWAY_MAX_POINTS = 50;
 
     /*
      * The keys are referenced to the amount of offers that must be completed
@@ -140,7 +144,7 @@ class CompletedTask extends Model
         return Arr::get($this, 'data.offers_count');
     }
 
-    public function getFormattedCreatedAtAttribute(): string
+    public function getFormattedCreatedAtAttribute(): ?string
     {
         return optional($this->created_at)->format('M d Y');
     }

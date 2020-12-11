@@ -18,8 +18,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read string $formatted_created_at
- * @property-read string $formatted_provider
+ * @property-read string|null $formatted_created_at
+ * @property-read string|null $formatted_provider
  * @property-read \App\Models\GiftCard|null $giftCard
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction newModelQuery()
@@ -87,12 +87,12 @@ class Transaction extends Model
         return $this->type === self::TYPE_ROBLOX;
     }
 
-    public function getFormattedCreatedAtAttribute(): string
+    public function getFormattedCreatedAtAttribute(): ?string
     {
         return optional($this->created_at)->format('M d Y');
     }
 
-    public function getFormattedProviderAttribute(): string
+    public function getFormattedProviderAttribute(): ?string
     {
         if ($this->type !== self::TYPE_GIFT_CARD || ! $this->relationLoaded('giftCard')) {
             return str_replace('_', ' ', ucwords($this->type, '_'));

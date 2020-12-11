@@ -30,7 +30,8 @@ class UserResource extends JsonResource
             'referral_token' => $this->referral_token,
             'banned_at' => optional($this->banned_at)->format('M d Y'),
             'ban_reason' => $this->ban_reason,
-            'created_at' => $this->created_at->format('M d Y'),
+            'registered_giveaway_at' => $this->registered_giveaway_at,
+            'created_at' => $this->formatted_created_at,
             'updated_at' => $this->updated_at->format('M d Y'),
         ];
 
