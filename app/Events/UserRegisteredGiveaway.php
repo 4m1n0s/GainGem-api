@@ -13,11 +13,11 @@ class UserRegisteredGiveaway implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public User $user;
+    public array $user;
 
     public function __construct(User $user)
     {
-        $this->user = $user;
+        $this->user = $user->only(['username', 'profile_image_url', 'registered_giveaway_at']);
     }
 
     public function broadcastOn(): Channel

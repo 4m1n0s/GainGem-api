@@ -40,7 +40,7 @@ class RandomGiveawayWinnerJob implements ShouldQueue
 
         $giveaway = CompletedTask::create([
             'type' => CompletedTask::TYPE_GIVEAWAY,
-            'points' => rand(CompletedTask::GIVEAWAY_MIN_POINTS * 10, CompletedTask::GIVEAWAY_MAX_POINTS * 10) / 10,
+            'points' => rand(CompletedTask::GIVEAWAY_MIN_POINTS, CompletedTask::GIVEAWAY_MAX_POINTS),
         ]);
 
         GiveawayCreated::dispatch($giveaway);
