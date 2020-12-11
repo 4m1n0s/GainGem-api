@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'email_verified_at' => optional($this->email_verified_at)->format('M d Y'),
             'profile_image' => $this->profile_image_url,
+            'role' => $this->role,
             'points' => $this->available_points,
             'total_points' => $this->total_points,
             'referred_by' => $this->referred_by,
@@ -40,7 +41,6 @@ class UserResource extends JsonResource
         if ($this->resource->isAdminRole() && ($user && $user->isAdminRole())) {
             $response = array_merge($response, [
                 'ip' => $this->ip,
-                'role' => $this->role,
             ]);
         }
 
