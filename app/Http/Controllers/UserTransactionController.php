@@ -13,6 +13,7 @@ class UserTransactionController extends Controller
 
         $transactions = $user->transactions()
             ->with('giftCard:id,provider')
+            ->orderByDesc('id')
             ->get(['id', 'type', 'points', 'gift_card_id', 'created_at']);
 
         return response()->json([

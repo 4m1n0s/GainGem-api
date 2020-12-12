@@ -12,7 +12,7 @@ class UserCompletedTaskController extends Controller
         $this->authorize('update', $user);
 
         return response()->json([
-            'activities' => $user->completedTasks()->get(),
+            'activities' => $user->completedTasks()->orderByDesc('id')->get(),
         ]);
     }
 }
