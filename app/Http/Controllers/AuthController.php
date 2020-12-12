@@ -61,6 +61,11 @@ class AuthController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
+        if ($user->banned_at) {
+            auth()->logout();
+            abort(403, 'Your user is banned for the reason: '.$user->ban_reason);
+        }
+
         return response()->json([
             'token' => $token,
             'user' => new UserResource($user->withAvailablePoints()),

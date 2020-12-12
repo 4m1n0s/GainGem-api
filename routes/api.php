@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnnouncementBannerController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BanController;
 use App\Http\Controllers\CouponRedeemController;
 use App\Http\Controllers\DailyTaskController;
 use App\Http\Controllers\GiveawayController;
@@ -41,16 +42,18 @@ Route::group(['middleware' => 'auth:api'], static function () {
     });
 
     Route::group(['prefix' => 'users'], static function () {
-        Route::get('', [UserController::class, 'index'])->middleware('role:admin');
+        Route::get('', [UserController::class, 'index'])->middleware('role:super_admin,admin');
         Route::get('{user}/transactions', [UserTransactionController::class, 'show']);
         Route::get('{user}/activities', [UserCompletedTaskController::class, 'show']);
         Route::get('{user}/referrals', [UserReferralController::class, 'show']);
         Route::get('{user}/referrals/stats', [UserReferralController::class, 'stats']);
         Route::put('{user}', [UserController::class, 'update']);
+        Route::post('{user}/bans', [BanController::class, 'store'])->middleware('role:super_admin,admin');
+        Route::delete('{user}/bans', [BanController::class, 'destroy'])->middleware('role:super_admin,admin');
     });
 
     Route::group(['prefix' => 'announcement-banner'], static function () {
         Route::get('', [AnnouncementBannerController::class, 'index']);
-        Route::post('', [AnnouncementBannerController::class, 'store'])->middleware('role:admin');
+        Route::post('', [AnnouncementBannerController::class, 'store'])->middleware('role:super_admin,admin');
     });
 });

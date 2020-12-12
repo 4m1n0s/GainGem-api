@@ -35,8 +35,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
  * @property-read float|null $available_points
+ * @property-read string|null $formatted_banned_at
  * @property-read string|null $formatted_created_at
- * @property-read string|null $formatted_registered_giveaway_at
+ * @property-read string|null $formatted_email_verified_at
  * @property-read string $profile_image_url
  * @property-read float|null $total_points
  * @property-read float|null $wasted_points
@@ -52,21 +53,25 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \App\Builders\UserBuilder|\App\Models\User newModelQuery()
  * @method static \App\Builders\UserBuilder|\App\Models\User newQuery()
  * @method static \App\Builders\UserBuilder|\App\Models\User query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereBanReason($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereBannedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereProfileImage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereReferralToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereReferredBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRegisteredGiveawayAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRole($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUsername($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User search(array $columns, string $term)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereBanReason($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereBannedAt($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereCreatedAt($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereEmail($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereEmailVerifiedAt($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereId($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereIp($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User wherePassword($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereProfileImage($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereReferralToken($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereReferredBy($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereRegisteredGiveawayAt($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereRole($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereUpdatedAt($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereUsername($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User withAvailablePoints()
+ * @method static \App\Builders\UserBuilder|\App\Models\User withTotalPoints()
+ * @method static \App\Builders\UserBuilder|\App\Models\User withWastedPoints()
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements JWTSubject
@@ -74,7 +79,9 @@ class User extends Authenticatable implements JWTSubject
     use HasFactory, Notifiable;
 
     const ROLE_USER = 'user';
+    const ROLE_SUPPLIER = 'supplier';
     const ROLE_ADMIN = 'admin';
+    const ROLE_SUPER_ADMIN = 'super_admin';
 
     protected $fillable = [
         'username',
@@ -123,9 +130,19 @@ class User extends Authenticatable implements JWTSubject
         return new UserBuilder($query);
     }
 
+    public function isSuperAdminRole(): bool
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
+    }
+
     public function isAdminRole(): bool
     {
         return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isSupplierRole(): bool
+    {
+        return $this->role === self::ROLE_SUPPLIER;
     }
 
     public function isUserRole(): bool
@@ -179,7 +196,7 @@ class User extends Authenticatable implements JWTSubject
             return null;
         }
 
-        return (float) number_format($this->getAttributes()['total_points'], 2);
+        return $this->getAttributes()['total_points'];
     }
 
     public function getWastedPointsAttribute(): ?float
@@ -188,7 +205,7 @@ class User extends Authenticatable implements JWTSubject
             return null;
         }
 
-        return (float) number_format($this->getAttributes()['wasted_points'], 2);
+        return $this->getAttributes()['wasted_points'];
     }
 
     public function getAvailablePointsAttribute(): ?float
@@ -198,7 +215,7 @@ class User extends Authenticatable implements JWTSubject
             return null;
         }
 
-        return (float) number_format($this->total_points - $this->wasted_points, 2);
+        return $this->total_points - $this->wasted_points;
     }
 
     public function getProfileImageUrlAttribute(): string
@@ -220,8 +237,28 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
+    public function getFormattedAvailablePointsAttribute(): string
+    {
+        return points_format($this->available_points);
+    }
+
+    public function getFormattedTotalPointsAttribute(): string
+    {
+        return points_format($this->total_points);
+    }
+
     public function getFormattedCreatedAtAttribute(): ?string
     {
         return optional($this->created_at)->format('M d Y');
+    }
+
+    public function getFormattedEmailVerifiedAtAttribute(): ?string
+    {
+        return optional($this->email_verified_at)->format('M d Y');
+    }
+
+    public function getFormattedBannedAtAttribute(): ?string
+    {
+        return optional($this->banned_at)->format('M d Y');
     }
 }

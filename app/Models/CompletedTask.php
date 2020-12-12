@@ -21,23 +21,25 @@ use Illuminate\Support\Arr;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Coupon|null $coupon
- * @property-read string $formatted_created_at
+ * @property-read string|null $formatted_created_at
  * @property-read string $formatted_type
  * @property-read int|null $offers_count
- * @property-read string|null $won_at
  * @property-read \App\Models\User|null $user
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask availableForReferring()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newModelQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereCouponId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereData($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask wherePoints($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereProvider($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedTask whereUserId($value)
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask todayDailyTasks()
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask todayOffers()
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask whereCouponId($value)
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask whereCreatedAt($value)
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask whereData($value)
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask whereId($value)
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask wherePoints($value)
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask whereProvider($value)
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask whereType($value)
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask whereUpdatedAt($value)
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask whereUserId($value)
  * @mixin \Eloquent
  */
 class CompletedTask extends Model
@@ -50,6 +52,7 @@ class CompletedTask extends Model
     const TYPE_DAILY_TASK = 'daily_task';
     const TYPE_PROMO_CODE = 'promo_code';
     const TYPE_REFERRAL_INCOME = 'referral_income';
+    const TYPE_ADMIN = 'admin';
 
     const POINTS_EMAIL_VERIFICATION = 2;
 
@@ -134,9 +137,14 @@ class CompletedTask extends Model
         return $this->type === self::TYPE_REFERRAL_INCOME;
     }
 
+    public function isTypeAdmin(): bool
+    {
+        return $this->type === self::TYPE_ADMIN;
+    }
+
     public function isAvailableForReferring(): bool
     {
-        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeDailyTask();
+        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeDailyTask() && ! $this->isTypeAdmin();
     }
 
     public function getOffersCountAttribute(): ?int

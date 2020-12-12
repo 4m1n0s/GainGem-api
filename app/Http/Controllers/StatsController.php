@@ -11,7 +11,7 @@ class StatsController extends Controller
     public function __invoke(): JsonResponse
     {
         $totalPointsEarned = Cache::remember('total_points_earned', 60 * 5, static function (): string {
-            return number_format(CompletedTask::sum('points'), 2, '.', ',');
+            return points_format(CompletedTask::sum('points'));
         });
 
         $totalOffersCompleted = Cache::remember('total_offers_completed', 60 * 5, static function (): int {

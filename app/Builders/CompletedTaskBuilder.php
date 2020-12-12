@@ -9,7 +9,7 @@ class CompletedTaskBuilder extends Builder
 {
     public function availableForReferring(): self
     {
-        $this->whereNotIn('type', [CompletedTask::TYPE_REFERRAL_INCOME, CompletedTask::TYPE_PROMO_CODE, CompletedTask::TYPE_DAILY_TASK]);
+        $this->whereNotIn('type', [CompletedTask::TYPE_REFERRAL_INCOME, CompletedTask::TYPE_PROMO_CODE, CompletedTask::TYPE_DAILY_TASK, CompletedTask::TYPE_ADMIN]);
 
         return $this;
     }

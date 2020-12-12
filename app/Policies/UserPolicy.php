@@ -9,12 +9,24 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function update(User $authUser, User $user): bool
+    public function update(User $authenticatedUser, User $user): bool
     {
-        if ($authUser->isAdminRole()) {
+        if ($authenticatedUser->isSuperAdminRole()) {
             return true;
         }
 
-        return $authUser->id === $user->id;
+        if ($authenticatedUser->id === $user->id) {
+            return true;
+        }
+
+        if ($authenticatedUser->isAdminRole() && $user->isAdminRole()) {
+            return false;
+        }
+
+        if ($authenticatedUser->isAdminRole()) {
+            return true;
+        }
+
+        return true;
     }
 }

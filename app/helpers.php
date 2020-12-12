@@ -20,3 +20,11 @@ function get_ip(): string
 
     return $ip;
 }
+
+function points_format($points): string
+{
+    $points = (float) sprintf($points);
+    $decimals = strlen(substr(strrchr($points, '.'), 1));
+
+    return number_format($points, $decimals <= 2 ? $decimals : 2);
+}
