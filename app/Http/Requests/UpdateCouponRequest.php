@@ -34,7 +34,7 @@ class UpdateCouponRequest extends FormRequest
                 'required',
                 'date',
                 'date_format:Y-m-d',
-                'after:'.date('Y-m-d'),
+                'after:'.now()->subDay()->format('Y-m-d'),
             ],
         ];
     }
@@ -44,7 +44,7 @@ class UpdateCouponRequest extends FormRequest
         return [
             'expires_at.date' => 'Invalid date!',
             'expires_at.date_format' => 'The format is invalid!',
-            'expires_at.after' => 'The date should be by tomorrow',
+            'expires_at.after' => 'The date should be today or later',
         ];
     }
 }

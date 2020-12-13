@@ -41,7 +41,7 @@ class StoreCouponRequest extends FormRequest
         return [
             'expires_at.date' => 'Invalid date!',
             'expires_at.date_format' => 'The format is invalid!',
-            'expires_at.after' => 'The date should be by tomorrow',
+            'expires_at.after' => 'The date should be tomorrow or later',
         ];
     }
 }

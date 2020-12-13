@@ -72,6 +72,10 @@ class Coupon extends Model
 
     public function getIsActiveAttribute(): bool
     {
+        if ($this->getAttributes()['uses'] && $this->max_usages !== 0) {
+            return ! $this->expires_at->isPast() && $this->getAttributes()['uses'] < $this->max_usages;
+        }
+
         return ! $this->expires_at->isPast();
     }
 }
