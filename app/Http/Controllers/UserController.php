@@ -20,6 +20,7 @@ class UserController extends Controller
             ->withAvailablePoints()
             ->with('referredBy:id,username')
             ->withCount(['referredUsers as referrals', 'transactions as withdraws'])
+            ->orderByDesc('id')
             ->paginate(10);
 
         $usersArr = $users->append(['formatted_email_verified_at', 'formatted_available_points', 'formatted_total_points', 'formatted_banned_at']);

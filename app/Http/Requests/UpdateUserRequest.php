@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Models\User;
 use App\Rules\ImageOrPath;
-use App\Rules\UniqueOrCurrentEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,7 +27,7 @@ class UpdateUserRequest extends FormRequest
                     'required',
                     'email',
                     'max:255',
-                    new UniqueOrCurrentEmail,
+                    Rule::unique('users')->ignore($user->id),
                 ],
                 'profile_image' => [
                     new ImageOrPath,

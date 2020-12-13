@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementBannerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BanController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CouponRedeemController;
 use App\Http\Controllers\DailyTaskController;
 use App\Http\Controllers\GiveawayController;
@@ -28,6 +29,10 @@ Route::get('stats', StatsController::class);
 
 Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'coupons'], static function () {
+        Route::get('', [CouponController::class, 'index'])->middleware('role:super_admin,admin');
+        Route::post('', [CouponController::class, 'store'])->middleware('role:super_admin,admin');
+        Route::delete('{coupon:code}', [CouponController::class, 'destroy'])->middleware('role:super_admin,admin');
+        Route::put('{coupon:code}', [CouponController::class, 'update'])->middleware('role:super_admin,admin');
         Route::post('{coupon:code}/redeems', [CouponRedeemController::class, 'store']);
     });
 
