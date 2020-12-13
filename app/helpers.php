@@ -21,10 +21,18 @@ function get_ip(): string
     return $ip;
 }
 
-function points_format($points): string
+function points_format(?float $points): string
 {
-    $points = (float) sprintf($points);
-    $decimals = strlen(substr(strrchr($points, '.'), 1));
+    if (! $points) {
+        return '0';
+    }
 
-    return number_format($points, $decimals <= 2 ? $decimals : 2);
+    $points = sprintf((string) $points);
+    $decimals = strrchr($points, '.') !== false ? strlen(substr(strrchr($points, '.'), 1)) : 0;
+
+    if ((float) ($points) === 0.00) {
+        return '0';
+    }
+
+    return number_format((float) ($points), $decimals <= 2 ? $decimals : 2);
 }

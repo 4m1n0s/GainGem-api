@@ -16,8 +16,8 @@ class DailyTaskController extends Controller
         $user = auth()->user();
 
         return response()->json([
-            'completed_offers_count' => CompletedTask::query()->where('user_id', $user->id)->todayOffers()->count(),
-            'completed_daily_tasks' => CompletedTask::query()->where('user_id', $user->id)->todayDailyTasks()->get()->pluck('offers_count'),
+            'completed_offers_count' => $user->completedTasks()->todayOffers()->count(),
+            'completed_daily_tasks' => $user->completedTasks()->todayDailyTasks()->get()->pluck('offers_count'),
             'daily_tasks_options' => CompletedTask::DAILY_TASK_OFFERS_OPTIONS,
         ]);
     }
@@ -29,8 +29,8 @@ class DailyTaskController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $todayCompletedOffersCount = CompletedTask::query()->where('user_id', $user->id)->todayOffers()->count();
-        $hasAlreadyStored = CompletedTask::query()->where('user_id', $user->id)->todayDailyTasks()->where('data->offers_count', $payload['offers_count'])->exists();
+        $todayCompletedOffersCount = $user->completedTasks()->todayOffers()->count();
+        $hasAlreadyStored = $user->completedTasks()->todayDailyTasks()->where('data->offers_count', $payload['offers_count'])->exists();
 
         abort_if($hasAlreadyStored, 422, "You've already redeemed this task");
         abort_if($todayCompletedOffersCount < $payload['offers_count'], 422, 'You need to complete '.($payload['offers_count'] - $todayCompletedOffersCount).' more offers!');
@@ -44,7 +44,7 @@ class DailyTaskController extends Controller
         ]);
 
         return response()->json([
-            'user' => new UserResource($user->withAvailablePoints()),
+            'user' => new UserResource($user->loadAvailablePoints()),
         ], 201);
     }
 }

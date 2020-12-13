@@ -31,7 +31,7 @@ class UserVerificationController extends Controller
         ]);
 
         return response()->json([
-            'user' => new UserResource($user->withAvailablePoints()),
+            'user' => new UserResource($user->loadAvailablePoints()),
         ]);
     }
 }

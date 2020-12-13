@@ -48,7 +48,7 @@ class GiveawayController extends Controller
         UserRegisteredGiveaway::dispatch($user);
 
         return response()->json([
-            'user' => new UserResource($user->withAvailablePoints()),
+            'user' => new UserResource($user->loadAvailablePoints()),
         ]);
     }
 }

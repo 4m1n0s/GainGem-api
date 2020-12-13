@@ -39,7 +39,7 @@ class UserController extends Controller
         $payload = $request->validated();
         $authenticatedUser = auth()->user();
 
-        if ($authenticatedUser->id === $user->id) {
+        if ($authenticatedUser && $authenticatedUser->id === $user->id) {
             $payload['profile_image'] = null;
 
             /** @var UploadedFile|null $profileImage */
@@ -68,7 +68,7 @@ class UserController extends Controller
         $user->update($payload);
 
         return response()->json([
-            'user' => new UserResource($user->withAvailablePoints()),
+            'user' => new UserResource($user->loadAvailablePoints()),
         ]);
     }
 }

@@ -35,9 +35,11 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
  * @property-read float|null $available_points
+ * @property-read string $formatted_available_points
  * @property-read string|null $formatted_banned_at
  * @property-read string|null $formatted_created_at
  * @property-read string|null $formatted_email_verified_at
+ * @property-read string $formatted_total_points
  * @property-read string $profile_image_url
  * @property-read float|null $total_points
  * @property-read float|null $wasted_points
@@ -175,19 +177,19 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UrlToken::class);
     }
 
-    public function withTotalPoints(): self
+    public function loadTotalPoints(): self
     {
         return $this->loadSum('completedTasks as total_points', 'points');
     }
 
-    public function withWastedPoints(): self
+    public function loadWastedPoints(): self
     {
         return $this->loadSum('transactions as wasted_points', 'points');
     }
 
-    public function withAvailablePoints(): self
+    public function loadAvailablePoints(): self
     {
-        return $this->withTotalPoints()->withWastedPoints();
+        return $this->loadTotalPoints()->loadWastedPoints();
     }
 
     public function getTotalPointsAttribute(): ?float
