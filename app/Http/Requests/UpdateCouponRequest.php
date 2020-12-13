@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Coupon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -9,6 +10,7 @@ class UpdateCouponRequest extends FormRequest
 {
     public function rules(): array
     {
+        /** @var Coupon $coupon */
         $coupon = $this->route('coupon');
 
         return [

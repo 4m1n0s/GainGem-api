@@ -38,7 +38,7 @@ class CouponController extends Controller
 
         $coupon->loadCount('completedTasks as uses');
 
-        abort_if((int) $payload['max_usages'] !== 0 && $coupon->uses > $payload['max_usages'], 422, 'Cannot set max usages below the current uses');
+        abort_if((int) $payload['max_usages'] !== 0 && $coupon['uses'] > $payload['max_usages'], 422, 'Cannot set max usages below the current uses');
 
         $coupon->update($payload);
 

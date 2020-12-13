@@ -32,7 +32,7 @@ Route::group(['middleware' => 'auth:api'], static function () {
         Route::get('', [CouponController::class, 'index'])->middleware('role:super_admin,admin');
         Route::post('', [CouponController::class, 'store'])->middleware('role:super_admin,admin');
         Route::delete('{coupon:code}', [CouponController::class, 'destroy'])->middleware('role:super_admin,admin');
-        Route::put('{coupon:code}', [CouponController::class, 'update'])->middleware('role:super_admin,admin');
+        Route::put('{coupon}', [CouponController::class, 'update'])->middleware('role:super_admin,admin');
         Route::post('{coupon:code}/redeems', [CouponRedeemController::class, 'store']);
     });
 
