@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Models\Coupon;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateCouponRequest extends FormRequest
 {
@@ -16,9 +15,9 @@ class UpdateCouponRequest extends FormRequest
         return [
             'code' => [
                 'required',
+                'unique:coupons,code,'.$coupon->id,
                 'min:2',
                 'max:20',
-                Rule::unique('coupons')->ignore($coupon->id),
             ],
             'points' => [
                 'required',

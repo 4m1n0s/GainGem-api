@@ -25,9 +25,9 @@ class UpdateUserRequest extends FormRequest
                 ],
                 'email' => [
                     'required',
+                    'unique:users,email,'.$user->id,
                     'email',
                     'max:255',
-                    Rule::unique('users')->ignore($user->id),
                 ],
                 'profile_image' => [
                     new ImageOrPath,

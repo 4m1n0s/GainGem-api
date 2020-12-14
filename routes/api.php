@@ -7,6 +7,7 @@ use App\Http\Controllers\CompletedTaskController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CouponRedeemController;
 use App\Http\Controllers\DailyTaskController;
+use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\GiveawayController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\StatsController;
@@ -49,6 +50,13 @@ Route::group(['middleware' => 'auth:api'], static function () {
 
     Route::group(['prefix' => 'activities'], static function () {
         Route::get('', [CompletedTaskController::class, 'index']);
+    });
+
+    Route::group(['prefix' => 'gift-cards'], static function () {
+        Route::get('', [GiftCardController::class, 'index']);
+        Route::post('', [GiftCardController::class, 'store']);
+        Route::put('{giftCard}', [GiftCardController::class, 'update']);
+        Route::delete('{giftCard}', [GiftCardController::class, 'destroy']);
     });
 
     Route::group(['prefix' => 'users'], static function () {
