@@ -89,6 +89,7 @@ class CompletedTask extends Model
 
     protected $appends = [
         'formatted_created_at',
+        'formatted_points',
         'formatted_type',
     ];
 
@@ -155,6 +156,11 @@ class CompletedTask extends Model
     public function getFormattedCreatedAtAttribute(): ?string
     {
         return optional($this->created_at)->format('M d Y');
+    }
+
+    public function getFormattedPointsAttribute(): string
+    {
+        return points_format($this->points);
     }
 
     public function getFormattedTypeAttribute(): string

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 
 /**
  * App\Models\Coupon.
@@ -72,7 +73,7 @@ class Coupon extends Model
 
     public function getIsActiveAttribute(): bool
     {
-        if ($this->getAttributes()['uses'] && $this->max_usages !== 0) {
+        if (Arr::has($this->getAttributes(), 'uses') && $this->max_usages !== 0) {
             return ! $this->expires_at->isPast() && $this->getAttributes()['uses'] < $this->max_usages;
         }
 

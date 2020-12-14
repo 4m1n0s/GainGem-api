@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementBannerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BanController;
+use App\Http\Controllers\CompletedTaskController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CouponRedeemController;
 use App\Http\Controllers\DailyTaskController;
@@ -44,6 +45,10 @@ Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'giveaway'], static function () {
         Route::get('', [GiveawayController::class, 'recently']);
         Route::post('', [GiveawayController::class, 'enter']);
+    });
+
+    Route::group(['prefix' => 'activities'], static function () {
+        Route::get('', [CompletedTaskController::class, 'index']);
     });
 
     Route::group(['prefix' => 'users'], static function () {

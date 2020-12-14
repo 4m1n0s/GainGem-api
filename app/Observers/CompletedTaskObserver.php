@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\CompletedTaskCreated;
 use App\Models\CompletedTask;
 
 class CompletedTaskObserver
@@ -9,6 +10,10 @@ class CompletedTaskObserver
     public function created(CompletedTask $completedTask): void
     {
         $completedTaskByUser = $completedTask->user;
+
+        if ($completedTaskByUser && ! $completedTask->isTypeReferralIncome() && ! $completedTask->isTypeAdmin()) {
+            CompletedTaskCreated::dispatch($completedTask);
+        }
 
         if (! $completedTaskByUser || ! $completedTaskByUser->referredBy || ! $completedTask->isAvailableForReferring()) {
             return;
