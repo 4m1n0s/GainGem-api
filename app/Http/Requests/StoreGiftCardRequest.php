@@ -11,7 +11,7 @@ class StoreGiftCardRequest extends FormRequest
     public function rules(): array
     {
         $file = file_get_contents(base_path()."\\vendor\samayo\country-json\src\country-by-name.json");
-        $countries = array_column(json_decode($file, true), 'country');
+        $countries = array_column(json_decode((string) $file, true), 'country');
 
         return [
             'code' => [

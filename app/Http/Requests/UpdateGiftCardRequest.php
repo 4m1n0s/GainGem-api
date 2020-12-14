@@ -11,7 +11,7 @@ class UpdateGiftCardRequest extends FormRequest
     public function rules(): array
     {
         $file = file_get_contents(base_path()."\\vendor\samayo\country-json\src\country-by-name.json");
-        $countries = array_column(json_decode($file, true), 'country');
+        $countries = array_column(json_decode((string) $file, true), 'country');
 
         /** @var GiftCard $giftCard */
         $giftCard = $this->route('giftCard');
@@ -21,7 +21,7 @@ class UpdateGiftCardRequest extends FormRequest
                 'required',
                 'min:2',
                 'max:255',
-                Rule::unique('gift_cards')->where('provider', $this->input('provider'))->whereNot('id', $giftCard->id),
+                Rule::unique('gift_cards')->where('provider', $this->input('provider'))->ignore($giftCard->id),
             ],
             'country' => [
                 'nullable',
