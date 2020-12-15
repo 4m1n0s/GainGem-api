@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BanRequest;
+use App\Http\Requests\StoreBanRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 class BanController extends Controller
 {
-    public function store(User $user, BanRequest $request): JsonResponse
+    public function store(User $user, StoreBanRequest $request): JsonResponse
     {
         $payload = $request->validated();
 

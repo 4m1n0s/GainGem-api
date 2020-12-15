@@ -53,10 +53,10 @@ Route::group(['middleware' => 'auth:api'], static function () {
     });
 
     Route::group(['prefix' => 'gift-cards'], static function () {
-        Route::get('', [GiftCardController::class, 'index']);
-        Route::post('', [GiftCardController::class, 'store']);
-        Route::put('{giftCard}', [GiftCardController::class, 'update']);
-        Route::delete('{giftCard}', [GiftCardController::class, 'destroy']);
+        Route::get('', [GiftCardController::class, 'index'])->middleware('role:super_admin,admin');
+        Route::post('', [GiftCardController::class, 'store'])->middleware('role:super_admin,admin');
+        Route::put('{giftCard}', [GiftCardController::class, 'update'])->middleware('role:super_admin,admin');
+        Route::delete('{giftCard}', [GiftCardController::class, 'destroy'])->middleware('role:super_admin,admin');
     });
 
     Route::group(['prefix' => 'users'], static function () {

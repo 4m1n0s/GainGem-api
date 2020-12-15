@@ -41,7 +41,7 @@ class UserController extends Controller
         $authenticatedUser = auth()->user();
 
         if ($authenticatedUser && $authenticatedUser->id === $user->id) {
-            $payload['profile_image'] = null;
+            unset($payload['profile_image']);
 
             /** @var UploadedFile|null $profileImage */
             $profileImage = $request->file('profile_image');
