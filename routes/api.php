@@ -9,6 +9,7 @@ use App\Http\Controllers\CouponRedeemController;
 use App\Http\Controllers\DailyTaskController;
 use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\GiveawayController;
+use App\Http\Controllers\PointsValueController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\UserCompletedTaskController;
@@ -36,6 +37,11 @@ Route::group(['middleware' => 'auth:api'], static function () {
         Route::delete('{coupon:code}', [CouponController::class, 'destroy'])->middleware('role:super_admin,admin');
         Route::put('{coupon}', [CouponController::class, 'update'])->middleware('role:super_admin,admin');
         Route::post('{coupon:code}/redeems', [CouponRedeemController::class, 'store']);
+    });
+
+    Route::group(['prefix' => 'points'], static function () {
+        Route::get('', [PointsValueController::class, 'index']);
+        Route::put('', [PointsValueController::class, 'update'])->middleware('role:super_admin,admin');
     });
 
     Route::group(['prefix' => 'daily-tasks'], static function () {

@@ -22,6 +22,7 @@ use Illuminate\Support\Arr;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Coupon|null $coupon
  * @property-read string|null $formatted_created_at
+ * @property-read string $formatted_points
  * @property-read string $formatted_type
  * @property-read int|null $offers_count
  * @property-read \App\Models\User|null $user
