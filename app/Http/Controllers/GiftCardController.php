@@ -33,9 +33,24 @@ class GiftCardController extends Controller
     {
         $payload = $request->validated();
 
+        $giftCards = [];
+
+        foreach ($payload['codes'] as $code) {
+            $giftCards[] = [
+                'code' => $code['code'],
+                'country' => $payload['country'],
+                'provider' => $payload['provider'],
+                'value' => $payload['value'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        GiftCard::insert($giftCards);
+
         return response()->json([
-            'gift_card' => GiftCard::create($payload),
-        ]);
+            'gift_cards' => GiftCard::orderByDesc('id')->limit(count($giftCards))->get(),
+        ], 201);
     }
 
     public function update(GiftCard $giftCard, UpdateGiftCardRequest $request): JsonResponse

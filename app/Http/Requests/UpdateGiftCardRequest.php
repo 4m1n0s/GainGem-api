@@ -10,9 +10,6 @@ class UpdateGiftCardRequest extends FormRequest
 {
     public function rules(): array
     {
-        $file = file_get_contents(base_path()."\\vendor\samayo\country-json\src\country-by-name.json");
-        $countries = array_column(json_decode((string) $file, true), 'country');
-
         /** @var GiftCard $giftCard */
         $giftCard = $this->route('giftCard');
 
@@ -25,7 +22,7 @@ class UpdateGiftCardRequest extends FormRequest
             ],
             'country' => [
                 'nullable',
-                Rule::in($countries),
+                Rule::in(get_countries()),
             ],
             'provider' => [
                 'required',

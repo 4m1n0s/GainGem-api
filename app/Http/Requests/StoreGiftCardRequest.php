@@ -10,19 +10,21 @@ class StoreGiftCardRequest extends FormRequest
 {
     public function rules(): array
     {
-        $file = file_get_contents(base_path()."\\vendor\samayo\country-json\src\country-by-name.json");
-        $countries = array_column(json_decode((string) $file, true), 'country');
-
         return [
-            'code' => [
+            'codes' => [
                 'required',
+                'array',
+            ],
+            'codes.*.code' => [
+                'required',
+                'string',
                 'min:2',
                 'max:255',
                 Rule::unique('gift_cards')->where('provider', $this->input('provider')),
             ],
             'country' => [
                 'nullable',
-                Rule::in($countries),
+                Rule::in(get_countries()),
             ],
             'provider' => [
                 'required',
