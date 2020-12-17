@@ -20,8 +20,11 @@ class RobuxController extends Controller
     {
         $payload = $request->validated();
 
-        $response = Http::get("https://groups.roblox.com/v1/groups/{$payload['group_id']}");
+        $response = Http::withHeaders([
+            'cookie' => '.ROBLOSECURITY='.$payload['cookie'],
+        ])->get("https://groups.roblox.com/v1/groups/{$payload['group_id']}/settings");
 
+        abort_if($response->status() === 401, 422, 'Invalid cookie!');
         abort_if($response->failed(), 422, 'Invalid group!');
 
         Cache::forget('robux');

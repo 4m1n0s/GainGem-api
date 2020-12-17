@@ -6,14 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRobuxRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         return [
             'cookie' => [
                 'required',
                 'string',
                 'min:2',
-                'max:255',
             ],
             'group_id' => [
                 'required',
