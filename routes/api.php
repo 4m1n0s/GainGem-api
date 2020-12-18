@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementBannerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BanController;
+use App\Http\Controllers\BitcoinController;
 use App\Http\Controllers\CompletedTaskController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CouponRedeemController;
@@ -69,6 +70,11 @@ Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'robux'], static function () {
         Route::get('', [RobuxController::class, 'index'])->middleware('role:super_admin');
         Route::post('', [RobuxController::class, 'store'])->middleware('role:super_admin');
+    });
+
+    Route::group(['prefix' => 'bitcoin'], static function () {
+        Route::get('', [BitcoinController::class, 'index'])->middleware('role:super_admin');
+        Route::post('', [BitcoinController::class, 'store'])->middleware('role:super_admin');
     });
 
     Route::group(['prefix' => 'users'], static function () {

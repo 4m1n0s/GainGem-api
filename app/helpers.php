@@ -43,3 +43,18 @@ function get_countries(): array
 
     return array_column(json_decode((string) $file, true), 'country');
 }
+
+function get_bitcoin_value(): float
+{
+    $response = Http::get('https://bitpay.com/api/rates');
+    $usd = 0;
+
+    foreach ($response->json() as $obj) {
+        if ($obj['code'] === 'USD') {
+            $usd = $obj['rate'];
+            break;
+        }
+    }
+
+    return 1 / $usd;
+}

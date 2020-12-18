@@ -11,9 +11,7 @@ class RobuxController extends Controller
 {
     public function index(): JsonResponse
     {
-        return response()->json([
-            'robux' => Cache::get('robux'),
-        ]);
+        return response()->json(Cache::get('robux'));
     }
 
     public function store(StoreRobuxRequest $request): JsonResponse
@@ -29,8 +27,6 @@ class RobuxController extends Controller
 
         Cache::forget('robux');
 
-        return response()->json([
-            'robux' => Cache::rememberForever('robux', static fn () => $payload),
-        ]);
+        return response()->json(Cache::rememberForever('robux', static fn () => $payload));
     }
 }

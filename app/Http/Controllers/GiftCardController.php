@@ -36,21 +36,15 @@ class GiftCardController extends Controller
         $giftCards = [];
 
         foreach ($payload['codes'] as $code) {
-            $giftCards[] = [
+            $giftCards[] = GiftCard::create([
                 'code' => $code['code'],
                 'country' => $payload['country'],
                 'provider' => $payload['provider'],
                 'value' => $payload['value'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+            ]);
         }
 
-        GiftCard::insert($giftCards);
-
-        return response()->json([
-            'gift_cards' => GiftCard::orderByDesc('id')->limit(count($giftCards))->get(),
-        ], 201);
+        return response()->json($giftCards, 201);
     }
 
     public function update(GiftCard $giftCard, UpdateGiftCardRequest $request): JsonResponse
@@ -59,9 +53,7 @@ class GiftCardController extends Controller
 
         $giftCard->update($payload);
 
-        return response()->json([
-            'gift_card' => $giftCard,
-        ]);
+        return response()->json($giftCard);
     }
 
     public function destroy(GiftCard $giftCard): void
