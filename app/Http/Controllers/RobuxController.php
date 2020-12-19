@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRobuxRequest;
+use App\Services\Robux;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 
 class RobuxController extends Controller
 {
@@ -18,9 +18,7 @@ class RobuxController extends Controller
     {
         $payload = $request->validated();
 
-        $response = Http::withHeaders([
-            'cookie' => '.ROBLOSECURITY='.$payload['cookie'],
-        ])->get("https://groups.roblox.com/v1/groups/{$payload['group_id']}/settings");
+        $response = Robux::getGroupSettingsResponse($payload['cookie'], $payload['group_id']);
 
         abort_if($response->status() === 401, 422, 'Invalid cookie!');
         abort_if($response->failed(), 422, 'Invalid group!');

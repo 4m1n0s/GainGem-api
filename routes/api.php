@@ -16,6 +16,7 @@ use App\Http\Controllers\RobuxController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\UserCompletedTaskController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserGiftCardController;
 use App\Http\Controllers\UserReferralController;
 use App\Http\Controllers\UserTransactionController;
 use App\Http\Controllers\UserVerificationController;
@@ -65,6 +66,11 @@ Route::group(['middleware' => 'auth:api'], static function () {
         Route::post('', [GiftCardController::class, 'store'])->middleware('role:super_admin,admin');
         Route::put('{giftCard}', [GiftCardController::class, 'update'])->middleware('role:super_admin,admin');
         Route::delete('{giftCard}', [GiftCardController::class, 'destroy'])->middleware('role:super_admin,admin');
+    });
+
+    Route::group(['prefix' => 'rewards'], static function () {
+        Route::get('', [UserGiftCardController::class, 'index']);
+        Route::post('', [UserTransactionController::class, 'store']);
     });
 
     Route::group(['prefix' => 'robux'], static function () {
