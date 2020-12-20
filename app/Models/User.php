@@ -229,7 +229,7 @@ class User extends Authenticatable implements JWTSubject
         return Storage::url($this->profile_image);
     }
 
-    public function markVerificationNotificationAsRead(int $urlTokenId): void
+    public function markNotificationAsRead(int $urlTokenId): void
     {
         /** @var DatabaseNotification|null $unreadNotification */
         $unreadNotification = $this->unreadNotifications()->where('data->url_token_id', $urlTokenId)->first();

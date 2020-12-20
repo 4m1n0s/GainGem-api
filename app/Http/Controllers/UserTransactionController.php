@@ -106,6 +106,7 @@ class UserTransactionController extends Controller
             'type' => Transaction::TYPE_ROBUX,
             'points' => $payload['value'],
             'destination' => $payload['destination'],
+            'value' => $payload['value'],
         ]);
 
         return 0;

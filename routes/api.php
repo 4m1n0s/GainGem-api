@@ -8,6 +8,7 @@ use App\Http\Controllers\CompletedTaskController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CouponRedeemController;
 use App\Http\Controllers\DailyTaskController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\GiveawayController;
 use App\Http\Controllers\PointsValueController;
@@ -24,6 +25,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('resend-verification', ResendVerificationController::class);
 Route::post('verify', UserVerificationController::class);
+
+Route::group(['prefix' => 'forgot-password'], static function () {
+    Route::post('', [ForgotPasswordController::class, 'store']);
+    Route::post('check-token', [ForgotPasswordController::class, 'checkToken']);
+    Route::post('reset', [ForgotPasswordController::class, 'resetPassword']);
+});
 
 Route::group(['prefix' => 'auth'], static function () {
     Route::post('register', [AuthController::class, 'register']);
