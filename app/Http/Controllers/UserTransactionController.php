@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\GiftCard;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\Robux;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 
@@ -30,6 +31,7 @@ class UserTransactionController extends Controller
     {
         $payload = $request->validated();
 
+        /** @var User $user */
         $user = auth()->user();
         $giftCard = null;
         $pointsValue = (int) Cache::get('points-value');
@@ -38,7 +40,13 @@ class UserTransactionController extends Controller
         abort_if(! $user->email_verified_at, 422, 'You need to verify your email in order to redeem.');
 
         if ($payload['provider'] === Transaction::TYPE_ROBUX) {
-            $this->storeRobuxTransaction($payload, $pointsValue);
+            $groupId = $this->storeRobuxTransaction($payload);
+
+            if ($groupId !== 0) {
+                return response()->json([
+                    'group_id' => $groupId,
+                ], 404);
+            }
         } elseif ($payload['provider'] === Transaction::TYPE_BITCOIN) {
             $this->storeBitcoinTransaction($payload, $pointsValue);
         } else {
@@ -47,7 +55,7 @@ class UserTransactionController extends Controller
 
         return response()->json([
             'gift_card' => $giftCard,
-            'user' => new UserResource(auth()->user()->loadAvailablePoints()),
+            'user' => new UserResource($user->loadAvailablePoints()),
         ]);
     }
 
@@ -58,7 +66,9 @@ class UserTransactionController extends Controller
             ->where('value', $payload['value'])
             ->firstOrFail();
 
-        $user = auth()->user()->loadAvailablePoints();
+        /** @var User $user */
+        $user = auth()->user();
+        $user->loadAvailablePoints();
 
         abort_if($user->available_points < $giftCard->value * $pointsValue, 422, "You don't have enough points!");
 
@@ -71,8 +81,34 @@ class UserTransactionController extends Controller
         return $giftCard;
     }
 
-    private function storeRobuxTransaction(array $payload, int $pointsValue): void
+    private function storeRobuxTransaction(array $payload): int
     {
+        /** @var User $user */
+        $user = auth()->user();
+        $user->loadAvailablePoints();
+
+        abort_if($user->available_points < $payload['value'], 422, "You don't have enough points!");
+
+        $robuxAmount = Robux::getCurrency();
+
+        abort_if(! $robuxAmount, 422, 'Robux is out of stock');
+        abort_if($robuxAmount < $payload['value'], 422, "Only {$robuxAmount} robux is in stock");
+
+        $group = Cache::get('robux');
+
+        $payout = Robux::payout($group, $payload['destination'], $payload['value']);
+
+        if (! $payout) {
+            return $group['group_id'];
+        }
+
+        $user->transactions()->create([
+            'type' => Transaction::TYPE_ROBUX,
+            'points' => $payload['value'],
+            'destination' => $payload['destination'],
+        ]);
+
+        return 0;
     }
 
     private function storeBitcoinTransaction(array $payload, int $pointsValue): void
