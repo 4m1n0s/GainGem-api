@@ -34,7 +34,7 @@ class StoreGiftCardRequest extends FormRequest
                 'required',
                 'integer',
                 'min:1',
-                'max:999999',
+                'max:5000',
             ],
         ];
     }
