@@ -31,6 +31,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof ModelNotFoundException) {
             $model = class_basename($exception->getModel());
             abort_if($model === 'Coupon', 422, 'Invalid or expired promo code!');
+            abort_if($model === 'GiftCard', 422, 'Invalid or expired gift card');
             abort(422, "{$model} not found");
         }
 
