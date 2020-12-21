@@ -58,3 +58,13 @@ function get_bitcoin_value(): float
 
     return 1 / $usd;
 }
+
+function convert_satoshi_to_bitcoin(int $satoshi): float
+{
+    return $satoshi / pow(10, 8);
+}
+
+function convert_satoshi_to_usd(int $satoshi): float
+{
+    return convert_satoshi_to_bitcoin($satoshi) / get_bitcoin_value();
+}

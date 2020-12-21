@@ -9,15 +9,22 @@ class StoreBitcoinRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'wallet' => [
+            'guid' => [
                 'required',
                 'string',
                 'min:2',
             ],
+            'password' => [
+                'required',
+                'string',
+                'min:2',
+                'max:255',
+            ],
             'stock_amount' => [
                 'required',
                 'integer',
-                'min:1',
+                'min:0',
+                'max:999999',
             ],
         ];
     }

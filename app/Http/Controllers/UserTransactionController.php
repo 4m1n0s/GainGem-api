@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\GiftCard;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\Bitcoin;
 use App\Services\Robux;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
@@ -114,5 +115,24 @@ class UserTransactionController extends Controller
 
     private function storeBitcoinTransaction(array $payload, int $pointsValue): void
     {
+        /** @var User $user */
+        $user = auth()->user();
+        $user->loadAvailablePoints();
+
+        abort_if($user->available_points < $payload['value'] * $pointsValue, 422, "You don't have enough points!");
+
+        $bitcoinAmount = (int) Bitcoin::getCurrency();
+        $bitcoin = Cache::get('bitcoin');
+
+        abort_if(! $bitcoin || $bitcoinAmount < $payload['value'] || $bitcoin['stock_amount'] < $payload['value'], 422, 'Bitcoin is out of stock');
+
+        Bitcoin::payout($payload['destination'], $payload['value']);
+
+        $user->transactions()->create([
+            'type' => Transaction::TYPE_BITCOIN,
+            'points' => $payload['value'] * $pointsValue,
+            'destination' => $payload['destination'],
+            'value' => $payload['value'],
+        ]);
     }
 }

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBitcoinRequest;
+use App\Services\Bitcoin;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 
 class BitcoinController extends Controller
 {
@@ -18,12 +18,10 @@ class BitcoinController extends Controller
     {
         $payload = $request->validated();
 
-        $response = Http::get("https://api.smartbit.com.au/v1/blockchain/address/{$payload['wallet']}?tx=0");
+        $response = Bitcoin::getBalance($payload['guid'], $payload['password']);
 
-        $btcValue = get_bitcoin_value();
-
-        abort_if(! $response['success'], 422, 'Wrong wallet!');
-        abort_if((float) $response['address']['total']['balance'] / $btcValue < (int) $payload['stock_amount'], 422, "You don't have enough cash!");
+        abort_if($response->failed(), 422, isset($response['error']) ? $response['error'] : 'Unexpected error, please try again');
+        abort_if(convert_satoshi_to_usd($response['balance']) < (int) $payload['stock_amount'], 422, "You don't have enough cash!");
 
         Cache::forget('bitcoin');
 
