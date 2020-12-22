@@ -48,7 +48,8 @@ class Bitcoin
         abort_if($response->status() === 500, 422, 'Incorrect wallet!');
         abort_if($response->failed(), 422, 'Payout has been failed, please try again later');
 
-        $bitcoin['stock_amount'] -= (int) round(convert_satoshi_to_usd($response['amounts'][0] + $response['fee']));
+        $usd = (int) $response['amounts'][0] + $response['fee'];
+        $bitcoin['stock_amount'] -= (int) round(convert_satoshi_to_usd((int) $usd));
 
         if ($bitcoin['stock_amount'] < 0) {
             $bitcoin['stock_amount'] = 0;

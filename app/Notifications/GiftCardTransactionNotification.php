@@ -24,11 +24,15 @@ class GiftCardTransactionNotification extends Notification implements ShouldQueu
 
     public function via(User $user): array
     {
-        return ['mail', 'database'];
+        return $this->transaction->giftCard ? ['mail', 'database'] : [];
     }
 
     public function toMail(User $user): MailMessage
     {
+        if (! $this->transaction->giftCard) {
+            return new MailMessage;
+        }
+
         return (new MailMessage)
             ->subject("[EzRewards] Successful Reward Claim #{$this->transaction->id}")
             ->line('Thank you for using EzRewards!')
