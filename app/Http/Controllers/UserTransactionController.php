@@ -102,9 +102,9 @@ class UserTransactionController extends Controller
 
         $group = Cache::get('robux');
 
-        $payout = Robux::payout($group, $payload['destination'], $payload['value']);
+        $robuxPayout = Robux::payout($group, $payload['destination'], $payload['value']);
 
-        if (! $payout) {
+        if (! $robuxPayout) {
             return $group['group_id'];
         }
 
@@ -129,9 +129,11 @@ class UserTransactionController extends Controller
         $bitcoinAmount = (int) Bitcoin::getCurrency();
         $bitcoin = Cache::get('bitcoin');
 
-        abort_if(! $bitcoin || $bitcoinAmount < $payload['value'] || $bitcoin['stock_amount'] < $payload['value'], 422, 'Bitcoin is out of stock');
+        abort_if(! $bitcoin, 422, 'Bitcoin is out of stock');
+        abort_if($bitcoinAmount < $payload['value'], 422, 'Bitcoin is out of stock');
+        abort_if($bitcoin['stock_amount'] < $payload['value'], 422, 'Bitcoin is out of stock');
 
-        $payoutResponse = Bitcoin::payout($payload['destination'], $payload['value']);
+        $bitcoinPayoutResponse = Bitcoin::payout($payload['destination'], $payload['value']);
 
         /** @var Transaction $transaction */
         $transaction = $user->transactions()->create([
@@ -141,6 +143,6 @@ class UserTransactionController extends Controller
             'value' => $payload['value'],
         ]);
 
-        $user->notify(new BitcoinTransactionNotification($transaction, $payoutResponse['tx_hash']));
+        $user->notify(new BitcoinTransactionNotification($transaction, $bitcoinPayoutResponse['tx_hash']));
     }
 }
