@@ -7,6 +7,8 @@ use App\Http\Resources\UserResource;
 use App\Models\GiftCard;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Notifications\BitcoinTransactionNotification;
+use App\Notifications\GiftCardTransactionNotification;
 use App\Services\Bitcoin;
 use App\Services\Robux;
 use Illuminate\Http\JsonResponse;
@@ -73,11 +75,14 @@ class UserTransactionController extends Controller
 
         abort_if($user->available_points < $giftCard->value * $pointsValue, 422, "You don't have enough points!");
 
-        $user->transactions()->create([
+        /** @var Transaction $transaction */
+        $transaction = $user->transactions()->create([
             'type' => Transaction::TYPE_GIFT_CARD,
             'points' => $giftCard->value * $pointsValue,
             'gift_card_id' => $giftCard->id,
         ]);
+
+        $user->notify(new GiftCardTransactionNotification($transaction));
 
         return $giftCard;
     }
@@ -126,13 +131,16 @@ class UserTransactionController extends Controller
 
         abort_if(! $bitcoin || $bitcoinAmount < $payload['value'] || $bitcoin['stock_amount'] < $payload['value'], 422, 'Bitcoin is out of stock');
 
-        Bitcoin::payout($payload['destination'], $payload['value']);
+        $payoutResponse = Bitcoin::payout($payload['destination'], $payload['value']);
 
-        $user->transactions()->create([
+        /** @var Transaction $transaction */
+        $transaction = $user->transactions()->create([
             'type' => Transaction::TYPE_BITCOIN,
             'points' => $payload['value'] * $pointsValue,
             'destination' => $payload['destination'],
             'value' => $payload['value'],
         ]);
+
+        $user->notify(new BitcoinTransactionNotification($transaction, $payoutResponse['tx_hash']));
     }
 }

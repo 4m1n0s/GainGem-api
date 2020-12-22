@@ -32,7 +32,7 @@ class Bitcoin
         return convert_satoshi_to_usd($response['balance']);
     }
 
-    public static function payout(string $to, int $amount): void
+    public static function payout(string $to, int $amount): Response
     {
         $bitcoin = Cache::get('bitcoin');
 
@@ -56,5 +56,7 @@ class Bitcoin
 
         Cache::forget('bitcoin');
         Cache::rememberForever('bitcoin', static fn () => $bitcoin);
+
+        return $response;
     }
 }
