@@ -166,6 +166,6 @@ class CompletedTask extends Model
 
     public function getFormattedTypeAttribute(): string
     {
-        return str_replace('_', ' ', ucwords($this->type, '_'));
+        return str_replace('_', ' ', ucwords(! $this->isTypeOffer() || ! isset($this->data['offer_name']) ? $this->type : $this->data['offer_name'], '_'));
     }
 }

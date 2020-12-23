@@ -12,6 +12,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\GiveawayController;
 use App\Http\Controllers\PointsValueController;
+use App\Http\Controllers\PostbackController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\RobuxController;
 use App\Http\Controllers\StatsController;
@@ -39,6 +40,11 @@ Route::group(['prefix' => 'auth'], static function () {
 });
 
 Route::get('stats', StatsController::class);
+
+Route::group(['prefix' => 'postback'], static function () {
+    Route::post('', [PostbackController::class, 'store'])->middleware('whitelist:providers');
+    Route::post('lootably', [PostbackController::class, 'lootably']);
+});
 
 Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'coupons'], static function () {

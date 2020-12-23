@@ -20,6 +20,7 @@
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "^4.1",
         "samayo/country-json": "^1.1",
+        "skydiver/laravel-route-blocker": "^1.5",
         "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
