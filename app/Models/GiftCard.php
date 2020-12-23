@@ -34,7 +34,7 @@ class GiftCard extends Model
 {
     use HasFactory;
 
-    const PROVIDER_APP_STORE = 'app_store';
+    const PROVIDER_APPLE = 'apple';
     const PROVIDER_XBOX = 'xbox';
     const PROVIDER_ROBLOX = 'roblox';
     const PROVIDER_PSN = 'psn';
@@ -42,6 +42,17 @@ class GiftCard extends Model
     const PROVIDER_NETFLIX = 'netflix';
     const PROVIDER_SPOTIFY = 'spotify';
     const PROVIDER_DISCORD = 'discord';
+
+    const PROVIDERS = [
+        self::PROVIDER_APPLE,
+        self::PROVIDER_XBOX,
+        self::PROVIDER_ROBLOX,
+        self::PROVIDER_PSN,
+        self::PROVIDER_GOOGLE_PLAY,
+        self::PROVIDER_NETFLIX,
+        self::PROVIDER_SPOTIFY,
+        self::PROVIDER_DISCORD,
+    ];
 
     protected $fillable = [
         'country',

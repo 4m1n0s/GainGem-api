@@ -31,7 +31,7 @@ class AuthController extends Controller
 
         $payload['referral_token'] = $referralToken;
 
-        $user = User::create($payload)->withAvailablePoints();
+        $user = User::create($payload)->loadAvailablePoints();
 
         /** @var UrlToken $urlToken */
         $urlToken = $user->urlTokens()->create([
@@ -61,9 +61,14 @@ class AuthController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
+        if ($user->banned_at) {
+            auth()->logout();
+            abort(403, 'Your user is banned for the reason: '.$user->ban_reason);
+        }
+
         return response()->json([
             'token' => $token,
-            'user' => new UserResource($user->withAvailablePoints()),
+            'user' => new UserResource($user->loadAvailablePoints()),
         ]);
     }
 
@@ -73,7 +78,7 @@ class AuthController extends Controller
         $user = auth()->user();
 
         return response()->json([
-            'user' => new UserResource($user->withAvailablePoints()),
+            'user' => new UserResource($user->loadAvailablePoints()),
         ]);
     }
 }

@@ -13,7 +13,7 @@ class RegisterRequest extends FormRequest
                 'required',
                 'unique:users',
                 'min:6',
-                'max:50',
+                'max:20',
             ],
             'password' => [
                 'required',

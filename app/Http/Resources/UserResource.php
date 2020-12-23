@@ -18,15 +18,15 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        $response = [
+        return [
             'id' => $this->id,
             'username' => $this->username,
             'email' => $this->email,
             'email_verified_at' => optional($this->email_verified_at)->format('M d Y'),
             'profile_image' => $this->profile_image_url,
             'role' => $this->role,
-            'points' => $this->available_points,
-            'total_points' => $this->total_points,
+            'points' => $this->formatted_available_points,
+            'total_points' => $this->formatted_total_points,
             'referred_by' => $this->referred_by,
             'referral_token' => $this->referral_token,
             'banned_at' => optional($this->banned_at)->format('M d Y'),
@@ -35,15 +35,5 @@ class UserResource extends JsonResource
             'created_at' => $this->formatted_created_at,
             'updated_at' => $this->updated_at->format('M d Y'),
         ];
-
-        $user = auth()->user();
-
-        if ($this->resource->isAdminRole() && ($user && $user->isAdminRole())) {
-            $response = array_merge($response, [
-                'ip' => $this->ip,
-            ]);
-        }
-
-        return $response;
     }
 }

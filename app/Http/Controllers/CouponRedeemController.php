@@ -15,8 +15,7 @@ class CouponRedeemController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $hadCompletedOfferThisWeek = CompletedTask::query()
-            ->where('user_id', $user->id)
+        $hadCompletedOfferThisWeek = $user->completedTasks()
             ->where('created_at', '>=', now()->subWeek())
             ->availableForReferring()
             ->exists();
@@ -36,7 +35,7 @@ class CouponRedeemController extends Controller
         ]);
 
         return response()->json([
-            'user' => new UserResource($user->withAvailablePoints()),
+            'user' => new UserResource($user->loadAvailablePoints()),
         ]);
     }
 }

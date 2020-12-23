@@ -9,7 +9,10 @@ class UserVerificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'token' => 'required|string',
+            'token' => [
+                'required',
+                'string',
+            ],
         ];
     }
 }

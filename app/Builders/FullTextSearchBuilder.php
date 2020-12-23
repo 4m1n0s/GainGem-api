@@ -14,7 +14,7 @@ class FullTextSearchBuilder extends Builder
         $words = explode(' ', $term);
 
         foreach ($words as $key => $word) {
-            if (strlen($word) >= 3) {
+            if (strlen($word) >= 1) {
                 $words[$key] = '+'.$word.'*';
             }
         }

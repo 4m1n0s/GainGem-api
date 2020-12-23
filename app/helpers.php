@@ -20,3 +20,51 @@ function get_ip(): string
 
     return $ip;
 }
+
+function points_format(?float $points): string
+{
+    if (! $points) {
+        return '0';
+    }
+
+    $points = sprintf((string) $points);
+    $decimals = strrchr($points, '.') !== false ? strlen(substr(strrchr($points, '.'), 1)) : 0;
+
+    if ((float) ($points) === 0.00) {
+        return '0';
+    }
+
+    return number_format((float) ($points), $decimals <= 2 ? $decimals : 2);
+}
+
+function get_countries(): array
+{
+    $file = file_get_contents(base_path()."\\vendor\samayo\country-json\src\country-by-name.json");
+
+    return array_column(json_decode((string) $file, true), 'country');
+}
+
+function get_bitcoin_value(): float
+{
+    $response = Http::get('https://bitpay.com/api/rates');
+    $usd = 0;
+
+    foreach ($response->json() as $obj) {
+        if ($obj['code'] === 'USD') {
+            $usd = $obj['rate'];
+            break;
+        }
+    }
+
+    return 1 / $usd;
+}
+
+function convert_satoshi_to_bitcoin(int $satoshi): float
+{
+    return $satoshi / pow(10, 8);
+}
+
+function convert_satoshi_to_usd(int $satoshi): float
+{
+    return convert_satoshi_to_bitcoin($satoshi) / get_bitcoin_value();
+}

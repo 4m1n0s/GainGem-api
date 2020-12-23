@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 
 /**
  * App\Models\Coupon.
@@ -18,6 +19,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
+ * @property-read string $formatted_expires_at
+ * @property-read string $formatted_points
+ * @property-read bool $is_active
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Coupon newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Coupon newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Coupon query()
@@ -46,8 +50,33 @@ class Coupon extends Model
         'points' => 'float',
     ];
 
+    protected $appends = [
+        'formatted_expires_at',
+        'formatted_points',
+        'is_active',
+    ];
+
     public function completedTasks(): HasMany
     {
         return $this->hasMany(CompletedTask::class);
+    }
+
+    public function getFormattedExpiresAtAttribute(): string
+    {
+        return $this->expires_at->format('M d Y');
+    }
+
+    public function getFormattedPointsAttribute(): string
+    {
+        return points_format($this->points);
+    }
+
+    public function getIsActiveAttribute(): bool
+    {
+        if (Arr::has($this->getAttributes(), 'uses') && $this->max_usages !== 0) {
+            return ! $this->expires_at->isPast() && $this->getAttributes()['uses'] < $this->max_usages;
+        }
+
+        return ! $this->expires_at->isPast();
     }
 }

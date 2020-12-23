@@ -42,7 +42,7 @@ class Transaction extends Model
 
     const TYPE_GIFT_CARD = 'gift_card';
     const TYPE_BITCOIN = 'bitcoin';
-    const TYPE_ROBLOX = 'roblox';
+    const TYPE_ROBUX = 'robux';
 
     protected $fillable = [
         'type',
@@ -82,9 +82,9 @@ class Transaction extends Model
         return $this->type === self::TYPE_BITCOIN;
     }
 
-    public function isTypeRoblox(): bool
+    public function isTypeRobux(): bool
     {
-        return $this->type === self::TYPE_ROBLOX;
+        return $this->type === self::TYPE_ROBUX;
     }
 
     public function getFormattedCreatedAtAttribute(): ?string

@@ -53,7 +53,8 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-    'user_app_url' => env('user_app_url'),
+    'user_app_url' => env('USER_APP_URL'),
+    'blockchain_app_url' => env('BLOCKCHAIN_APP_URL'),
 
     'asset_url' => env('ASSET_URL', null),
 
