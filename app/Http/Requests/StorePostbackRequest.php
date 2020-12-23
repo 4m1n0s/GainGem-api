@@ -7,7 +7,7 @@ use Illuminate\Validation\Rule;
 
 class StorePostbackRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         return [
             'app' => [
