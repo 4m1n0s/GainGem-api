@@ -38,7 +38,7 @@ class StorePostbackRequest extends FormRequest
             ],
             'transaction_id' => [
                 'required',
-                Rule::unique('completed_tasks', 'data->transaction_id')->where('provider', $this->input('app')),
+                Rule::unique('completed_tasks', 'data->transaction_id')->where('provider', $this->get('app')),
             ],
         ];
     }
