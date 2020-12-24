@@ -39,7 +39,7 @@ function points_format(?float $points): string
 
 function get_countries(): array
 {
-    $file = file_get_contents(base_path()."\\vendor\samayo\country-json\src\country-by-name.json");
+    $file = file_get_contents(base_path().'/vendor/samayo/country-json/src/country-by-name.json');
 
     return array_column(json_decode((string) $file, true), 'country');
 }
