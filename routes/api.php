@@ -43,7 +43,7 @@ Route::get('stats', StatsController::class);
 
 Route::group(['prefix' => 'postback'], static function () {
     Route::get('', [PostbackController::class, 'store'])->middleware('whitelist:providers');
-    Route::post('lootably', [PostbackController::class, 'lootably']);
+    Route::get('lootably', [PostbackController::class, 'lootably']);
 });
 
 Route::group(['middleware' => 'auth:api'], static function () {
