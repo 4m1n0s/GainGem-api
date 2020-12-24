@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\CompletedTaskCreated;
 use App\Events\GiveawayCreated;
 use App\Models\CompletedTask;
 use App\Models\User;
@@ -43,6 +44,7 @@ class RandomGiveawayWinnerJob implements ShouldQueue
             'points' => rand(CompletedTask::GIVEAWAY_MIN_POINTS, CompletedTask::GIVEAWAY_MAX_POINTS),
         ]);
 
+        CompletedTaskCreated::dispatch($latestGiveawayQuery);
         GiveawayCreated::dispatch($giveaway);
     }
 }

@@ -13,7 +13,7 @@ class CompletedTaskController extends Controller
             'activities' => CompletedTask::whereNotIn('type', [CompletedTask::TYPE_REFERRAL_INCOME, CompletedTask::TYPE_ADMIN])
                 ->whereNotNull('user_id')
                 ->with('user:id,username,profile_image')
-                ->orderByDesc('id')
+                ->orderByDesc('updated_at')
                 ->limit(10)
                 ->get(),
         ]);
