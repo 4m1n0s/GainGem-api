@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
 class StorePostbackRequest extends FormRequest
@@ -41,5 +43,10 @@ class StorePostbackRequest extends FormRequest
                 Rule::unique('completed_tasks', 'data->transaction_id')->where('provider', $this->get('app')),
             ],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json($validator->errors(), 422));
     }
 }
