@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLootablyPostbackRequest;
+use App\Http\Requests\StorePostbackRequest;
 use App\Models\CompletedTask;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 
 class PostbackController extends Controller
@@ -20,10 +20,8 @@ class PostbackController extends Controller
         }
     }
 
-    public function store(): JsonResponse
+    public function store(StorePostbackRequest $request): void
     {
-        return response()->json(['hello']);
-
         $payload = $request->validated();
 
         CompletedTask::create([
