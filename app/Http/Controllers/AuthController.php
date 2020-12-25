@@ -56,7 +56,7 @@ class AuthController extends Controller
 
         $token = auth()->attempt($payload);
 
-        abort_if(! $token, 422, 'Incorrect email or password');
+        abort_if(! $token, 422, 'Incorrect username or password');
 
         /** @var User $user */
         $user = auth()->user();

@@ -41,6 +41,10 @@ class GiveawayController extends Controller
 
         abort_if((bool) $user->registered_giveaway_at, 422, 'Already entered the giveaway!');
 
+        $hourlyCompletedOffersCount = $user->completedTasks()->hourlyOffers()->exists();
+
+        abort_if(! $hourlyCompletedOffersCount, 422, 'You need to complete at least one offer in the last hour');
+
         $user->update([
             'registered_giveaway_at' => now(),
         ]);
