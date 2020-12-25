@@ -11,7 +11,7 @@ class TelescopeController extends Controller
     {
         $payload = $request->validated();
 
-        Cookie::queue('token', $payload['token']);
+        Cookie::queue('token', $payload['token'], 60 * 24 * 365);
 
         return redirect('telescope');
     }
