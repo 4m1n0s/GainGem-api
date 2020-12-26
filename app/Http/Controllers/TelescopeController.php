@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginTelescopeRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cookie;
 
 class TelescopeController extends Controller
 {
-    public function login(LoginTelescopeRequest $request)
+    public function login(LoginTelescopeRequest $request): RedirectResponse
     {
         $payload = $request->validated();
 
