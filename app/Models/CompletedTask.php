@@ -27,6 +27,7 @@ use Illuminate\Support\Arr;
  * @property-read int|null $offers_count
  * @property-read \App\Models\User|null $user
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask availableForReferring()
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask hourlyOffers()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newModelQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask query()
@@ -53,6 +54,7 @@ class CompletedTask extends Model
     const TYPE_DAILY_TASK = 'daily_task';
     const TYPE_PROMO_CODE = 'promo_code';
     const TYPE_REFERRAL_INCOME = 'referral_income';
+    const TYPE_CHARGEBACK = 'chargeback';
     const TYPE_ADMIN = 'admin';
 
     const POINTS_EMAIL_VERIFICATION = 2;
@@ -144,9 +146,14 @@ class CompletedTask extends Model
         return $this->type === self::TYPE_ADMIN;
     }
 
+    public function isTypeChargeback(): bool
+    {
+        return $this->type === self::TYPE_CHARGEBACK;
+    }
+
     public function isAvailableForReferring(): bool
     {
-        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeDailyTask() && ! $this->isTypeAdmin();
+        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeDailyTask() && ! $this->isTypeChargeback() && ! $this->isTypeAdmin();
     }
 
     public function getOffersCountAttribute(): ?int

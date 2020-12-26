@@ -19,8 +19,6 @@ class StorePostbackRequest extends FormRequest
             'payout' => [
                 'required',
                 'numeric',
-                'min:0',
-                'not_in:0',
             ],
             'user_id' => [
                 'required',
@@ -39,6 +37,9 @@ class StorePostbackRequest extends FormRequest
             'transaction_id' => [
                 'required',
                 Rule::unique('completed_tasks', 'data->transaction_id')->where('provider', $this->get('app')),
+            ],
+            'status' => [
+                'in:1,2',
             ],
         ];
     }

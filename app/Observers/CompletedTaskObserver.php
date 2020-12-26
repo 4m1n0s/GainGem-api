@@ -11,7 +11,7 @@ class CompletedTaskObserver
     {
         $completedTaskByUser = $completedTask->user;
 
-        if ($completedTaskByUser && ! $completedTask->isTypeReferralIncome() && ! $completedTask->isTypeAdmin()) {
+        if ($completedTaskByUser && ! $completedTask->isTypeReferralIncome() && ! $completedTask->isTypeAdmin() && ! $completedTask->isTypeChargeback()) {
             CompletedTaskCreated::dispatch($completedTask);
         }
 

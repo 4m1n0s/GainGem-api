@@ -20,11 +20,11 @@ class PostbackController extends Controller
         }
     }
 
-    public function store(StorePostbackRequest $request): void
+    public function store(StorePostbackRequest $request): int
     {
         $payload = $request->validated();
 
-        CompletedTask::create([
+        $data = [
             'type' => CompletedTask::TYPE_OFFER,
             'provider' => $payload['app'],
             'user_id' => $payload['user_id'],
@@ -35,10 +35,19 @@ class PostbackController extends Controller
                 'revenue' => $payload['payout'],
                 'user_ip' => $payload['user_ip'],
             ],
-        ]);
+        ];
+
+        if ($payload['payout'] < 0 || isset($payload['status']) && (int) $payload['status'] === 2) {
+            $data['type'] = CompletedTask::TYPE_CHARGEBACK;
+            $data['points'] = $payload['payout'] < 0 ? $data['points'] : -$data['points'];
+        }
+
+        CompletedTask::create($data);
+
+        return 1;
     }
 
-    public function lootably(StoreLootablyPostbackRequest $request): void
+    public function lootably(StoreLootablyPostbackRequest $request): int
     {
         $payload = $request->validated();
 
@@ -54,5 +63,7 @@ class PostbackController extends Controller
                 'user_ip' => $payload['user_ip'],
             ],
         ]);
+
+        return 1;
     }
 }
