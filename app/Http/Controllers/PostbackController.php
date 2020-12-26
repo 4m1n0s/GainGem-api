@@ -39,7 +39,7 @@ class PostbackController extends Controller
 
         if ($payload['payout'] < 0 || isset($payload['status']) && (int) $payload['status'] === 2) {
             $data['type'] = CompletedTask::TYPE_CHARGEBACK;
-            $data['points'] = $payload['payout'] < 0 ? $data['points'] : -$data['points'];
+            $data['points'] = -abs($data['points']);
         }
 
         CompletedTask::create($data);
