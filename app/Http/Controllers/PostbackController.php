@@ -52,7 +52,7 @@ class PostbackController extends Controller
         $payload = $request->validated();
 
         CompletedTask::create([
-            'type' => CompletedTask::TYPE_OFFER,
+            'type' => $payload['payout'] > 0 ? CompletedTask::TYPE_OFFER : CompletedTask::TYPE_CHARGEBACK,
             'provider' => 'lootably',
             'user_id' => $payload['user_id'],
             'points' => $payload['payout'] * $this->pointsValue,
