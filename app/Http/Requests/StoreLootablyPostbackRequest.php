@@ -20,8 +20,6 @@ class StoreLootablyPostbackRequest extends FormRequest
             'payout' => [
                 'required',
                 'numeric',
-                'min:0',
-                'not_in:0',
             ],
             'user_id' => [
                 'required',
