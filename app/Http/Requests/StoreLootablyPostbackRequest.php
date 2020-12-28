@@ -37,7 +37,7 @@ class StoreLootablyPostbackRequest extends FormRequest
             ],
             'transaction_id' => [
                 'required',
-                Rule::unique('completed_tasks', 'data->transaction_id')->where('provider', 'lootably'),
+                Rule::unique('completed_tasks', 'data->transaction_id')->where('provider', 'Lootably'),
             ],
             'key' => [
                 'required',
