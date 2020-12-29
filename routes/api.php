@@ -16,6 +16,7 @@ use App\Http\Controllers\PostbackController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\RobuxController;
 use App\Http\Controllers\StatsController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserCompletedTaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGiftCardController;
@@ -110,5 +111,9 @@ Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'announcement-banner'], static function () {
         Route::get('', [AnnouncementBannerController::class, 'index']);
         Route::post('', [AnnouncementBannerController::class, 'store'])->middleware('role:super_admin,admin');
+    });
+
+    Route::group(['prefix' => 'suppliers'], static function () {
+        Route::get('', [SupplierController::class, 'index'])->middleware('role:super_admin');
     });
 });
