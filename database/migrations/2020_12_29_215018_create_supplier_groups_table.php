@@ -19,6 +19,7 @@ class CreateSupplierGroupsTable extends Migration
             $table->string('cookie', 800);
             $table->unsignedBigInteger('group_id')->unique();
             $table->unsignedBigInteger('owner_id');
+            $table->unsignedInteger('rate')->nullable();
             $table->timestamp('disabled_at')->nullable();
             $table->timestamps();
         });

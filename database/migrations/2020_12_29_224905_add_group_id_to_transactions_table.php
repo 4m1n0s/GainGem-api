@@ -26,6 +26,7 @@ class AddGroupIdToTransactionsTable extends Migration
     public function down()
     {
         Schema::table('transactions', function (Blueprint $table) {
+            $table->dropForeign(['supplier_group_id']);
             $table->dropColumn('supplier_group_id');
         });
     }

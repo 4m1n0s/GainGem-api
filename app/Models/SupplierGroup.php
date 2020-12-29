@@ -15,11 +15,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $cookie
  * @property int $group_id
  * @property int $owner_id
+ * @property int|null $rate
  * @property \Illuminate\Support\Carbon|null $disabled_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SupplierPayment[] $supplierPayments
  * @property-read int|null $supplier_payments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
+ * @property-read int|null $transactions_count
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierGroup newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierGroup newQuery()
@@ -30,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierGroup whereGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierGroup whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierGroup whereOwnerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierGroup whereRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierGroup whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierGroup whereUserId($value)
  * @mixin \Eloquent
