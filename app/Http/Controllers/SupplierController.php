@@ -10,7 +10,12 @@ class SupplierController extends Controller
     public function index(): JsonResponse
     {
         $suppliers = User::where('role', User::ROLE_SUPPLIER)
-            ->with(['supplierGroup.supplierPayments', 'supplierGroup.transactions'])
+            ->select(['id', 'username'])
+            ->with([
+                'supplierGroup:id,user_id',
+                'supplierGroup.supplierPayments:supplier_group_id,value,status',
+                'supplierGroup.transactions:supplier_group_id,value',
+            ])
             ->paginate(10);
 
         $pagination = $suppliers->toArray();
