@@ -16,7 +16,7 @@ class CreateSupplierPaymentsTable extends Migration
     {
         Schema::create('supplier_payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supplier_group_id')->nullable()->index()->constrained()->onDelete('set null');
+            $table->foreignId('robux_group_id')->index()->constrained();
             $table->string('method');
             $table->string('destination');
             $table->unsignedDecimal('value');

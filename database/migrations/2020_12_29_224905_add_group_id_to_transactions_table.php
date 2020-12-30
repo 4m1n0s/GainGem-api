@@ -14,7 +14,7 @@ class AddGroupIdToTransactionsTable extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->foreignId('supplier_group_id')->nullable()->index()->constrained()->onDelete('set null');
+            $table->foreignId('robux_group_id')->nullable()->index()->constrained();
         });
     }
 
@@ -26,8 +26,8 @@ class AddGroupIdToTransactionsTable extends Migration
     public function down()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->dropForeign(['supplier_group_id']);
-            $table->dropColumn('supplier_group_id');
+            $table->dropForeign(['robux_group_id']);
+            $table->dropColumn('robux_group_id');
         });
     }
 }

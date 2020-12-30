@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Builders\RobuxGroupBuilder;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
 
 class SupplierController extends Controller
@@ -11,11 +13,10 @@ class SupplierController extends Controller
     {
         $suppliers = User::where('role', User::ROLE_SUPPLIER)
             ->select(['id', 'username'])
-            ->with([
-                'supplierGroup:id,user_id',
-                'supplierGroup.supplierPayments:supplier_group_id,value,status',
-                'supplierGroup.transactions:supplier_group_id,value',
-            ])
+            ->with(['robuxGroups' => static function (HasMany $query) {
+                /** @var RobuxGroupBuilder $query */
+                $query->select(['id', 'supplier_user_id'])->withAvailableEarnings();
+            }])
             ->paginate(10);
 
         $pagination = $suppliers->toArray();

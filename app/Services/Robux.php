@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\RobuxGroup;
 use Illuminate\Http\Client\Response;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class Robux
@@ -15,17 +15,11 @@ class Robux
         ])->get("https://groups.roblox.com/v1/groups/{$groupId}/settings");
     }
 
-    public static function getCurrency(): int
+    public static function getCurrency(RobuxGroup $robuxGroup): int
     {
-        $robux = Cache::get('robux');
-
-        if (! $robux) {
-            return 0;
-        }
-
         $response = Http::withHeaders([
-            'cookie' => '.ROBLOSECURITY='.$robux['cookie'],
-        ])->get("https://economy.roblox.com/v1/groups/{$robux['group_id']}/currency");
+            'cookie' => '.ROBLOSECURITY='.$robuxGroup->cookie,
+        ])->get("https://economy.roblox.com/v1/groups/{$robuxGroup->robux_group_id}/currency");
 
         if ($response->failed()) {
             return 0;

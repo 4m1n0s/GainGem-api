@@ -10,14 +10,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * App\Models\SupplierPayment.
  *
  * @property int $id
- * @property int|null $supplier_group_id
+ * @property int $robux_group_id
  * @property string $method
  * @property string $destination
  * @property string $value
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\SupplierGroup|null $supplierGroup
+ * @property-read \App\Models\RobuxGroup $robuxGroup
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment query()
@@ -25,8 +25,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereDestination($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereRobuxGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereSupplierGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereValue($value)
  * @mixin \Eloquent
@@ -42,8 +42,16 @@ class SupplierPayment extends Model
     const METHOD_BITCOIN = 'bitcoin';
     const METHOD_PAYPAL = 'paypal';
 
-    public function supplierGroup(): BelongsTo
+    protected $fillable = [
+        'robux_group_id',
+        'method',
+        'destination',
+        'value',
+        'status',
+    ];
+
+    public function robuxGroup(): BelongsTo
     {
-        return $this->belongsTo(SupplierGroup::class);
+        return $this->belongsTo(RobuxGroup::class);
     }
 }

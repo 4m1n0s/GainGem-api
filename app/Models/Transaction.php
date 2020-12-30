@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $supplier_group_id
+ * @property int|null $robux_group_id
  * @property-read string|null $formatted_created_at
  * @property-read string|null $formatted_provider
  * @property-read \App\Models\GiftCard|null $giftCard
@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereGiftCardId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction wherePoints($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereSupplierGroupId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereRobuxGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereUserId($value)
@@ -53,6 +53,7 @@ class Transaction extends Model
         'gift_card_id',
         'destination',
         'value',
+        'robux_group_id',
     ];
 
     protected $casts = [

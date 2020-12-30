@@ -12,7 +12,7 @@ class CreateGlobalRate extends Migration
      */
     public function up()
     {
-        Cache::rememberForever('global-rate', static fn () => 6);
+        Cache::rememberForever('robux-supplier-rate', static fn () => 6 / 1000);
     }
 
     /**
@@ -22,6 +22,6 @@ class CreateGlobalRate extends Migration
      */
     public function down()
     {
-        Cache::forget('global-rate');
+        Cache::forget('robux-supplier-rate');
     }
 }
