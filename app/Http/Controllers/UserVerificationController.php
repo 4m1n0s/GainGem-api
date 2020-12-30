@@ -25,10 +25,13 @@ class UserVerificationController extends Controller
 
         $user->markNotificationAsRead($urlToken->id);
         $user->markEmailAsVerified();
-        $user->completedTasks()->create([
-            'type' => CompletedTask::TYPE_EMAIL_VERIFICATION,
-            'points' => CompletedTask::POINTS_EMAIL_VERIFICATION,
-        ]);
+
+        if ($user->completedTasks()->where('type', CompletedTask::TYPE_EMAIL_VERIFICATION)->doesntExist()) {
+            $user->completedTasks()->create([
+                'type' => CompletedTask::TYPE_EMAIL_VERIFICATION,
+                'points' => CompletedTask::POINTS_EMAIL_VERIFICATION,
+            ]);
+        }
 
         return response()->json([
             'user' => new UserResource($user->loadAvailablePoints()),

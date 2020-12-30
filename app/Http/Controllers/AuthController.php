@@ -32,6 +32,7 @@ class AuthController extends Controller
         $payload['referral_token'] = $referralToken;
 
         $user = User::create($payload)->loadAvailablePoints();
+        $user->refresh();
 
         /** @var UrlToken $urlToken */
         $urlToken = $user->urlTokens()->create([
