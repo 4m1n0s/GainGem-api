@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Builders\RobuxGroupBuilder;
+use App\Http\Requests\UpdateSupplierRequest;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
@@ -34,5 +35,16 @@ class SupplierController extends Controller
             'suppliers' => $suppliersArr,
             'pagination' => $pagination,
         ]);
+    }
+
+    public function update(User $supplier, UpdateSupplierRequest $request): JsonResponse
+    {
+        $payload = $request->validated();
+
+        $supplier->update([
+            'robux_rate' => $payload['robux_rate'] ? $payload['robux_rate'] / 1000 : null,
+        ]);
+
+        return response()->json($supplier->append('formatted_robux_rate'));
     }
 }

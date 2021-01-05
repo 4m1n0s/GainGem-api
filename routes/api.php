@@ -15,6 +15,7 @@ use App\Http\Controllers\PointsValueController;
 use App\Http\Controllers\PostbackController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\RobuxController;
+use App\Http\Controllers\RobuxSupplierRateController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserCompletedTaskController;
@@ -115,5 +116,11 @@ Route::group(['middleware' => 'auth:api'], static function () {
 
     Route::group(['prefix' => 'suppliers'], static function () {
         Route::get('', [SupplierController::class, 'index'])->middleware('role:super_admin');
+        Route::put('{supplier}', [SupplierController::class, 'update'])->middleware('role:super_admin');
+    });
+
+    Route::group(['prefix' => 'supplier-rate'], static function () {
+        Route::get('', [RobuxSupplierRateController::class, 'index'])->middleware('role:super_admin');
+        Route::put('', [RobuxSupplierRateController::class, 'update'])->middleware('role:super_admin');
     });
 });

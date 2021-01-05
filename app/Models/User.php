@@ -110,6 +110,7 @@ class User extends Authenticatable implements JWTSubject
         'banned_at',
         'ban_reason',
         'registered_giveaway_at',
+        'robux_rate',
     ];
 
     protected $hidden = [
