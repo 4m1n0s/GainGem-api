@@ -20,7 +20,6 @@ class CreateRobuxGroupsTable extends Migration
             $table->unsignedBigInteger('robux_group_id')->unique();
             $table->unsignedBigInteger('robux_owner_id');
             $table->string('robux_owner_username');
-            $table->unsignedDecimal('rate', 4, 4)->nullable();
             $table->timestamp('disabled_at')->nullable();
             $table->timestamps();
         });

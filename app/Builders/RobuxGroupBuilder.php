@@ -14,20 +14,6 @@ class RobuxGroupBuilder extends Builder
         return $this;
     }
 
-    public function withTotalWithdrawals(): self
-    {
-        $this->withSum('paidSupplierPayments as total_withdrawals', 'value');
-
-        return $this;
-    }
-
-    public function withAvailableEarnings(): self
-    {
-        $this->withTotalEarnings()->withTotalWithdrawals();
-
-        return $this;
-    }
-
     public function bestMatch(): self
     {
         $this->whereNull('disabled_at')

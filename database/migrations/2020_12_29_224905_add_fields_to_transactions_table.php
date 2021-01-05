@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddGroupIdToTransactionsTable extends Migration
+class AddFieldsToTransactionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,10 @@ class AddGroupIdToTransactionsTable extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
+            $table->unsignedDecimal('value')->change();
             $table->foreignId('robux_group_id')->nullable()->index()->constrained();
+            $table->unsignedInteger('robux_amount')->nullable();
+            $table->unsignedDecimal('bitcoin_amount')->nullable();
         });
     }
 
@@ -26,8 +29,11 @@ class AddGroupIdToTransactionsTable extends Migration
     public function down()
     {
         Schema::table('transactions', function (Blueprint $table) {
+            $table->unsignedBigInteger('value');
             $table->dropForeign(['robux_group_id']);
             $table->dropColumn('robux_group_id');
+            $table->dropColumn('robux_amount');
+            $table->dropColumn('bitcoin_amount');
         });
     }
 }

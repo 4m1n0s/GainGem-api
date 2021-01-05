@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * App\Models\SupplierPayment.
  *
  * @property int $id
- * @property int $robux_group_id
+ * @property int $supplier_user_id
  * @property string $method
  * @property string $destination
  * @property string $value
@@ -25,8 +25,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereDestination($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereMethod($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereRobuxGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereSupplierUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereValue($value)
  * @mixin \Eloquent

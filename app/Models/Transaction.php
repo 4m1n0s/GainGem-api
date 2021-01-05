@@ -15,10 +15,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float $points
  * @property int|null $gift_card_id
  * @property string|null $destination
- * @property int|null $value
+ * @property string|null $value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $robux_group_id
+ * @property int|null $robux_amount
+ * @property string|null $bitcoin_amount
  * @property-read string|null $formatted_created_at
  * @property-read string|null $formatted_provider
  * @property-read \App\Models\GiftCard|null $giftCard
@@ -26,11 +28,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereBitcoinAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereDestination($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereGiftCardId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction wherePoints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereRobuxAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereRobuxGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereUpdatedAt($value)

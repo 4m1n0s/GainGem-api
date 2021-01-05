@@ -19,17 +19,10 @@ use Illuminate\Support\Arr;
  * @property int $robux_group_id
  * @property int $robux_owner_id
  * @property string $robux_owner_username
- * @property float|null $rate
  * @property \Illuminate\Support\Carbon|null $disabled_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read float|null $available_earnings
- * @property-read float|null $total_earnings
- * @property-read float|null $total_withdrawals
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SupplierPayment[] $paidSupplierPayments
- * @property-read int|null $paid_supplier_payments_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SupplierPayment[] $supplierPayments
- * @property-read int|null $supplier_payments_count
+ * @property-read float $total_earnings
  * @property-read \App\Models\User $supplierUser
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
  * @property-read int|null $transactions_count
@@ -41,15 +34,12 @@ use Illuminate\Support\Arr;
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereCreatedAt($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereDisabledAt($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereId($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRate($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxGroupId($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxOwnerId($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxOwnerUsername($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereSupplierUserId($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereUpdatedAt($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup withAvailableEarnings()
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup withTotalEarnings()
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup withTotalWithdrawals()
  * @mixin \Eloquent
  */
 class RobuxGroup extends Model
@@ -74,8 +64,6 @@ class RobuxGroup extends Model
 
     protected $appends = [
         'total_earnings',
-        'total_withdrawals',
-        'available_earnings',
     ];
 
     public function newEloquentBuilder($query)
@@ -88,16 +76,6 @@ class RobuxGroup extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function supplierPayments(): HasMany
-    {
-        return $this->hasMany(SupplierPayment::class);
-    }
-
-    public function paidSupplierPayments(): HasMany
-    {
-        return $this->supplierPayments()->where('status', SupplierPayment::STATUS_PAID);
-    }
-
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
@@ -108,41 +86,12 @@ class RobuxGroup extends Model
         return $this->loadSum('transactions as total_earnings', 'value');
     }
 
-    public function loadTotalWithdrawals(): self
-    {
-        return $this->loadSum('paidSupplierPayments as total_withdrawals', 'value');
-    }
-
-    public function loadAvailableEarnings(): self
-    {
-        return $this->loadTotalEarnings()->loadTotalWithdrawals();
-    }
-
-    public function getTotalEarningsAttribute(): ?float
+    public function getTotalEarningsAttribute(): float
     {
         if (! Arr::has($this->getAttributes(), 'total_earnings')) {
-            return null;
+            return 0;
         }
 
-        return $this->getAttributes()['total_earnings'];
-    }
-
-    public function getTotalWithdrawalsAttribute(): ?float
-    {
-        if (! Arr::has($this->getAttributes(), 'total_withdrawals')) {
-            return null;
-        }
-
-        return $this->getAttributes()['total_withdrawals'];
-    }
-
-    public function getAvailableEarningsAttribute(): ?float
-    {
-        $attributes = $this->getAttributes();
-        if (! Arr::has($attributes, 'total_earnings') || ! Arr::has($attributes, 'total_withdrawals')) {
-            return null;
-        }
-
-        return $this->total_earnings - $this->total_withdrawals;
+        return $this->getAttributes()['total_earnings'] ?? 0;
     }
 }

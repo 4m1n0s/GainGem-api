@@ -6,6 +6,7 @@ use App\Models\RobuxGroup;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 
 class TransactionSeeder extends Seeder
 {
@@ -24,20 +25,24 @@ class TransactionSeeder extends Seeder
             return;
         }
 
+        $rate = Cache::get('robux-supplier-rate') ?? 6 / 1000;
+
         Transaction::create([
             'user_id' => $user->id,
             'type' => Transaction::TYPE_ROBUX,
             'points' => 10,
-            'value' => 10,
+            'value' => 10 * $rate,
             'robux_group_id' => $robuxGroup->id,
+            'robux_amount' => 10,
         ]);
 
         Transaction::create([
             'user_id' => $user->id,
             'type' => Transaction::TYPE_ROBUX,
             'points' => 5,
-            'value' => 5,
+            'value' => 5 * $rate,
             'robux_group_id' => $secondRobuxGroup->id,
+            'robux_amount' => 5,
         ]);
     }
 }

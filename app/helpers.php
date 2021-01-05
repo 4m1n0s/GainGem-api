@@ -21,7 +21,7 @@ function get_ip(): string
     return $ip;
 }
 
-function points_format(?float $points): string
+function currency_format(?float $points, int $maxDecimals = 2): string
 {
     if (! $points) {
         return '0';
@@ -34,7 +34,7 @@ function points_format(?float $points): string
         return '0';
     }
 
-    return number_format((float) ($points), $decimals <= 2 ? $decimals : 2);
+    return number_format((float) ($points), $decimals <= $maxDecimals ? $decimals : $maxDecimals);
 }
 
 function get_countries(): array

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Cache;
 
-class CreateGlobalRate extends Migration
+class CreateRobuxSupplierRate extends Migration
 {
     /**
      * Run the migrations.

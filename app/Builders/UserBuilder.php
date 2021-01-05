@@ -24,4 +24,11 @@ class UserBuilder extends FullTextSearchBuilder
 
         return $this;
     }
+
+    public function withTotalSupplierWithdrawals(): self
+    {
+        $this->withSum('paidSupplierPayments as total_supplier_withdrawals', 'value');
+
+        return $this;
+    }
 }
