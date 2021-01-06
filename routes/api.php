@@ -15,9 +15,12 @@ use App\Http\Controllers\PointsValueController;
 use App\Http\Controllers\PostbackController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\RobuxController;
+use App\Http\Controllers\RobuxGroupController;
+use App\Http\Controllers\RobuxGroupDisabilityController;
 use App\Http\Controllers\RobuxSupplierRateController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SupplierPaymentController;
 use App\Http\Controllers\UserCompletedTaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGiftCardController;
@@ -115,8 +118,21 @@ Route::group(['middleware' => 'auth:api'], static function () {
     });
 
     Route::group(['prefix' => 'suppliers'], static function () {
-        Route::get('', [SupplierController::class, 'index'])->middleware('role:super_admin');
-        Route::put('{supplier}', [SupplierController::class, 'update'])->middleware('role:super_admin');
+        Route::group(['middleware' => 'role:super_admin'], static function () {
+            Route::get('', [SupplierController::class, 'index']);
+            Route::put('{supplier}', [SupplierController::class, 'update']);
+
+            Route::group(['prefix' => 'groups'], static function () {
+                Route::get('', [RobuxGroupController::class, 'index']);
+                Route::post('{robuxGroup}/disability', [RobuxGroupDisabilityController::class, 'store']);
+                Route::delete('{robuxGroup}/disability', [RobuxGroupDisabilityController::class, 'destroy']);
+            });
+        });
+
+        Route::group(['prefix' => 'payments'], static function () {
+            Route::get('', [SupplierPaymentController::class, 'index'])->middleware('role:super_admin');
+            Route::put('{supplierPayment}', [SupplierPaymentController::class, 'update'])->middleware('role:super_admin');
+        });
     });
 
     Route::group(['prefix' => 'supplier-rate'], static function () {

@@ -21,6 +21,7 @@ class CreateSupplierPaymentsTable extends Migration
             $table->string('destination');
             $table->unsignedDecimal('value');
             $table->string('status')->default(SupplierPayment::STATUS_PENDING);
+            $table->string('denial_reason')->nullable();
             $table->timestamps();
         });
     }

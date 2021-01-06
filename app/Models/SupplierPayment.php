@@ -15,13 +15,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $destination
  * @property string $value
  * @property string $status
+ * @property string|null $denial_reason
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $formatted_method
+ * @property-read string $formatted_status
+ * @property-read string $formatted_value
  * @property-read \App\Models\RobuxGroup $robuxGroup
+ * @property-read \App\Models\User $supplierUser
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereDenialReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereDestination($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment whereMethod($value)
@@ -48,10 +54,37 @@ class SupplierPayment extends Model
         'destination',
         'value',
         'status',
+        'denial_reason',
+    ];
+
+    protected $appends = [
+        'formatted_method',
+        'formatted_status',
+        'formatted_value',
     ];
 
     public function robuxGroup(): BelongsTo
     {
         return $this->belongsTo(RobuxGroup::class);
+    }
+
+    public function supplierUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function getFormattedMethodAttribute(): string
+    {
+        return ucfirst($this->method);
+    }
+
+    public function getFormattedStatusAttribute(): string
+    {
+        return ucfirst($this->status);
+    }
+
+    public function getFormattedValueAttribute(): string
+    {
+        return currency_format($this->value);
     }
 }

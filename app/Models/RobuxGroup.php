@@ -19,10 +19,14 @@ use Illuminate\Support\Arr;
  * @property int $robux_group_id
  * @property int $robux_owner_id
  * @property string $robux_owner_username
+ * @property int $robux_amount
  * @property \Illuminate\Support\Carbon|null $disabled_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string|null $formatted_disabled_at
+ * @property-read string $formatted_total_withdrawn
  * @property-read float $total_earnings
+ * @property-read int $total_withdrawn
  * @property-read \App\Models\User $supplierUser
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
  * @property-read int|null $transactions_count
@@ -34,12 +38,14 @@ use Illuminate\Support\Arr;
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereCreatedAt($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereDisabledAt($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereId($value)
+ * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxAmount($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxGroupId($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxOwnerId($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxOwnerUsername($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereSupplierUserId($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereUpdatedAt($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup withTotalEarnings()
+ * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup withTotalWithdrawn()
  * @mixin \Eloquent
  */
 class RobuxGroup extends Model
@@ -52,6 +58,7 @@ class RobuxGroup extends Model
         'robux_group_id',
         'robux_owner_id',
         'robux_owner_username',
+        'robux_amount',
         'rate',
         'disabled_at',
     ];
@@ -64,6 +71,8 @@ class RobuxGroup extends Model
 
     protected $appends = [
         'total_earnings',
+        'total_withdrawn',
+        'formatted_disabled_at',
     ];
 
     public function newEloquentBuilder($query)
@@ -86,6 +95,11 @@ class RobuxGroup extends Model
         return $this->loadSum('transactions as total_earnings', 'value');
     }
 
+    public function loadTotalWithdrawn(): self
+    {
+        return $this->loadSum('transactions as total_withdrawn', 'robux_amount');
+    }
+
     public function getTotalEarningsAttribute(): float
     {
         if (! Arr::has($this->getAttributes(), 'total_earnings')) {
@@ -93,5 +107,24 @@ class RobuxGroup extends Model
         }
 
         return $this->getAttributes()['total_earnings'] ?? 0;
+    }
+
+    public function getTotalWithdrawnAttribute(): int
+    {
+        if (! Arr::has($this->getAttributes(), 'total_withdrawn')) {
+            return 0;
+        }
+
+        return $this->getAttributes()['total_withdrawn'] ?? 0;
+    }
+
+    public function getFormattedDisabledAtAttribute(): ?string
+    {
+        return optional($this->disabled_at)->format('M d Y');
+    }
+
+    public function getFormattedTotalWithdrawnAttribute(): string
+    {
+        return currency_format($this->total_withdrawn);
     }
 }

@@ -28,6 +28,7 @@ class RobuxGroupSeeder extends Seeder
             'robux_group_id' => 2820850,
             'robux_owner_id' => 859953059,
             'robux_owner_username' => 'adiryed',
+            'robux_amount' => 3000,
         ]);
 
         RobuxGroup::create([
@@ -36,6 +37,7 @@ class RobuxGroupSeeder extends Seeder
             'robux_group_id' => 123123,
             'robux_owner_id' => 859953059,
             'robux_owner_username' => 'adiryed',
+            'robux_amount' => 3000,
             'created_at' => now()->addHour(),
             'updated_at' => now()->addHour(),
         ]);

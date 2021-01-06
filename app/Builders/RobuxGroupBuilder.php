@@ -14,6 +14,13 @@ class RobuxGroupBuilder extends Builder
         return $this;
     }
 
+    public function withTotalWithdrawn(): self
+    {
+        $this->withSum('transactions as total_withdrawn', 'robux_amount');
+
+        return $this;
+    }
+
     public function bestMatch(): self
     {
         $this->whereNull('disabled_at')
