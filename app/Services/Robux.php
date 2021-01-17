@@ -8,6 +8,15 @@ use Illuminate\Support\Facades\Http;
 
 class Robux
 {
+    public static function getUserByGroupId(int $groupId): array
+    {
+        $response = Http::get("https://groups.roblox.com/v1/groups/{$groupId}");
+
+        abort_if($response->failed(), 422, isset($response['errors']) ? $response['errors'][0]['message'] : 'Group not found!');
+
+        return $response['owner'];
+    }
+
     public static function getGroupSettingsResponse(string $cookie, int $groupId): Response
     {
         return Http::withHeaders([
@@ -15,11 +24,15 @@ class Robux
         ])->get("https://groups.roblox.com/v1/groups/{$groupId}/settings");
     }
 
-    public static function getCurrency(RobuxGroup $robuxGroup): int
+    /**
+     * @param RobuxGroup|array $robuxGroup
+     * @return int
+     */
+    public static function getCurrency($robuxGroup): int
     {
         $response = Http::withHeaders([
-            'cookie' => '.ROBLOSECURITY='.$robuxGroup->cookie,
-        ])->get("https://economy.roblox.com/v1/groups/{$robuxGroup->robux_group_id}/currency");
+            'cookie' => '.ROBLOSECURITY='.$robuxGroup['cookie'],
+        ])->get("https://economy.roblox.com/v1/groups/{$robuxGroup['robux_group_id']}/currency");
 
         if ($response->failed()) {
             return 0;

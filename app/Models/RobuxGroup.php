@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 
 /**
@@ -21,6 +22,7 @@ use Illuminate\Support\Arr;
  * @property string $robux_owner_username
  * @property int $robux_amount
  * @property \Illuminate\Support\Carbon|null $disabled_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string|null $formatted_disabled_at
@@ -33,9 +35,11 @@ use Illuminate\Support\Arr;
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup bestMatch()
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup newModelQuery()
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup newQuery()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\RobuxGroup onlyTrashed()
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup query()
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereCookie($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereCreatedAt($value)
+ * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereDeletedAt($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereDisabledAt($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereId($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxAmount($value)
@@ -46,11 +50,15 @@ use Illuminate\Support\Arr;
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereUpdatedAt($value)
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup withTotalEarnings()
  * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup withTotalWithdrawn()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\RobuxGroup withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\RobuxGroup withoutTrashed()
  * @mixin \Eloquent
  */
 class RobuxGroup extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+    const MIN_ROBUX_AMOUNT = 100;
 
     protected $fillable = [
         'supplier_user_id',

@@ -16,7 +16,7 @@ class SupplierController extends Controller
             ->withTotalSupplierWithdrawals()
             ->with(['robuxGroups' => static function (HasMany $query) {
                 /** @var RobuxGroupBuilder $query */
-                $query->select(['id', 'supplier_user_id'])->withTotalEarnings();
+                $query->select(['id', 'supplier_user_id'])->withTrashed()->withTotalEarnings();
             }])
             ->paginate(10);
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Builders\TransactionBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,22 +25,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read string|null $formatted_created_at
  * @property-read string|null $formatted_provider
  * @property-read \App\Models\GiftCard|null $giftCard
+ * @property-read \App\Models\RobuxGroup|null $robuxGroup
  * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereBitcoinAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereDestination($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereGiftCardId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction wherePoints($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereRobuxAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereRobuxGroupId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereValue($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction newModelQuery()
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction newQuery()
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction query()
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereBitcoinAmount($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereCreatedAt($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereDestination($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereGiftCardId($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereId($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction wherePoints($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereRobuxAmount($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereRobuxGroupId($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereSupplier(\App\Models\User $supplier)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereSupplierWithTrashed(\App\Models\User $supplier)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereType($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereUpdatedAt($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereUserId($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereValue($value)
  * @mixin \Eloquent
  */
 class Transaction extends Model
@@ -69,6 +73,11 @@ class Transaction extends Model
         'formatted_provider',
     ];
 
+    public function newEloquentBuilder($query)
+    {
+        return new TransactionBuilder($query);
+    }
+
     public function giftCard(): BelongsTo
     {
         return $this->belongsTo(GiftCard::class);
@@ -77,6 +86,11 @@ class Transaction extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function robuxGroup(): BelongsTo
+    {
+        return $this->belongsTo(RobuxGroup::class);
     }
 
     public function isTypeGiftCard(): bool

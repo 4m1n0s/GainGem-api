@@ -13,6 +13,7 @@ use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\GiveawayController;
 use App\Http\Controllers\PointsValueController;
 use App\Http\Controllers\PostbackController;
+use App\Http\Controllers\RefreshRobuxGroupController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\RobuxController;
 use App\Http\Controllers\RobuxGroupController;
@@ -118,15 +119,16 @@ Route::group(['middleware' => 'auth:api'], static function () {
     });
 
     Route::group(['prefix' => 'suppliers'], static function () {
-        Route::group(['middleware' => 'role:super_admin'], static function () {
-            Route::get('', [SupplierController::class, 'index']);
-            Route::put('{supplier}', [SupplierController::class, 'update']);
+        Route::get('', [SupplierController::class, 'index'])->middleware('role:super_admin');
+        Route::put('{supplier}', [SupplierController::class, 'update'])->middleware('role:super_admin');
 
-            Route::group(['prefix' => 'groups'], static function () {
-                Route::get('', [RobuxGroupController::class, 'index']);
-                Route::post('{robuxGroup}/disability', [RobuxGroupDisabilityController::class, 'store']);
-                Route::delete('{robuxGroup}/disability', [RobuxGroupDisabilityController::class, 'destroy']);
-            });
+        Route::group(['prefix' => 'groups'], static function () {
+            Route::get('', [RobuxGroupController::class, 'index'])->middleware('role:super_admin,supplier');
+            Route::post('', [RobuxGroupController::class, 'store'])->middleware('role:super_admin,supplier');
+            Route::post('{robuxGroup}/refresh', [RefreshRobuxGroupController::class, 'store'])->middleware('role:super_admin,supplier');
+            Route::post('{robuxGroup}/disability', [RobuxGroupDisabilityController::class, 'store'])->middleware('role:super_admin');
+            Route::delete('{robuxGroup}/disability', [RobuxGroupDisabilityController::class, 'destroy'])->middleware('role:super_admin');
+            Route::delete('{robuxGroup}', [RobuxGroupController::class, 'destroy'])->middleware('role:super_admin,supplier');
         });
 
         Route::group(['prefix' => 'payments'], static function () {
