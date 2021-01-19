@@ -2,6 +2,8 @@
 
 return [
 
+    'robux_group_cookie' => env('ROBUX_GROUP_COOKIE'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

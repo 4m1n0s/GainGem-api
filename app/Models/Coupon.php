@@ -68,7 +68,7 @@ class Coupon extends Model
 
     public function getFormattedPointsAttribute(): string
     {
-        return points_format($this->points);
+        return currency_format($this->points);
     }
 
     public function getIsActiveAttribute(): bool

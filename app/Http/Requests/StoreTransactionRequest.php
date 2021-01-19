@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\GiftCard;
 use App\Models\Transaction;
+use App\Rules\BitcoinAddress;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -36,6 +37,14 @@ class StoreTransactionRequest extends FormRequest
         ];
 
         if (! $isGiftCard) {
+            if ($this->input('provider') === Transaction::TYPE_BITCOIN) {
+                $rules['destination'][] = new BitcoinAddress;
+            } else {
+                $rules['group_id'] = [
+                    'integer',
+                ];
+            }
+
             return $rules;
         }
 

@@ -16,7 +16,7 @@ class UserReferralController extends Controller
             ->withTotalPoints()
             ->get()
             ->each(static function (User $referredUser) {
-                $referredUser['referral_points'] = points_format($referredUser->total_points * CompletedTask::COMMISSION_PERCENT_REFERRAL);
+                $referredUser['referral_points'] = currency_format($referredUser->total_points * CompletedTask::COMMISSION_PERCENT_REFERRAL);
             });
 
         return response()->json([
@@ -36,7 +36,7 @@ class UserReferralController extends Controller
 
         return response()->json([
             'total_referrals' => $user->referred_users_count,
-            'total_revenue' => points_format($totalRevenue),
+            'total_revenue' => currency_format($totalRevenue),
         ]);
     }
 }

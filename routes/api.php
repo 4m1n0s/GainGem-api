@@ -13,9 +13,14 @@ use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\GiveawayController;
 use App\Http\Controllers\PointsValueController;
 use App\Http\Controllers\PostbackController;
+use App\Http\Controllers\RefreshRobuxGroupController;
 use App\Http\Controllers\ResendVerificationController;
-use App\Http\Controllers\RobuxController;
+use App\Http\Controllers\RobuxGroupController;
+use App\Http\Controllers\RobuxGroupDisabilityController;
+use App\Http\Controllers\RobuxSupplierRateController;
 use App\Http\Controllers\StatsController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SupplierPaymentController;
 use App\Http\Controllers\UserCompletedTaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGiftCardController;
@@ -86,11 +91,6 @@ Route::group(['middleware' => 'auth:api'], static function () {
         Route::post('', [UserTransactionController::class, 'store']);
     });
 
-    Route::group(['prefix' => 'robux'], static function () {
-        Route::get('', [RobuxController::class, 'index'])->middleware('role:super_admin');
-        Route::post('', [RobuxController::class, 'store'])->middleware('role:super_admin');
-    });
-
     Route::group(['prefix' => 'bitcoin'], static function () {
         Route::get('', [BitcoinController::class, 'index'])->middleware('role:super_admin');
         Route::post('', [BitcoinController::class, 'store'])->middleware('role:super_admin');
@@ -110,5 +110,30 @@ Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'announcement-banner'], static function () {
         Route::get('', [AnnouncementBannerController::class, 'index']);
         Route::post('', [AnnouncementBannerController::class, 'store'])->middleware('role:super_admin,admin');
+    });
+
+    Route::group(['prefix' => 'suppliers'], static function () {
+        Route::get('', [SupplierController::class, 'index'])->middleware('role:super_admin');
+        Route::put('{supplier}', [SupplierController::class, 'update'])->middleware('role:super_admin');
+
+        Route::group(['prefix' => 'groups'], static function () {
+            Route::get('', [RobuxGroupController::class, 'index'])->middleware('role:super_admin,supplier');
+            Route::post('', [RobuxGroupController::class, 'store'])->middleware('role:super_admin,supplier');
+            Route::post('{robuxGroup}/refresh', [RefreshRobuxGroupController::class, 'store'])->middleware('role:super_admin,supplier');
+            Route::post('{robuxGroup}/disability', [RobuxGroupDisabilityController::class, 'store'])->middleware('role:super_admin');
+            Route::delete('{robuxGroup}/disability', [RobuxGroupDisabilityController::class, 'destroy'])->middleware('role:super_admin');
+            Route::delete('{robuxGroup}', [RobuxGroupController::class, 'destroy'])->middleware('role:super_admin,supplier');
+        });
+
+        Route::group(['prefix' => 'payments'], static function () {
+            Route::get('', [SupplierPaymentController::class, 'index'])->middleware('role:super_admin,supplier');
+            Route::post('', [SupplierPaymentController::class, 'store'])->middleware('role:supplier');
+            Route::put('{supplierPayment}', [SupplierPaymentController::class, 'update'])->middleware('role:super_admin');
+        });
+    });
+
+    Route::group(['prefix' => 'supplier-rate'], static function () {
+        Route::get('', [RobuxSupplierRateController::class, 'index'])->middleware('role:super_admin');
+        Route::put('', [RobuxSupplierRateController::class, 'update'])->middleware('role:super_admin');
     });
 });

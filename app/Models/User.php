@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -32,6 +33,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property \Illuminate\Support\Carbon|null $registered_giveaway_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $robux_rate
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
  * @property-read float|null $available_points
@@ -39,15 +41,25 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read string|null $formatted_banned_at
  * @property-read string|null $formatted_created_at
  * @property-read string|null $formatted_email_verified_at
+ * @property-read float|null $formatted_robux_rate
  * @property-read string $formatted_total_points
  * @property-read string $profile_image_url
  * @property-read float|null $total_points
+ * @property-read float $total_supplier_withdrawals
  * @property-read float|null $wasted_points
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SupplierPayment[] $paidSupplierPayments
+ * @property-read int|null $paid_supplier_payments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SupplierPayment[] $pendingOrPaidSupplierPayments
+ * @property-read int|null $pending_or_paid_supplier_payments_count
  * @property-read \App\Models\User|null $referredBy
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $referredUsers
  * @property-read int|null $referred_users_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RobuxGroup[] $robuxGroups
+ * @property-read int|null $robux_groups_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SupplierPayment[] $supplierPayments
+ * @property-read int|null $supplier_payments_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
  * @property-read int|null $transactions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UrlToken[] $urlTokens
@@ -68,11 +80,13 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \App\Builders\UserBuilder|\App\Models\User whereReferralToken($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereReferredBy($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereRegisteredGiveawayAt($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereRobuxRate($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereRole($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereUpdatedAt($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereUsername($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User withAvailablePoints()
  * @method static \App\Builders\UserBuilder|\App\Models\User withTotalPoints()
+ * @method static \App\Builders\UserBuilder|\App\Models\User withTotalSupplierWithdrawals()
  * @method static \App\Builders\UserBuilder|\App\Models\User withWastedPoints()
  * @mixin \Eloquent
  */
@@ -98,6 +112,7 @@ class User extends Authenticatable implements JWTSubject
         'banned_at',
         'ban_reason',
         'registered_giveaway_at',
+        'robux_rate',
     ];
 
     protected $hidden = [
@@ -177,6 +192,26 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UrlToken::class);
     }
 
+    public function robuxGroups(): HasMany
+    {
+        return $this->hasMany(RobuxGroup::class, 'supplier_user_id');
+    }
+
+    public function supplierPayments(): HasMany
+    {
+        return $this->hasMany(SupplierPayment::class, 'supplier_user_id');
+    }
+
+    public function pendingOrPaidSupplierPayments(): HasMany
+    {
+        return $this->hasMany(SupplierPayment::class, 'supplier_user_id')->whereIn('status', [SupplierPayment::STATUS_PAID, SupplierPayment::STATUS_PENDING]);
+    }
+
+    public function paidSupplierPayments(): HasMany
+    {
+        return $this->supplierPayments()->where('status', SupplierPayment::STATUS_PAID);
+    }
+
     public function loadTotalPoints(): self
     {
         return $this->loadSum('completedTasks as total_points', 'points');
@@ -190,6 +225,16 @@ class User extends Authenticatable implements JWTSubject
     public function loadAvailablePoints(): self
     {
         return $this->loadTotalPoints()->loadWastedPoints();
+    }
+
+    public function loadTotalSupplierWithdrawals(): self
+    {
+        return $this->loadSum('paidSupplierPayments as total_supplier_withdrawals', 'value');
+    }
+
+    public function loadTotalPendingOrPaidSupplierWithdrawals(): self
+    {
+        return $this->loadSum('pendingOrPaidSupplierPayments as total_supplier_withdrawals', 'value');
     }
 
     public function getTotalPointsAttribute(): ?float
@@ -220,6 +265,15 @@ class User extends Authenticatable implements JWTSubject
         return $this->total_points - $this->wasted_points;
     }
 
+    public function getTotalSupplierWithdrawalsAttribute(): float
+    {
+        if (! Arr::has($this->getAttributes(), 'total_supplier_withdrawals')) {
+            return 0;
+        }
+
+        return $this->getAttributes()['total_supplier_withdrawals'] ?? 0;
+    }
+
     public function getProfileImageUrlAttribute(): string
     {
         if (! $this->profile_image || ! Storage::exists($this->profile_image)) {
@@ -241,12 +295,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function getFormattedAvailablePointsAttribute(): string
     {
-        return points_format($this->available_points);
+        return currency_format($this->available_points);
     }
 
     public function getFormattedTotalPointsAttribute(): string
     {
-        return points_format($this->total_points);
+        return currency_format($this->total_points);
     }
 
     public function getFormattedCreatedAtAttribute(): ?string
@@ -262,5 +316,12 @@ class User extends Authenticatable implements JWTSubject
     public function getFormattedBannedAtAttribute(): ?string
     {
         return optional($this->banned_at)->format('M d Y');
+    }
+
+    public function getFormattedRobuxRateAttribute(): ?float
+    {
+        $rate = $this->robux_rate ?? Cache::get('robux-supplier-rate');
+
+        return $rate * 1000;
     }
 }

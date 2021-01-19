@@ -15,7 +15,7 @@ class UpdateUserDataMiddleware
 
         $user = auth()->user();
 
-        if ($user && $user->isUserRole()) {
+        if ($user) {
             $this->updateData($request, $user);
         }
 
