@@ -39,7 +39,7 @@ class SupplierPaymentController extends Controller
 
             $totals['total_earnings'] = currency_format($supplier->robuxGroups->sum('total_earnings'));
             $totals['total_withdrawals'] = currency_format($supplier->total_supplier_withdrawals);
-            $totals['available_earnings'] = currency_format($totals['total_earnings'] - $totals['total_withdrawals']);
+            $totals['available_earnings'] = currency_format($supplier->robuxGroups->sum('total_earnings') - $supplier->total_supplier_withdrawals);
         }
 
         $pagination = $supplierPayments->toArray();
