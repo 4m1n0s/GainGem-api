@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Resources\UserResource;
 use App\Models\GiftCard;
+use App\Models\RobuxGroup;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Notifications\BitcoinTransactionNotification;
 use App\Notifications\GiftCardTransactionNotification;
 use App\Services\Bitcoin;
 use App\Services\Robux;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 
@@ -43,11 +45,11 @@ class UserTransactionController extends Controller
         abort_if(! $user->email_verified_at, 422, 'You need to verify your email in order to redeem.');
 
         if ($payload['provider'] === Transaction::TYPE_ROBUX) {
-            $groupId = $this->storeRobuxTransaction($payload);
+            $chosenGroupId = $this->storeRobuxTransaction($payload);
 
-            if ($groupId !== 0) {
+            if ($chosenGroupId !== 0) {
                 return response()->json([
-                    'group_id' => $groupId,
+                    'group_id' => $chosenGroupId,
                 ], 404);
             }
         } elseif ($payload['provider'] === Transaction::TYPE_BITCOIN) {
@@ -95,24 +97,68 @@ class UserTransactionController extends Controller
 
         abort_if($user->available_points < $payload['value'], 422, "You don't have enough points!");
 
-        $robuxAmount = Robux::getCurrency();
+        $robuxGroupsExist = RobuxGroup::whereNull('disabled_at')->exists();
 
-        abort_if(! $robuxAmount, 422, 'Robux is out of stock');
-        abort_if($robuxAmount < $payload['value'], 422, "Only {$robuxAmount} robux is in stock");
+        abort_if(! $robuxGroupsExist, 422, 'Robux is out of stock.');
 
-        $group = Cache::get('robux');
+        $chosenGroup = null;
 
-        $robuxPayout = Robux::payout($group, $payload['destination'], $payload['value']);
+        if (isset($payload['group_id'])) {
+            $chosenGroup = RobuxGroup::whereNull('disabled_at')->where('robux_group_id', $payload['group_id'])->first();
+
+            if ($chosenGroup) {
+                /** @var RobuxGroup $chosenGroup */
+                $robuxAmount = Robux::getCurrency($chosenGroup);
+
+                $chosenGroup->update([
+                    'robux_amount' => $robuxAmount,
+                    'disabled_at' => $robuxAmount < RobuxGroup::MIN_ROBUX_AMOUNT ? now() : null,
+                ]);
+
+                if ($robuxAmount < $payload['value']) {
+                    $chosenGroup = null;
+                }
+            }
+        }
+
+        if (! $chosenGroup) {
+            /** @var Collection $robuxGroups */
+            $robuxGroups = RobuxGroup::bestMatch()->where('robux_amount', '>', $payload['value'])->get();
+            $i = 0;
+
+            while (! $chosenGroup && $i < count($robuxGroups)) {
+                $robuxAmount = Robux::getCurrency($robuxGroups[$i]);
+
+                $robuxGroups[$i]->update([
+                    'robux_amount' => $robuxAmount,
+                    'disabled_at' => $robuxAmount < RobuxGroup::MIN_ROBUX_AMOUNT ? now() : null,
+                ]);
+
+                if ($robuxAmount >= $payload['value']) {
+                    $chosenGroup = $robuxGroups[$i];
+                }
+
+                $i++;
+            }
+        }
+
+        abort_if(! $chosenGroup, 422, "Couldn't find a group with the amount you've asked.");
+
+        $robuxPayout = Robux::payout($chosenGroup, $payload['destination'], $payload['value']);
 
         if (! $robuxPayout) {
-            return $group['group_id'];
+            return $chosenGroup->robux_group_id;
         }
+
+        $rate = $chosenGroup->supplierUser->robux_rate ?? Cache::get('robux-supplier-rate');
 
         $user->transactions()->create([
             'type' => Transaction::TYPE_ROBUX,
             'points' => $payload['value'],
             'destination' => $payload['destination'],
-            'value' => $payload['value'],
+            'value' => $payload['value'] * $rate,
+            'robux_group_id' => $chosenGroup->id,
+            'robux_amount' => $payload['value'],
         ]);
 
         return 0;
@@ -133,7 +179,9 @@ class UserTransactionController extends Controller
         abort_if($bitcoinAmount < $payload['value'], 422, 'Bitcoin is out of stock');
         abort_if($bitcoin['stock_amount'] < $payload['value'], 422, 'Bitcoin is out of stock');
 
-        $bitcoinPayoutResponse = Bitcoin::payout($payload['destination'], $payload['value']);
+        $bitcoin = get_bitcoin_value() * $payload['value'];
+        $satoshi = $bitcoin * pow(10, 8);
+        $bitcoinPayoutResponse = Bitcoin::payout($payload['destination'], (int) $satoshi);
 
         /** @var Transaction $transaction */
         $transaction = $user->transactions()->create([
@@ -141,6 +189,7 @@ class UserTransactionController extends Controller
             'points' => $payload['value'] * $pointsValue,
             'destination' => $payload['destination'],
             'value' => $payload['value'],
+            'bitcoin_amount' => $bitcoin,
         ]);
 
         $user->notify(new BitcoinTransactionNotification($transaction, $bitcoinPayoutResponse['tx_hash']));

@@ -26,6 +26,7 @@ use Illuminate\Support\Arr;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string|null $formatted_disabled_at
+ * @property-read string $formatted_robux_amount
  * @property-read string $formatted_total_withdrawn
  * @property-read float $total_earnings
  * @property-read int $total_withdrawn
@@ -80,6 +81,7 @@ class RobuxGroup extends Model
     protected $appends = [
         'total_earnings',
         'total_withdrawn',
+        'formatted_robux_amount',
         'formatted_disabled_at',
     ];
 
@@ -134,5 +136,10 @@ class RobuxGroup extends Model
     public function getFormattedTotalWithdrawnAttribute(): string
     {
         return currency_format($this->total_withdrawn);
+    }
+
+    public function getFormattedRobuxAmountAttribute(): string
+    {
+        return currency_format($this->robux_amount);
     }
 }

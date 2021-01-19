@@ -15,7 +15,6 @@ use App\Http\Controllers\PointsValueController;
 use App\Http\Controllers\PostbackController;
 use App\Http\Controllers\RefreshRobuxGroupController;
 use App\Http\Controllers\ResendVerificationController;
-use App\Http\Controllers\RobuxController;
 use App\Http\Controllers\RobuxGroupController;
 use App\Http\Controllers\RobuxGroupDisabilityController;
 use App\Http\Controllers\RobuxSupplierRateController;
@@ -92,11 +91,6 @@ Route::group(['middleware' => 'auth:api'], static function () {
         Route::post('', [UserTransactionController::class, 'store']);
     });
 
-    Route::group(['prefix' => 'robux'], static function () {
-        Route::get('', [RobuxController::class, 'index'])->middleware('role:super_admin');
-        Route::post('', [RobuxController::class, 'store'])->middleware('role:super_admin');
-    });
-
     Route::group(['prefix' => 'bitcoin'], static function () {
         Route::get('', [BitcoinController::class, 'index'])->middleware('role:super_admin');
         Route::post('', [BitcoinController::class, 'store'])->middleware('role:super_admin');
@@ -132,7 +126,8 @@ Route::group(['middleware' => 'auth:api'], static function () {
         });
 
         Route::group(['prefix' => 'payments'], static function () {
-            Route::get('', [SupplierPaymentController::class, 'index'])->middleware('role:super_admin');
+            Route::get('', [SupplierPaymentController::class, 'index'])->middleware('role:super_admin,supplier');
+            Route::post('', [SupplierPaymentController::class, 'store'])->middleware('role:supplier');
             Route::put('{supplierPayment}', [SupplierPaymentController::class, 'update'])->middleware('role:super_admin');
         });
     });

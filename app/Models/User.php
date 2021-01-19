@@ -41,7 +41,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read string|null $formatted_banned_at
  * @property-read string|null $formatted_created_at
  * @property-read string|null $formatted_email_verified_at
- * @property-read int|null $formatted_robux_rate
+ * @property-read float|null $formatted_robux_rate
  * @property-read string $formatted_total_points
  * @property-read string $profile_image_url
  * @property-read float|null $total_points
@@ -51,6 +51,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SupplierPayment[] $paidSupplierPayments
  * @property-read int|null $paid_supplier_payments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SupplierPayment[] $pendingOrPaidSupplierPayments
+ * @property-read int|null $pending_or_paid_supplier_payments_count
  * @property-read \App\Models\User|null $referredBy
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $referredUsers
  * @property-read int|null $referred_users_count
@@ -200,6 +202,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(SupplierPayment::class, 'supplier_user_id');
     }
 
+    public function pendingOrPaidSupplierPayments(): HasMany
+    {
+        return $this->hasMany(SupplierPayment::class, 'supplier_user_id')->whereIn('status', [SupplierPayment::STATUS_PAID, SupplierPayment::STATUS_PENDING]);
+    }
+
     public function paidSupplierPayments(): HasMany
     {
         return $this->supplierPayments()->where('status', SupplierPayment::STATUS_PAID);
@@ -218,6 +225,16 @@ class User extends Authenticatable implements JWTSubject
     public function loadAvailablePoints(): self
     {
         return $this->loadTotalPoints()->loadWastedPoints();
+    }
+
+    public function loadTotalSupplierWithdrawals(): self
+    {
+        return $this->loadSum('paidSupplierPayments as total_supplier_withdrawals', 'value');
+    }
+
+    public function loadTotalPendingOrPaidSupplierWithdrawals(): self
+    {
+        return $this->loadSum('pendingOrPaidSupplierPayments as total_supplier_withdrawals', 'value');
     }
 
     public function getTotalPointsAttribute(): ?float
@@ -301,7 +318,7 @@ class User extends Authenticatable implements JWTSubject
         return optional($this->banned_at)->format('M d Y');
     }
 
-    public function getFormattedRobuxRateAttribute(): ?int
+    public function getFormattedRobuxRateAttribute(): ?float
     {
         $rate = $this->robux_rate ?? Cache::get('robux-supplier-rate');
 

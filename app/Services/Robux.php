@@ -41,18 +41,18 @@ class Robux
         return $response['robux'];
     }
 
-    public static function payout(array $group, string $username, int $amount): bool
+    public static function payout(RobuxGroup $robuxGroup, string $username, int $amount): bool
     {
         $user = self::getUserByUsername($username);
 
         $authResponse = Http::withHeaders([
-            'cookie' => '.ROBLOSECURITY='.$group['cookie'],
+            'cookie' => '.ROBLOSECURITY='.$robuxGroup->cookie,
         ])->post('https://auth.roblox.com/v2/login');
 
         $response = Http::withHeaders([
             'X-CSRF-TOKEN' => $authResponse->headers()['x-csrf-token'],
-            'cookie' => '.ROBLOSECURITY='.$group['cookie'],
-        ])->post("https://groups.roblox.com/v1/groups/{$group['group_id']}/payouts", [
+            'cookie' => '.ROBLOSECURITY='.$robuxGroup->cookie,
+        ])->post("https://groups.roblox.com/v1/groups/{$robuxGroup->robux_group_id}/payouts", [
             'PayoutType' => 'FixedAmount',
             'Recipients' => [
                 [
@@ -63,12 +63,21 @@ class Robux
             ],
         ]);
 
-        if ($response->failed() && $response['errors'][0]['code'] === 27) {
-            return false;
+        if ($response->failed()) {
+            if ($response['errors'][0]['code'] === 27) {
+                return false;
+            } elseif ($response['errors'][0]['code'] === 1) {
+                $robuxGroup->update(['disabled_at' => now()]);
+            }
         }
 
         abort_if($response->status() === 400, 422, 'Group is invalid or does not exist');
         abort_if($response->failed(), 422, 'Payout has been failed, please try again later');
+
+        $robuxGroup->update([
+            'robux_amount' => $robuxGroup->robux_amount - $amount,
+            'disabled_at' => $robuxGroup->robux_amount - $amount < RobuxGroup::MIN_ROBUX_AMOUNT ? now() : null,
+        ]);
 
         return true;
     }

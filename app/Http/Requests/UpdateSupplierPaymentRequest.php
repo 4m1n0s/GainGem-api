@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 
 class UpdateSupplierPaymentRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         return [
             'status' => [

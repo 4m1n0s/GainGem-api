@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Services\Robux;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 
@@ -19,9 +20,10 @@ class RobuxGroupController extends Controller
         $payload = $request->validated();
 
         if (! isset($payload['user_id'])) {
+            /** @var Collection $robuxGroups */
             $robuxGroups = RobuxGroup::withTotalWithdrawn()->orderByDesc('id')->paginate(10);
 
-            $robuxGroupsArr = $robuxGroups->append('formatted_total_withdrawn', 'formatted_disabled_at');
+            $robuxGroupsArr = $robuxGroups->append(['formatted_total_withdrawn', 'formatted_disabled_at']);
 
             $robuxGroupsArr->map(static function (RobuxGroup $robuxGroup) {
                 $robuxGroup->cookie = Str::limit($robuxGroup->cookie, 200);
@@ -36,9 +38,11 @@ class RobuxGroupController extends Controller
             ]);
         }
 
+        /** @var User $supplier */
         $supplier = User::find($payload['user_id']);
         $this->authorize('update', $supplier);
 
+        /** @var Collection $robuxGroups */
         $robuxGroups = $supplier->robuxGroups()->select(['id', 'supplier_user_id', 'robux_group_id', 'robux_owner_username', 'robux_amount', 'disabled_at'])
             ->orderByDesc('id')
             ->paginate(10);
@@ -49,10 +53,10 @@ class RobuxGroupController extends Controller
             ->orderBy('date')
             ->whereBetween('created_at', [now()->startOfMonth()->startOfDay(), now()->endOfMonth()->endOfDay()])
             ->get()
-            ->each(static function (Transaction $transaction) {
-                $date = Carbon::parse($transaction->date);
-                $transaction->formatted_date = $date->copy()->format('M d');
-                $transaction->date = $date->day;
+            ->each(static function (Transaction $transaction) { /** @phpstan-ignore-line */
+                $date = Carbon::parse($transaction['date']);
+                $transaction['formatted_date'] = $date->copy()->format('M d');
+                $transaction['date'] = $date->day;
             });
 
         $totalRobuxEarnings = Transaction::whereSupplierWithTrashed($supplier)->sum('robux_amount');
@@ -87,7 +91,10 @@ class RobuxGroupController extends Controller
 
         abort_if($robuxGroupCurrency < RobuxGroup::MIN_ROBUX_AMOUNT, 422, 'Group must have at least '.RobuxGroup::MIN_ROBUX_AMOUNT.' robux.');
 
-        $robuxGroup = auth()->user()->robuxGroups()->create([
+        /** @var User $user */
+        $user = auth()->user();
+
+        $robuxGroup = $user->robuxGroups()->create([
             'cookie' => $payload['cookie'],
             'robux_group_id' => $payload['robux_group_id'],
             'robux_owner_id' => $robuxGroupOwner['userId'],

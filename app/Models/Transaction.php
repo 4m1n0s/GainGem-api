@@ -62,6 +62,8 @@ class Transaction extends Model
         'destination',
         'value',
         'robux_group_id',
+        'robux_amount',
+        'bitcoin_amount',
     ];
 
     protected $casts = [

@@ -14,10 +14,10 @@ class AddFieldsToTransactionsTable extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->unsignedDecimal('value')->change();
+            $table->unsignedDecimal('value', 8, 3)->change();
             $table->foreignId('robux_group_id')->nullable()->index()->constrained();
             $table->unsignedInteger('robux_amount')->nullable();
-            $table->unsignedDecimal('bitcoin_amount')->nullable();
+            $table->unsignedDecimal('bitcoin_amount', 8, 6)->nullable();
         });
     }
 

@@ -13,11 +13,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $supplier_user_id
  * @property string $method
  * @property string $destination
- * @property string $value
+ * @property float $value
  * @property string $status
  * @property string|null $denial_reason
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string|null $formatted_created_at
  * @property-read string $formatted_method
  * @property-read string $formatted_status
  * @property-read string $formatted_value
@@ -61,6 +62,11 @@ class SupplierPayment extends Model
         'formatted_method',
         'formatted_status',
         'formatted_value',
+        'formatted_created_at',
+    ];
+
+    protected $casts = [
+        'value' => 'float',
     ];
 
     public function robuxGroup(): BelongsTo
@@ -86,5 +92,10 @@ class SupplierPayment extends Model
     public function getFormattedValueAttribute(): string
     {
         return currency_format($this->value);
+    }
+
+    public function getFormattedCreatedAtAttribute(): ?string
+    {
+        return optional($this->created_at)->format('M d Y');
     }
 }
