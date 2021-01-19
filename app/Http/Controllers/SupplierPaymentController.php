@@ -20,6 +20,8 @@ class SupplierPaymentController extends Controller
         $supplierPayments = null;
         $payload = $request->validated();
 
+        $totals = [];
+
         if (! isset($payload['user_id'])) {
             $supplierPayments = SupplierPayment::with('supplierUser:id,username')->orderByDesc('id')->paginate(10);
         } else {
@@ -28,16 +30,26 @@ class SupplierPaymentController extends Controller
             $this->authorize('update', $supplier);
 
             $supplierPayments = $supplier->supplierPayments()->orderByDesc('id')->paginate(10);
+
+            $supplier->loadTotalPendingOrPaidSupplierWithdrawals()
+                ->load(['robuxGroups' => static function (HasMany $query) {
+                    /** @var RobuxGroupBuilder $query */
+                    $query->select(['id', 'supplier_user_id'])->withTotalEarnings()->withTrashed();
+                }])->append(['total_supplier_withdrawals']);
+
+            $totals['total_earnings'] = currency_format($supplier->robuxGroups->sum('total_earnings'));
+            $totals['total_withdrawals'] = currency_format($supplier->total_supplier_withdrawals);
+            $totals['available_earnings'] = currency_format($totals['total_earnings'] - $totals['total_withdrawals']);
         }
 
         $pagination = $supplierPayments->toArray();
         $supplierPaymentsArr = $pagination['data'];
         unset($pagination['data']);
 
-        return response()->json([
+        return response()->json(array_merge([
             'payments' => $supplierPaymentsArr,
             'pagination' => $pagination,
-        ]);
+        ], $totals));
     }
 
     public function store(StoreSupplierPaymentRequest $request): JsonResponse
