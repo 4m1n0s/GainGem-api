@@ -59,7 +59,7 @@ class RobuxGroup extends Model
 {
     use HasFactory, SoftDeletes;
 
-    const MIN_ROBUX_AMOUNT = 100;
+    const MIN_ROBUX_AMOUNT = 250;
 
     protected $fillable = [
         'supplier_user_id',
