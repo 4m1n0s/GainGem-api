@@ -39,7 +39,7 @@ class StorePostbackRequest extends FormRequest
                 Rule::unique('completed_tasks', 'data->transaction_id')->where('provider', $this->get('app')),
             ],
             'status' => [
-                'in:1,2',
+                'in:0,1,2',
             ],
         ];
     }

@@ -9,6 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\HtmlString;
 
 class GiftCardTransactionNotification extends Notification implements ShouldQueue
 {
@@ -35,9 +36,10 @@ class GiftCardTransactionNotification extends Notification implements ShouldQueu
 
         return (new MailMessage)
             ->subject("[EzRewards] Successful Reward Claim #{$this->transaction->id}")
+            ->greeting("Hello, {$user->username}!")
             ->line('Thank you for using EzRewards!')
             ->line("You have successfully claimed \${$giftCard->value} {$this->transaction->formatted_provider} Gift Card for {$this->transaction->points} points. Please see your code below.")
-            ->line($giftCard->code)
+            ->line(new HtmlString("<strong>{$giftCard->code}</strong>"))
             ->line('Share the news with your friends!');
     }
 

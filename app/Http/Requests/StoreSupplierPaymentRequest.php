@@ -25,7 +25,7 @@ class StoreSupplierPaymentRequest extends FormRequest
             ],
             'value' => [
                 'required',
-                'integer',
+                'numeric',
                 'min:5',
                 'max:10000',
             ],

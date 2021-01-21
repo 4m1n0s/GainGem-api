@@ -65,9 +65,11 @@ class SupplierPaymentController extends Controller
             }]);
 
         $availableEarnings = $supplier->robuxGroups->sum('total_earnings') - $supplier->total_supplier_withdrawals;
+        $formattedAvailableEarnings = currency_format($availableEarnings);
 
-        abort_if($availableEarnings < (int) $payload['value'], 422, "You have only \${$availableEarnings} available earnings.");
+        abort_if($availableEarnings < (int) $payload['value'], 422, "You have only \${$formattedAvailableEarnings} available earnings.");
 
+        /** @var SupplierPayment $supplierPayment */
         $supplierPayment = $supplier->supplierPayments()->create([
             'method' => $payload['method'],
             'destination' => $payload['destination'],

@@ -31,6 +31,7 @@ class ForgotPasswordNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Password reset request')
+            ->greeting("Hello, {$user->username}!")
             ->line("You've requested to reset your password at ".config('app.name').'. Click on the link below to reset.')
             ->action('Reset Password', $forgotPasswordUrl)
             ->line('The link is valid for one day. You can request a new one if this one has expired.')
