@@ -9,7 +9,7 @@ class RobuxSupplierRateController extends Controller
 {
     public function index(): int
     {
-        return (int) Cache::get('robux-supplier-rate') * 1000;
+        return (int) (Cache::get('robux-supplier-rate') * 1000);
     }
 
     public function update(StoreRobuxSupplierRateRequest $request): int
@@ -18,6 +18,6 @@ class RobuxSupplierRateController extends Controller
 
         Cache::forget('robux-supplier-rate');
 
-        return (int) Cache::rememberForever('robux-supplier-rate', static fn () => $payload['rate'] / 1000) * 1000;
+        return (int) (Cache::rememberForever('robux-supplier-rate', static fn () => $payload['rate'] / 1000) * 1000);
     }
 }
