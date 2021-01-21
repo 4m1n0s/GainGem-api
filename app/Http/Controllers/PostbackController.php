@@ -37,7 +37,9 @@ class PostbackController extends Controller
             ],
         ];
 
-        if ($payload['payout'] < 0 || isset($payload['status']) && (int) $payload['status'] === 2) {
+        $isChargeback = isset($payload['status']) && ($payload['app'] === 'CPX Research' && (int) $payload['status'] === 2 || $payload['app'] === 'Adgate Media' && (int) $payload['status'] === 0);
+
+        if ($payload['payout'] < 0 || $isChargeback) {
             $data['type'] = CompletedTask::TYPE_CHARGEBACK;
             $data['points'] = -abs($data['points']);
         }
