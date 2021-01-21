@@ -31,6 +31,7 @@ class VerifyUserNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Email verification')
+            ->greeting("Hello, {$user->username}!")
             ->line('Thanks for registering to '.config('app.name'))
             ->line("Click on the link down below to verify your account. We just need to verify that you're a human.")
             ->action("I'm a human", $verifyUrl);
