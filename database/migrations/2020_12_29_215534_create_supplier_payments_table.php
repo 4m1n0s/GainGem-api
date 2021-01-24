@@ -19,7 +19,7 @@ class CreateSupplierPaymentsTable extends Migration
             $table->foreignId('supplier_user_id')->index()->constrained('users');
             $table->string('method');
             $table->string('destination');
-            $table->unsignedDecimal('value');
+            $table->unsignedDecimal('value', 8, 3);
             $table->string('status')->default(SupplierPayment::STATUS_PENDING);
             $table->string('denial_reason')->nullable();
             $table->timestamps();
