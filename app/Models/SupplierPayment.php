@@ -91,7 +91,7 @@ class SupplierPayment extends Model
 
     public function getFormattedValueAttribute(): string
     {
-        return currency_format($this->value);
+        return currency_format($this->value, 3);
     }
 
     public function getFormattedCreatedAtAttribute(): ?string
