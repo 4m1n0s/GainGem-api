@@ -39,7 +39,7 @@ class UserTransactionController extends Controller
         /** @var User $user */
         $user = auth()->user();
         $giftCard = null;
-        $pointsValue = (int) Cache::get('points-value');
+        $pointsValue = (int) ($payload['provider'] === Transaction::TYPE_BITCOIN ? Cache::get('bitcoin-value') : Cache::get('points-value'));
 
         abort_if(! $pointsValue, 422, 'Error during redeeming the reward!');
         abort_if(! $user->email_verified_at, 422, 'You need to verify your email in order to redeem.');

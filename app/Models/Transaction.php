@@ -112,7 +112,7 @@ class Transaction extends Model
 
     public function getFormattedCreatedAtAttribute(): ?string
     {
-        return optional($this->created_at)->format('M d Y');
+        return optional($this->created_at)->format('M d Y H:i');
     }
 
     public function getFormattedProviderAttribute(): ?string
