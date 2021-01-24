@@ -10,10 +10,10 @@ class StoreLootablyPostbackRequest extends FormRequest
 {
     public function rules(): array
     {
-        $pointsValue = (int) Cache::get('points-value');
+        $postbackValue = (int) Cache::get('postback-value');
 
-        if (! $pointsValue) {
-            $pointsValue = 40;
+        if (! $postbackValue) {
+            $postbackValue = 40;
         }
 
         return [
@@ -42,7 +42,7 @@ class StoreLootablyPostbackRequest extends FormRequest
             'key' => [
                 'required',
                 'string',
-                'in:'.hash('sha256', $this->input('user_id').$this->input('user_ip').$this->input('payout').$this->input('payout') * $pointsValue.'WNveOaxj5FTpNJhM5IL4QZIhtmHTkiQiMCaeD4zg36BjtVeKAxrC5NK0kKT6dGoCyQ1qeND0PRBQD4HPX51ZLA'),
+                'in:'.hash('sha256', $this->input('user_id').$this->input('user_ip').$this->input('payout').$this->input('payout') * $postbackValue.'WNveOaxj5FTpNJhM5IL4QZIhtmHTkiQiMCaeD4zg36BjtVeKAxrC5NK0kKT6dGoCyQ1qeND0PRBQD4HPX51ZLA'),
             ],
         ];
     }

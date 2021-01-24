@@ -4,6 +4,7 @@ use App\Http\Controllers\AnnouncementBannerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BanController;
 use App\Http\Controllers\BitcoinController;
+use App\Http\Controllers\BitcoinValueController;
 use App\Http\Controllers\CompletedTaskController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CouponRedeemController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\GiveawayController;
 use App\Http\Controllers\PointsValueController;
 use App\Http\Controllers\PostbackController;
+use App\Http\Controllers\PostbackValueController;
 use App\Http\Controllers\RefreshRobuxGroupController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\RobuxGroupController;
@@ -62,7 +64,12 @@ Route::group(['middleware' => 'auth:api'], static function () {
 
     Route::group(['prefix' => 'points'], static function () {
         Route::get('', [PointsValueController::class, 'index']);
-        Route::put('', [PointsValueController::class, 'update'])->middleware('role:super_admin,admin');
+        Route::put('', [PointsValueController::class, 'update'])->middleware('role:super_admin');
+    });
+
+    Route::group(['prefix' => 'postback/values', 'middleware' => 'role:super_admin'], static function () {
+        Route::get('', [PostbackValueController::class, 'index']);
+        Route::put('', [PostbackValueController::class, 'update']);
     });
 
     Route::group(['prefix' => 'daily-tasks'], static function () {
@@ -94,6 +101,8 @@ Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'bitcoin'], static function () {
         Route::get('', [BitcoinController::class, 'index'])->middleware('role:super_admin');
         Route::post('', [BitcoinController::class, 'store'])->middleware('role:super_admin');
+        Route::get('values', [BitcoinValueController::class, 'index']);
+        Route::put('values', [BitcoinValueController::class, 'update'])->middleware('role:super_admin');
     });
 
     Route::group(['prefix' => 'users'], static function () {

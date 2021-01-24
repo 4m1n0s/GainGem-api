@@ -67,7 +67,7 @@ class SupplierPaymentController extends Controller
         $availableEarnings = $supplier->robuxGroups->sum('total_earnings') - $supplier->total_supplier_withdrawals;
         $formattedAvailableEarnings = currency_format($availableEarnings);
 
-        abort_if($availableEarnings < (int) $payload['value'], 422, "You have only \${$formattedAvailableEarnings} available earnings.");
+        abort_if($availableEarnings < (float) $payload['value'], 422, "You have only \${$formattedAvailableEarnings} available earnings.");
 
         /** @var SupplierPayment $supplierPayment */
         $supplierPayment = $supplier->supplierPayments()->create([
