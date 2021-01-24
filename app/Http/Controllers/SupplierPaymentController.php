@@ -37,9 +37,9 @@ class SupplierPaymentController extends Controller
                     $query->select(['id', 'supplier_user_id'])->withTotalEarnings()->withTrashed();
                 }])->append(['total_supplier_withdrawals']);
 
-            $totals['total_earnings'] = currency_format($supplier->robuxGroups->sum('total_earnings'));
-            $totals['total_withdrawals'] = currency_format($supplier->total_supplier_withdrawals);
-            $totals['available_earnings'] = currency_format($supplier->robuxGroups->sum('total_earnings') - $supplier->total_supplier_withdrawals);
+            $totals['total_earnings'] = currency_format($supplier->robuxGroups->sum('total_earnings'), 3);
+            $totals['total_withdrawals'] = currency_format($supplier->total_supplier_withdrawals, 3);
+            $totals['available_earnings'] = currency_format($supplier->robuxGroups->sum('total_earnings') - $supplier->total_supplier_withdrawals, 3);
         }
 
         $pagination = $supplierPayments->toArray();
@@ -65,7 +65,7 @@ class SupplierPaymentController extends Controller
             }]);
 
         $availableEarnings = $supplier->robuxGroups->sum('total_earnings') - $supplier->total_supplier_withdrawals;
-        $formattedAvailableEarnings = currency_format($availableEarnings);
+        $formattedAvailableEarnings = currency_format($availableEarnings, 3);
 
         abort_if($availableEarnings < (float) $payload['value'], 422, "You have only \${$formattedAvailableEarnings} available earnings.");
 
