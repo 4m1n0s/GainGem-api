@@ -20,6 +20,7 @@ use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\RobuxGroupController;
 use App\Http\Controllers\RobuxGroupDisabilityController;
 use App\Http\Controllers\RobuxSupplierRateController;
+use App\Http\Controllers\SocialMediaTaskController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SupplierPaymentController;
@@ -75,6 +76,11 @@ Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'daily-tasks'], static function () {
         Route::get('', [DailyTaskController::class, 'index']);
         Route::post('', [DailyTaskController::class, 'store']);
+    });
+
+    Route::group(['prefix' => 'social-media-tasks'], static function () {
+        Route::get('', [SocialMediaTaskController::class, 'index']);
+        Route::post('', [SocialMediaTaskController::class, 'store']);
     });
 
     Route::group(['prefix' => 'giveaway'], static function () {

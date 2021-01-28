@@ -21,7 +21,7 @@ class SupplierPaymentMail extends Mailable implements ShouldQueue
 
     public function build(): Mailable
     {
-        return $this->to('adir.yed@gmail.com')
+        return $this->to('ezrewardsgg@gmail.com')
             ->subject("[Notification] {$this->supplierPayment->supplierUser->username} requested a {$this->supplierPayment->formatted_method} payment! #{$this->supplierPayment->id}")
             ->markdown('emails.supplier_payments');
     }
