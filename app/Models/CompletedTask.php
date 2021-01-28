@@ -166,7 +166,7 @@ class CompletedTask extends Model
 
     public function isAvailableForReferring(): bool
     {
-        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeDailyTask() && ! $this->isTypeChargeback() && ! $this->isTypeAdmin();
+        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeDailyTask() && ! $this->isTypeChargeback() && ! $this->isTypeAdmin() && ! $this->isTypeSocialMedia();
     }
 
     public function getOffersCountAttribute(): ?int
