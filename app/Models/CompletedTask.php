@@ -52,6 +52,7 @@ class CompletedTask extends Model
     const TYPE_EMAIL_VERIFICATION = 'email_verification';
     const TYPE_GIVEAWAY = 'giveaway';
     const TYPE_DAILY_TASK = 'daily_task';
+    const TYPE_SOCIAL_MEDIA = 'social_media';
     const TYPE_PROMO_CODE = 'promo_code';
     const TYPE_REFERRAL_INCOME = 'referral_income';
     const TYPE_CHARGEBACK = 'chargeback';
@@ -74,6 +75,13 @@ class CompletedTask extends Model
         3 => 1.00,
         5 => 2.00,
         10 => 4.00,
+    ];
+
+    const SOCIAL_MEDIA_TASK_OFFERS_OPTIONS = [
+        'youtube' => 0.5,
+        'discord' => 0.5,
+        'instagram' => 0.25,
+        'twitter' => 0.25,
     ];
 
     protected $fillable = [
@@ -131,6 +139,11 @@ class CompletedTask extends Model
         return $this->type === self::TYPE_DAILY_TASK;
     }
 
+    public function isTypeSocialMedia(): bool
+    {
+        return $this->type === self::TYPE_SOCIAL_MEDIA;
+    }
+
     public function isTypeCoupon(): bool
     {
         return $this->type === self::TYPE_PROMO_CODE;
@@ -153,7 +166,7 @@ class CompletedTask extends Model
 
     public function isAvailableForReferring(): bool
     {
-        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeDailyTask() && ! $this->isTypeChargeback() && ! $this->isTypeAdmin();
+        return ! $this->isTypeCoupon() && ! $this->isTypeReferralIncome() && ! $this->isTypeDailyTask() && ! $this->isTypeChargeback() && ! $this->isTypeAdmin() && ! $this->isTypeSocialMedia();
     }
 
     public function getOffersCountAttribute(): ?int
