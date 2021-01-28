@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 
 class StoreSocialMediaTaskRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         return [
             'social_media' => [

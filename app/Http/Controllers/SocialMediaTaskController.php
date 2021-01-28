@@ -22,7 +22,9 @@ class SocialMediaTaskController extends Controller
             ->whereIn('data->type', array_keys(CompletedTask::SOCIAL_MEDIA_TASK_OFFERS_OPTIONS))
             ->get(['user_id', 'data'])
             ->each(static function (CompletedTask $completedTask) use (&$options) {
-                unset($options[$completedTask->data['type']]);
+                if (isset($completedTask->data['type'])) {
+                    unset($options[$completedTask->data['type']]);
+                }
             });
 
         return response()->json([
