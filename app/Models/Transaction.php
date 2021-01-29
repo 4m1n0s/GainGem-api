@@ -22,8 +22,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $robux_group_id
  * @property int|null $robux_amount
  * @property string|null $bitcoin_amount
+ * @property \Illuminate\Support\Carbon|null $emailed_at
  * @property-read string|null $formatted_created_at
  * @property-read string|null $formatted_provider
+ * @property-read bool $has_emailed_in_the_last_hour
  * @property-read \App\Models\GiftCard|null $giftCard
  * @property-read \App\Models\RobuxGroup|null $robuxGroup
  * @property-read \App\Models\User $user
@@ -33,6 +35,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereBitcoinAmount($value)
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereCreatedAt($value)
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereDestination($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereEmailedAt($value)
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereGiftCardId($value)
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereId($value)
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction wherePoints($value)
@@ -64,10 +67,12 @@ class Transaction extends Model
         'robux_group_id',
         'robux_amount',
         'bitcoin_amount',
+        'emailed_at',
     ];
 
     protected $casts = [
         'points' => 'float',
+        'emailed_at' => 'datetime',
     ];
 
     protected $appends = [
@@ -122,5 +127,10 @@ class Transaction extends Model
         }
 
         return optional($this->giftCard)->formatted_provider;
+    }
+
+    public function getHasEmailedInTheLastHourAttribute(): bool
+    {
+        return (bool) optional($this->emailed_at)->between(now()->startOfHour(), now()->endOfHour());
     }
 }

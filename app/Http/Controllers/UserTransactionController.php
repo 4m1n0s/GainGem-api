@@ -25,7 +25,8 @@ class UserTransactionController extends Controller
         $transactions = $user->transactions()
             ->with('giftCard:id,provider')
             ->orderByDesc('id')
-            ->get(['id', 'type', 'points', 'gift_card_id', 'created_at']);
+            ->get(['id', 'type', 'points', 'gift_card_id', 'destination', 'robux_amount', 'bitcoin_amount', 'created_at', 'emailed_at'])
+            ->append('has_emailed_in_the_last_hour');
 
         return response()->json([
             'transactions' => $transactions,

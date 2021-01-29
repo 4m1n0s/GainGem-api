@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -29,6 +30,12 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('supplier', static function ($value) {
             return User::where('id', $value)
                 ->where('role', User::ROLE_SUPPLIER)
+                ->firstOrFail();
+        });
+
+        Route::bind('giftCardTransaction', static function ($value) {
+            return Transaction::where('id', $value)
+                ->where('type', Transaction::TYPE_GIFT_CARD)
                 ->firstOrFail();
         });
     }
