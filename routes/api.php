@@ -115,6 +115,7 @@ Route::group(['middleware' => 'auth:api'], static function () {
 
     Route::group(['prefix' => 'users'], static function () {
         Route::get('', [UserController::class, 'index'])->middleware('role:super_admin,admin');
+        Route::get('{user}', [UserController::class, 'show'])->middleware('role:super_admin,admin');
         Route::get('{user}/transactions', [UserTransactionController::class, 'show']);
         Route::get('{user}/activities', [UserCompletedTaskController::class, 'show']);
         Route::get('{user}/referrals', [UserReferralController::class, 'show']);

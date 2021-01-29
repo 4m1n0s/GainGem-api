@@ -33,6 +33,13 @@ class UserController extends Controller
         ]);
     }
 
+    public function show(User $user): JsonResponse
+    {
+        $this->authorize('update', $user);
+
+        return response()->json(new UserResource($user->loadAvailablePoints()));
+    }
+
     public function update(User $user, UpdateUserRequest $request): JsonResponse
     {
         $this->authorize('update', $user);
