@@ -16,6 +16,7 @@ use App\Http\Controllers\PointsValueController;
 use App\Http\Controllers\PostbackController;
 use App\Http\Controllers\PostbackValueController;
 use App\Http\Controllers\RefreshRobuxGroupController;
+use App\Http\Controllers\ResendGiftCardTransactionMailController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\RobuxGroupController;
 use App\Http\Controllers\RobuxGroupDisabilityController;
@@ -102,6 +103,7 @@ Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => 'rewards'], static function () {
         Route::get('', [UserGiftCardController::class, 'index']);
         Route::post('', [UserTransactionController::class, 'store']);
+        Route::post('{giftCardTransaction}/mails', [ResendGiftCardTransactionMailController::class, 'store']);
     });
 
     Route::group(['prefix' => 'bitcoin'], static function () {
@@ -113,6 +115,7 @@ Route::group(['middleware' => 'auth:api'], static function () {
 
     Route::group(['prefix' => 'users'], static function () {
         Route::get('', [UserController::class, 'index'])->middleware('role:super_admin,admin');
+        Route::get('{user}', [UserController::class, 'show'])->middleware('role:super_admin,admin');
         Route::get('{user}/transactions', [UserTransactionController::class, 'show']);
         Route::get('{user}/activities', [UserCompletedTaskController::class, 'show']);
         Route::get('{user}/referrals', [UserReferralController::class, 'show']);
