@@ -19,7 +19,7 @@ class UserPolicy
             return true;
         }
 
-        if ($authenticatedUser->isAdminRole() && $user->isAdminRole()) {
+        if ($authenticatedUser->isAdminRole() && ($user->isAdminRole() || $user->isSuperAdminRole())) {
             return false;
         }
 
