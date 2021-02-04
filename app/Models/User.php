@@ -34,6 +34,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $robux_rate
+ * @property \Illuminate\Support\Carbon|null $two_factor_enabled_at
+ * @property string|null $two_factor_code
+ * @property \Illuminate\Support\Carbon|null $two_factor_expires_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
  * @property-read float|null $available_points
@@ -82,6 +85,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \App\Builders\UserBuilder|\App\Models\User whereRegisteredGiveawayAt($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereRobuxRate($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereRole($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereTwoFactorCode($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereTwoFactorEnabledAt($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereTwoFactorExpiresAt($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereUpdatedAt($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereUsername($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User withAvailablePoints()
@@ -113,6 +119,9 @@ class User extends Authenticatable implements JWTSubject
         'ban_reason',
         'registered_giveaway_at',
         'robux_rate',
+        'two_factor_enabled_at',
+        'two_factor_code',
+        'two_factor_expires_at',
     ];
 
     protected $hidden = [
@@ -124,6 +133,8 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'banned_at' => 'datetime',
         'registered_giveaway_at' => 'datetime',
+        'two_factor_enabled_at' => 'datetime',
+        'two_factor_expires_at' => 'datetime',
     ];
 
     protected $appends = [
@@ -291,6 +302,22 @@ class User extends Authenticatable implements JWTSubject
         if ($unreadNotification) {
             $unreadNotification->markAsRead();
         }
+    }
+
+    public function generateTwoFactorCode(): void
+    {
+        $this->update([
+            'two_factor_code' => rand(100000, 999999),
+            'two_factor_expires_at' => now()->addMinutes(10),
+        ]);
+    }
+
+    public function resetTwoFactorCode(): void
+    {
+        $this->update([
+            'two_factor_code' => null,
+            'two_factor_expires_at' => null,
+        ]);
     }
 
     public function getFormattedAvailablePointsAttribute(): string

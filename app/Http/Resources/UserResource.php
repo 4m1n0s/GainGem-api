@@ -32,6 +32,7 @@ class UserResource extends JsonResource
             'banned_at' => optional($this->banned_at)->format('M d Y'),
             'ban_reason' => $this->ban_reason,
             'registered_giveaway_at' => $this->registered_giveaway_at,
+            'two_factor_enabled_at' => $this->two_factor_enabled_at,
             'created_at' => $this->formatted_created_at,
             'updated_at' => $this->updated_at->format('M d Y'),
         ];

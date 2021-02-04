@@ -21,6 +21,12 @@ class LoginRequest extends FormRequest
                 'min:6',
                 'max:255',
             ],
+            'two_factor_code' => [
+                'string',
+                'nullable',
+                'min:6',
+                'max:6',
+            ],
         ];
     }
 

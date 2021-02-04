@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\UrlToken;
 use App\Models\User;
+use App\Notifications\TwoFactorCodeNotification;
 use App\Notifications\VerifyUserNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
@@ -54,6 +55,8 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $payload = $request->validated();
+        $faCode = $payload['two_factor_code'];
+        unset($payload['two_factor_code']);
 
         $token = auth()->attempt($payload);
 
@@ -66,6 +69,23 @@ class AuthController extends Controller
             auth()->logout();
             abort(403, 'Your user is banned for the reason: '.$user->ban_reason);
         }
+
+        if (! $user->two_factor_enabled_at) {
+            return response()->json([
+                'token' => $token,
+                'user' => new UserResource($user->loadAvailablePoints()),
+            ]);
+        }
+
+        if (! $user->two_factor_expires_at || $user->two_factor_expires_at->isPast()) {
+            $user->generateTwoFactorCode();
+            $user->notify(new TwoFactorCodeNotification);
+            abort(403, '2FA');
+        }
+
+        abort_if(is_null($faCode) || $user->two_factor_code !== $faCode, 422, '2FA-CODE');
+
+        $user->resetTwoFactorCode();
 
         return response()->json([
             'token' => $token,
