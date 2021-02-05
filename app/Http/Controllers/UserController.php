@@ -58,6 +58,9 @@ class UserController extends Controller
 
             if ($user->email !== $payload['email']) {
                 $payload['email_verified_at'] = null;
+                $payload['two_factor_enabled_at'] = null;
+                $payload['two_factor_code'] = null;
+                $payload['two_factor_expires_at'] = null;
             }
         } else {
             if (! is_null($payload['points'])) {
