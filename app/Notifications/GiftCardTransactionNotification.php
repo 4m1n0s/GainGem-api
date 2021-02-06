@@ -38,7 +38,7 @@ class GiftCardTransactionNotification extends Notification implements ShouldQueu
             ->subject("[EzRewards] Successful Reward Claim #{$this->transaction->id}")
             ->greeting("Hello, {$user->username}!")
             ->line('Thank you for using EzRewards!')
-            ->line("You have successfully claimed \${$giftCard->value} {$this->transaction->formatted_provider} Gift Card for {$this->transaction->points} points. Please see your code below.")
+            ->line("You have successfully claimed a \${$giftCard->value} {$this->transaction->formatted_provider} Gift Card for {$this->transaction->points} points. Please see your code below.")
             ->line(new HtmlString("<strong>{$giftCard->code}</strong>"))
             ->line('Share the news with your friends!');
     }
