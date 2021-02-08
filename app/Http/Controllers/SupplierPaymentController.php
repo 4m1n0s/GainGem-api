@@ -79,7 +79,15 @@ class SupplierPaymentController extends Controller
 
         Mail::send(new SupplierPaymentMail($supplierPayment));
 
-        return response()->json($supplierPayment);
+        $responseArr = [
+            'payment' => $supplierPayment,
+        ];
+
+        $responseArr['total_earnings'] = currency_format($supplier->robuxGroups->sum('total_earnings'));
+        $responseArr['total_withdrawals'] = currency_format($supplier->total_supplier_withdrawals + $payload['value']);
+        $responseArr['available_earnings'] = currency_format(floor(($supplier->robuxGroups->sum('total_earnings') - $supplier->total_supplier_withdrawals) * 100) / 100 - $payload['value']);
+
+        return response()->json($responseArr);
     }
 
     public function update(SupplierPayment $supplierPayment, UpdateSupplierPaymentRequest $request): JsonResponse
