@@ -62,8 +62,8 @@ class CompletedTask extends Model
 
     const COMMISSION_PERCENT_REFERRAL = 0.1;
 
-    const GIVEAWAY_MIN_POINTS = 10;
-    const GIVEAWAY_MAX_POINTS = 50;
+    const GIVEAWAY_MIN_POINTS = 5;
+    const GIVEAWAY_MAX_POINTS = 25;
 
     /*
      * The keys are referenced to the amount of offers that must be completed
