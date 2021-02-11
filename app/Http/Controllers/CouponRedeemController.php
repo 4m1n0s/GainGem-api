@@ -17,10 +17,10 @@ class CouponRedeemController extends Controller
 
         $hadCompletedOfferThisWeek = $user->completedTasks()
             ->where('created_at', '>=', now()->subWeek())
-            ->availableForReferring()
+            ->where('type', CompletedTask::TYPE_OFFER)
             ->exists();
 
-        abort_if(! $hadCompletedOfferThisWeek, 422, 'You must complete at least 1 offer this week!');
+        abort_if(! $user->isSuperAdminRole() && ! $user->isAdminRole() && ! $user->isSponsorRole() && ! $hadCompletedOfferThisWeek, 422, 'You must complete at least 1 offer this week!');
 
         $coupon->loadCount('completedTasks');
 

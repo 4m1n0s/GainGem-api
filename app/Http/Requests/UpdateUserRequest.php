@@ -45,11 +45,13 @@ class UpdateUserRequest extends FormRequest
             'role' => ['required'],
         ];
 
+        $roles = [User::ROLE_SPONSOR, User::ROLE_SUPPLIER, User::ROLE_USER];
+
         if ($authenticatedUser->isSuperAdminRole()) {
-            $rules['role'][] = Rule::in([User::ROLE_ADMIN, User::ROLE_SUPPLIER, User::ROLE_USER]);
-        } else {
-            $rules['role'][] = Rule::in([User::ROLE_SUPPLIER, User::ROLE_USER]);
+            $roles[] = User::ROLE_ADMIN;
         }
+
+        $rules['role'][] = Rule::in($roles);
 
         return $rules;
     }

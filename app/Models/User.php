@@ -102,6 +102,7 @@ class User extends Authenticatable implements JWTSubject
 
     const ROLE_USER = 'user';
     const ROLE_SUPPLIER = 'supplier';
+    const ROLE_SPONSOR = 'sponsor';
     const ROLE_ADMIN = 'admin';
     const ROLE_SUPER_ADMIN = 'super_admin';
 
@@ -166,6 +167,11 @@ class User extends Authenticatable implements JWTSubject
     public function isAdminRole(): bool
     {
         return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isSponsorRole(): bool
+    {
+        return $this->role === self::ROLE_SPONSOR;
     }
 
     public function isSupplierRole(): bool

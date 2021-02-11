@@ -7,6 +7,7 @@ use App\Http\Requests\StoreGiftCardRequest;
 use App\Http\Requests\UpdateGiftCardRequest;
 use App\Models\GiftCard;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
 
 class GiftCardController extends Controller
 {
@@ -18,6 +19,13 @@ class GiftCardController extends Controller
             ->with('transaction.user')
             ->orderByDesc('id')
             ->paginate(10);
+
+        $giftCards->map(static function (GiftCard $giftCard) {
+            $length = strlen($giftCard->code);
+            $length = $length > 3 ? $length - 3 : $length / 2;
+
+            $giftCard->code = Str::limit($giftCard->code, (int) $length);
+        });
 
         $pagination = $giftCards->toArray();
         $giftCardsArr = $pagination['data'];

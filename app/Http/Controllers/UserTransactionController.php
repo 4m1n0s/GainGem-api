@@ -46,6 +46,8 @@ class UserTransactionController extends Controller
         abort_if(! $user->email_verified_at, 422, 'You need to verify your email in order to redeem.');
 
         if ($payload['provider'] === Transaction::TYPE_ROBUX) {
+            abort_if($payload['value'] < 5, 422, 'The amount has to be greater than 5.');
+
             $chosenGroupId = $this->storeRobuxTransaction($payload);
 
             if ($chosenGroupId !== 0) {
