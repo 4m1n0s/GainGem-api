@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Builders\RobuxGroupBuilder;
+use App\Builders\RobuxAccountBuilder;
 use App\Http\Requests\IndexSupplierPaymentRequest;
 use App\Http\Requests\StoreSupplierPaymentRequest;
 use App\Http\Requests\UpdateSupplierPaymentRequest;
@@ -32,14 +32,14 @@ class SupplierPaymentController extends Controller
             $supplierPayments = $supplier->supplierPayments()->orderByDesc('id')->paginate(10);
 
             $supplier->loadTotalPendingOrPaidSupplierWithdrawals()
-                ->load(['robuxGroups' => static function (HasMany $query) {
-                    /** @var RobuxGroupBuilder $query */
+                ->load(['robuxAccounts' => static function (HasMany $query) {
+                    /** @var RobuxAccountBuilder $query */
                     $query->select(['id', 'supplier_user_id'])->withTotalEarnings()->withTrashed();
                 }])->append(['total_supplier_withdrawals']);
 
-            $totals['total_earnings'] = currency_format($supplier->robuxGroups->sum('total_earnings'));
+            $totals['total_earnings'] = currency_format($supplier->robuxAccounts->sum('total_earnings'));
             $totals['total_withdrawals'] = currency_format($supplier->total_supplier_withdrawals);
-            $totals['available_earnings'] = currency_format(floor(($supplier->robuxGroups->sum('total_earnings') - $supplier->total_supplier_withdrawals) * 100) / 100);
+            $totals['available_earnings'] = currency_format(floor(($supplier->robuxAccounts->sum('total_earnings') - $supplier->total_supplier_withdrawals) * 100) / 100);
         }
 
         $pagination = $supplierPayments->toArray();
@@ -59,12 +59,12 @@ class SupplierPaymentController extends Controller
         /** @var User $supplier */
         $supplier = auth()->user();
         $supplier->loadTotalPendingOrPaidSupplierWithdrawals()
-            ->load(['robuxGroups' => static function (HasMany $query) {
-                /** @var RobuxGroupBuilder $query */
+            ->load(['robuxAccounts' => static function (HasMany $query) {
+                /** @var RobuxAccountBuilder $query */
                 $query->select(['id', 'supplier_user_id'])->withTotalEarnings()->withTrashed();
             }]);
 
-        $availableEarnings = floor(($supplier->robuxGroups->sum('total_earnings') - $supplier->total_supplier_withdrawals) * 100) / 100;
+        $availableEarnings = floor(($supplier->robuxAccounts->sum('total_earnings') - $supplier->total_supplier_withdrawals) * 100) / 100;
         $formattedAvailableEarnings = currency_format($availableEarnings);
 
         abort_if($availableEarnings < (float) $payload['value'], 422, "You have only \${$formattedAvailableEarnings} available earnings.");
@@ -83,9 +83,9 @@ class SupplierPaymentController extends Controller
             'payment' => $supplierPayment,
         ];
 
-        $responseArr['total_earnings'] = currency_format($supplier->robuxGroups->sum('total_earnings'));
+        $responseArr['total_earnings'] = currency_format($supplier->robuxAccounts->sum('total_earnings'));
         $responseArr['total_withdrawals'] = currency_format($supplier->total_supplier_withdrawals + $payload['value']);
-        $responseArr['available_earnings'] = currency_format(floor(($supplier->robuxGroups->sum('total_earnings') - $supplier->total_supplier_withdrawals) * 100) / 100 - $payload['value']);
+        $responseArr['available_earnings'] = currency_format(floor(($supplier->robuxAccounts->sum('total_earnings') - $supplier->total_supplier_withdrawals) * 100) / 100 - $payload['value']);
 
         return response()->json($responseArr);
     }

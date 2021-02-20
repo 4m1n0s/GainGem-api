@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class IndexRobuxGroupRequest extends FormRequest
+class IndexRobuxAccountRequest extends FormRequest
 {
     public function rules(): array
     {

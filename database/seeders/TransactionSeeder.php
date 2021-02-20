@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\RobuxGroup;
+use App\Models\RobuxAccount;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -18,8 +18,8 @@ class TransactionSeeder extends Seeder
     public function run()
     {
         $user = User::first();
-        $robuxGroup = RobuxGroup::first();
-        $secondRobuxGroup = RobuxGroup::skip(1)->first();
+        $robuxGroup = RobuxAccount::first();
+        $secondRobuxGroup = RobuxAccount::skip(1)->first();
 
         if (! $user || ! $robuxGroup || ! $secondRobuxGroup) {
             return;

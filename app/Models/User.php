@@ -59,8 +59,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read \App\Models\User|null $referredBy
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $referredUsers
  * @property-read int|null $referred_users_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RobuxGroup[] $robuxGroups
- * @property-read int|null $robux_groups_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RobuxAccount[] $robuxAccounts
+ * @property-read int|null $robux_accounts_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SupplierPayment[] $supplierPayments
  * @property-read int|null $supplier_payments_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
@@ -209,9 +209,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UrlToken::class);
     }
 
-    public function robuxGroups(): HasMany
+    public function robuxAccounts(): HasMany
     {
-        return $this->hasMany(RobuxGroup::class, 'supplier_user_id');
+        return $this->hasMany(RobuxAccount::class, 'supplier_user_id');
     }
 
     public function supplierPayments(): HasMany

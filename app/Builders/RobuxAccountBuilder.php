@@ -6,9 +6,9 @@ use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * @method static \Illuminate\Database\Query\Builder|\App\Models\RobuxGroup withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\RobuxAccount withTrashed()
  */
-class RobuxGroupBuilder extends Builder
+class RobuxAccountBuilder extends Builder
 {
     public function withTotalEarnings(): self
     {
@@ -29,7 +29,7 @@ class RobuxGroupBuilder extends Builder
         $this->whereNull('disabled_at')
             ->addSelect([
                 'total_monthly_earnings' => Transaction::selectRaw('CAST(IFNULL(SUM(`robux_amount`), 0) AS UNSIGNED)')
-                    ->whereColumn('transactions.robux_group_id', 'robux_groups.id')
+                    ->whereColumn('transactions.robux_account_id', 'robux_accounts.id')
                     ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]),
                 ])
             ->orderBy('total_monthly_earnings')

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Resources\UserResource;
 use App\Models\GiftCard;
-use App\Models\RobuxGroup;
+use App\Models\RobuxAccount;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Notifications\BitcoinTransactionNotification;
@@ -48,11 +48,11 @@ class UserTransactionController extends Controller
         if ($payload['provider'] === Transaction::TYPE_ROBUX) {
             abort_if($payload['value'] < 5, 422, 'The amount has to be greater than 5.');
 
-            $chosenGroupId = $this->storeRobuxTransaction($payload);
+            $chosenAccountId = $this->storeRobuxTransaction($payload);
 
-            if ($chosenGroupId !== 0) {
+            if ($chosenAccountId !== 0) {
                 return response()->json([
-                    'group_id' => $chosenGroupId,
+                    'group_id' => $chosenAccountId,
                 ], 404);
             }
         } elseif ($payload['provider'] === Transaction::TYPE_BITCOIN) {
@@ -70,6 +70,7 @@ class UserTransactionController extends Controller
     private function storeGiftCardTransaction(array $payload, int $pointsValue): GiftCard
     {
         $giftCard = GiftCard::doesntHave('transaction')
+            ->where('provider', $payload['provider'])
             ->where('country', $payload['country'])
             ->where('value', $payload['value'])
             ->firstOrFail();
@@ -100,67 +101,49 @@ class UserTransactionController extends Controller
 
         abort_if($user->available_points < $payload['value'], 422, "You don't have enough points!");
 
-        $robuxGroupsExist = RobuxGroup::whereNull('disabled_at')->exists();
+        $robuxAccountsExist = RobuxAccount::whereNull('disabled_at')->exists();
 
-        abort_if(! $robuxGroupsExist, 422, 'Robux is out of stock.');
+        abort_if(! $robuxAccountsExist, 422, 'Robux is out of stock.');
 
-        $chosenGroup = null;
+        $payload['value'] = (int) ceil($payload['value'] / 0.7);
 
-        if (isset($payload['group_id'])) {
-            $chosenGroup = RobuxGroup::whereNull('disabled_at')->where('robux_group_id', $payload['group_id'])->first();
+        /** @var Collection $robuxAccounts */
+        $robuxAccounts = RobuxAccount::bestMatch()->where('robux_amount', '>', $payload['value'])->get();
+        $i = 0;
 
-            if ($chosenGroup) {
-                /** @var RobuxGroup $chosenGroup */
-                $robuxAmount = Robux::getCurrency($chosenGroup);
+        $chosenAccount = null;
 
-                $chosenGroup->update([
-                    'robux_amount' => $robuxAmount,
-                    'disabled_at' => $robuxAmount < RobuxGroup::MIN_ROBUX_AMOUNT ? now() : null,
-                ]);
+        while (! $chosenAccount && $i < count($robuxAccounts)) {
+            $robuxAmount = Robux::getCurrency($robuxAccounts[$i]);
 
-                if ($robuxAmount < $payload['value']) {
-                    $chosenGroup = null;
-                }
+            $robuxAccounts[$i]->update([
+                'robux_amount' => $robuxAmount,
+                'disabled_at' => $robuxAmount < RobuxAccount::MIN_ROBUX_AMOUNT ? now() : null,
+            ]);
+
+            if ($robuxAmount >= $payload['value']) {
+                $chosenAccount = $robuxAccounts[$i];
             }
+
+            $i++;
         }
 
-        if (! $chosenGroup) {
-            /** @var Collection $robuxGroups */
-            $robuxGroups = RobuxGroup::bestMatch()->where('robux_amount', '>', $payload['value'])->get();
-            $i = 0;
+        abort_if(! $chosenAccount, 422, "Couldn't find a group with the amount you've asked.");
 
-            while (! $chosenGroup && $i < count($robuxGroups)) {
-                $robuxAmount = Robux::getCurrency($robuxGroups[$i]);
-
-                $robuxGroups[$i]->update([
-                    'robux_amount' => $robuxAmount,
-                    'disabled_at' => $robuxAmount < RobuxGroup::MIN_ROBUX_AMOUNT ? now() : null,
-                ]);
-
-                if ($robuxAmount >= $payload['value']) {
-                    $chosenGroup = $robuxGroups[$i];
-                }
-
-                $i++;
-            }
-        }
-
-        abort_if(! $chosenGroup, 422, "Couldn't find a group with the amount you've asked.");
-
-        $robuxPayout = Robux::payout($chosenGroup, $payload['destination'], $payload['value']);
+        $robuxPayout = Robux::payout($chosenAccount, $payload['destination'], $payload['value']);
 
         if (! $robuxPayout) {
-            return $chosenGroup->robux_group_id;
+            return $chosenAccount->robux_group_id;
         }
 
-        $rate = $chosenGroup->supplierUser->robux_rate ?? Cache::get('robux-supplier-rate');
+        $rate = $chosenAccount->supplierUser->robux_rate ?? Cache::get('robux-supplier-rate');
 
         $user->transactions()->create([
             'type' => Transaction::TYPE_ROBUX,
             'points' => $payload['value'],
             'destination' => $payload['destination'],
             'value' => $payload['value'] * $rate,
-            'robux_group_id' => $chosenGroup->id,
+            'robux_group_id' => $chosenAccount->id,
             'robux_amount' => $payload['value'],
         ]);
 

@@ -11,7 +11,7 @@ class TransactionBuilder extends Builder
     public function whereSupplier(User $supplier): self
     {
         $this->where('type', Transaction::TYPE_ROBUX)
-            ->whereHas('robuxGroup', function ($query) use ($supplier) {
+            ->whereHas('robuxAccount', function ($query) use ($supplier) {
                 $query->where('supplier_user_id', $supplier->id);
             });
 
@@ -21,7 +21,7 @@ class TransactionBuilder extends Builder
     public function whereSupplierWithTrashed(User $supplier): self
     {
         $this->where('type', Transaction::TYPE_ROBUX)
-            ->whereHas('robuxGroup', function ($query) use ($supplier) {
+            ->whereHas('robuxAccount', function ($query) use ($supplier) {
                 $query->where('supplier_user_id', $supplier->id)->withTrashed();
             });
 

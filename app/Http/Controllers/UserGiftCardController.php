@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\GiftCard;
-use App\Models\RobuxGroup;
+use App\Models\RobuxAccount;
 use App\Services\Bitcoin;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
@@ -18,7 +18,7 @@ class UserGiftCardController extends Controller
             ->get(['country', 'provider', 'value'])
             ->groupBy('provider');
 
-        $robuxGroup = RobuxGroup::whereNull('disabled_at')->exists();
+        $robuxAccount = RobuxAccount::whereNull('disabled_at')->exists();
 
         $stockAmount = (int) optional(Cache::get('bitcoin'))['stock_amount'];
         $bitcoinAmount = (int) Bitcoin::getCurrency();
@@ -27,7 +27,7 @@ class UserGiftCardController extends Controller
 
         return response()->json([
             'gift_cards' => $giftCards,
-            'robux' => $robuxGroup,
+            'robux' => $robuxAccount,
             'bitcoin' => $bitcoinAmount,
         ]);
     }
