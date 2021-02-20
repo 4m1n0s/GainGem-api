@@ -70,6 +70,7 @@ class UserTransactionController extends Controller
     private function storeGiftCardTransaction(array $payload, int $pointsValue): GiftCard
     {
         $giftCard = GiftCard::doesntHave('transaction')
+            ->where('provider', $payload['provider'])
             ->where('country', $payload['country'])
             ->where('value', $payload['value'])
             ->firstOrFail();
