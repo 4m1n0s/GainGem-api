@@ -8,7 +8,7 @@ use App\Services\Robux;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 
-class RobuxPlaceController extends Controller
+class RobuxGameController extends Controller
 {
     public function index(IndexRobuxPlaceRequest $request): JsonResponse
     {
@@ -20,15 +20,15 @@ class RobuxPlaceController extends Controller
 
         abort_if($user->available_points < $payload['value'], 422, "You don't have enough points!");
 
-        $places = collect(Robux::getPlacesByUsername($payload['username'])['data']);
-        $placesIds = $places->pluck('rootPlace.id')->toArray();
+        $games = Robux::getGamesByUsername($payload['username'])['data'];
+        $placesIds = collect($games)->pluck('rootPlace.id')->toArray();
         $thumbnails = Robux::getPlacesIconsByIds($placesIds)['data'];
 
-        foreach ($thumbnails as &$thumbnail) {
-            $place = Arr::first(Arr::where($places->toArray(), static fn ($place) => $place['rootPlace']['id'] === $thumbnail['targetId']));
-            $thumbnail['name'] = $place['name'];
+        foreach ($games as &$game) {
+            $thumbnail = Arr::first(Arr::where($thumbnails, static fn ($thumbnail) => $thumbnail['targetId'] === $game['rootPlace']['id']));
+            $game['rootPlace']['imageUrl'] = $thumbnail['imageUrl'];
         }
 
-        return response()->json($thumbnails);
+        return response()->json($games);
     }
 }

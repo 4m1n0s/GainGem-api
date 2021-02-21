@@ -18,10 +18,10 @@ class TransactionSeeder extends Seeder
     public function run()
     {
         $user = User::first();
-        $robuxGroup = RobuxAccount::first();
-        $secondRobuxGroup = RobuxAccount::skip(1)->first();
+        $robuxAccount = RobuxAccount::first();
+        $secondRobuxAccount = RobuxAccount::skip(1)->first();
 
-        if (! $user || ! $robuxGroup || ! $secondRobuxGroup) {
+        if (! $user || ! $robuxAccount || ! $secondRobuxAccount) {
             return;
         }
 
@@ -32,7 +32,7 @@ class TransactionSeeder extends Seeder
             'type' => Transaction::TYPE_ROBUX,
             'points' => 10,
             'value' => 10 * $rate,
-            'robux_group_id' => $robuxGroup->id,
+            'robux_account_id' => $robuxAccount->id,
             'robux_amount' => 10,
         ]);
 
@@ -41,7 +41,7 @@ class TransactionSeeder extends Seeder
             'type' => Transaction::TYPE_ROBUX,
             'points' => 5,
             'value' => 5 * $rate,
-            'robux_group_id' => $secondRobuxGroup->id,
+            'robux_account_id' => $secondRobuxAccount->id,
             'robux_amount' => 5,
         ]);
     }

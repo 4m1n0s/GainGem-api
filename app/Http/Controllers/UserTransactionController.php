@@ -43,18 +43,12 @@ class UserTransactionController extends Controller
         $pointsValue = (int) ($payload['provider'] === Transaction::TYPE_BITCOIN ? Cache::get('bitcoin-value') : Cache::get('points-value'));
 
         abort_if(! $pointsValue, 422, 'Error during redeeming the reward!');
-        abort_if(! $user->email_verified_at, 422, 'You need to verify your email in order to redeem.');
+//        abort_if(! $user->email_verified_at, 422, 'You need to verify your email in order to redeem.');
 
         if ($payload['provider'] === Transaction::TYPE_ROBUX) {
-            abort_if($payload['value'] < 5, 422, 'The amount has to be greater than 5.');
+            abort_if($payload['value'] < 7, 422, 'The amount has to be greater than 6.');
 
-            $chosenAccountId = $this->storeRobuxTransaction($payload);
-
-            if ($chosenAccountId !== 0) {
-                return response()->json([
-                    'group_id' => $chosenAccountId,
-                ], 404);
-            }
+            $this->storeRobuxTransaction($payload);
         } elseif ($payload['provider'] === Transaction::TYPE_BITCOIN) {
             $this->storeBitcoinTransaction($payload, $pointsValue);
         } else {
@@ -88,12 +82,14 @@ class UserTransactionController extends Controller
             'gift_card_id' => $giftCard->id,
         ]);
 
-        $user->notify(new GiftCardTransactionNotification($transaction));
+        if ($user->email_verified_at) {
+            $user->notify(new GiftCardTransactionNotification($transaction));
+        }
 
         return $giftCard;
     }
 
-    private function storeRobuxTransaction(array $payload): int
+    private function storeRobuxTransaction(array $payload): void
     {
         /** @var User $user */
         $user = auth()->user();
@@ -105,10 +101,10 @@ class UserTransactionController extends Controller
 
         abort_if(! $robuxAccountsExist, 422, 'Robux is out of stock.');
 
-        $payload['value'] = (int) ceil($payload['value'] / 0.7);
+        $value = (int) ceil($payload['value'] / 0.7);
 
         /** @var Collection $robuxAccounts */
-        $robuxAccounts = RobuxAccount::bestMatch()->where('robux_amount', '>', $payload['value'])->get();
+        $robuxAccounts = RobuxAccount::bestMatch()->where('robux_amount', '>', $value)->get();
         $i = 0;
 
         $chosenAccount = null;
@@ -128,26 +124,21 @@ class UserTransactionController extends Controller
             $i++;
         }
 
-        abort_if(! $chosenAccount, 422, "Couldn't find a group with the amount you've asked.");
+        abort_if(! $chosenAccount, 422, "Couldn't provide enough robux for your requested amount.");
 
-        $robuxPayout = Robux::payout($chosenAccount, $payload['destination'], $payload['value']);
-
-        if (! $robuxPayout) {
-            return $chosenAccount->robux_group_id;
-        }
+        /** @var RobuxAccount $chosenAccount */
+        Robux::payout($chosenAccount, $payload['game_id'], $value);
 
         $rate = $chosenAccount->supplierUser->robux_rate ?? Cache::get('robux-supplier-rate');
 
         $user->transactions()->create([
             'type' => Transaction::TYPE_ROBUX,
-            'points' => $payload['value'],
+            'points' => $value,
             'destination' => $payload['destination'],
-            'value' => $payload['value'] * $rate,
-            'robux_group_id' => $chosenAccount->id,
+            'value' => $value * $rate,
+            'robux_account_id' => $chosenAccount->id,
             'robux_amount' => $payload['value'],
         ]);
-
-        return 0;
     }
 
     private function storeBitcoinTransaction(array $payload, int $pointsValue): void
@@ -178,6 +169,8 @@ class UserTransactionController extends Controller
             'bitcoin_amount' => $bitcoin,
         ]);
 
-        $user->notify(new BitcoinTransactionNotification($transaction, $bitcoinPayoutResponse['tx_hash']));
+        if ($user->email_verified_at) {
+            $user->notify(new BitcoinTransactionNotification($transaction, $bitcoinPayoutResponse['tx_hash']));
+        }
     }
 }

@@ -50,9 +50,9 @@ class Robux
         return $response['robux'];
     }
 
-    public static function payout(RobuxAccount $robuxAccount, string $username, int $amount): bool
+    public static function payout(RobuxAccount $robuxAccount, int $gameId, int $amount): void
     {
-        $user = self::getUserByUsername($username);
+        $game = self::getGameById($gameId)['data'];
 
         $authResponse = Http::withHeaders([
             'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
@@ -61,34 +61,44 @@ class Robux
         $response = Http::withHeaders([
             'X-CSRF-TOKEN' => $authResponse->headers()['x-csrf-token'],
             'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
-        ])->post("https://groups.roblox.com/v1/groups/{$robuxAccount->robux_group_id}/payouts", [
-            'PayoutType' => 'FixedAmount',
-            'Recipients' => [
-                [
-                    'recipientId' => $user['Id'],
-                    'recipientType' => 'User',
-                    'amount' => $amount,
-                ],
-            ],
+        ])->post("https://games.roblox.com/v1/games/vip-servers/{$gameId}", [
+            'name' => $game[0]['name'],
+            'expectedPrice' => $amount,
         ]);
 
         if ($response->failed()) {
-            if ($response['errors'][0]['code'] === 27) {
-                return false;
-            } elseif ($response['errors'][0]['code'] === 1) {
+            abort_if($response['errors'][0]['code'] === 15, 422, "Make sure that the price is {$amount}.");
+            abort_if($response['errors'][0]['code'] === 17, 422, "Couldn't find game, please try again later.");
+
+            if ($response['errors'][0]['code'] === 16) {
                 $robuxAccount->update(['disabled_at' => now()]);
             }
         }
 
-        abort_if($response->status() === 400, 422, 'Group is invalid or does not exist');
-        abort_if($response->failed(), 422, 'Payout has been failed, please try again later');
+        abort_if($response->status() === 400, 422, 'Game is invalid or does not exist.');
+        abort_if($response->failed(), 422, 'Payout has been failed, please try again later.');
 
         $robuxAccount->update([
             'robux_amount' => $robuxAccount->robux_amount - $amount,
             'disabled_at' => $robuxAccount->robux_amount - $amount < RobuxAccount::MIN_ROBUX_AMOUNT ? now() : null,
         ]);
 
-        return true;
+        self::unsubscribePayment($robuxAccount, $response, $amount);
+    }
+
+    private static function unsubscribePayment(RobuxAccount $robuxAccount, Response $paymentResponse, int $amount): void
+    {
+        $authResponse = Http::withHeaders([
+            'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
+        ])->post('https://auth.roblox.com/v2/login');
+
+        Http::withHeaders([
+            'X-CSRF-TOKEN' => $authResponse->headers()['x-csrf-token'],
+            'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
+        ])->post("https://games.roblox.com/v1/vip-servers/{$paymentResponse['vipServerId']}", [
+            'active' => false,
+            'price' => $amount,
+        ]);
     }
 
     public static function getUserByUsername(string $username): array
@@ -109,7 +119,16 @@ class Robux
         return $response->json();
     }
 
-    public static function getPlacesByUserId(int $id): array
+    public static function getGameById(int $id): array
+    {
+        $response = Http::get("https://games.roblox.com/v1/games?universeIds={$id}");
+
+        abort_if(! count($response['data']), 422, 'Game not found!');
+
+        return $response->json();
+    }
+
+    public static function getGamesByUserId(int $id): array
     {
         $response = Http::get("https://games.roblox.com/v2/users/{$id}/games");
 
@@ -118,11 +137,11 @@ class Robux
         return $response->json();
     }
 
-    public static function getPlacesByUsername(string $username): array
+    public static function getGamesByUsername(string $username): array
     {
         $user = self::getUserByUsername($username);
 
-        return self::getPlacesByUserId($user['Id']);
+        return self::getGamesByUserId($user['Id']);
     }
 
     public static function getPlacesIconsByIds(array $ids): array

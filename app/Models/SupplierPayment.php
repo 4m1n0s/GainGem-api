@@ -50,7 +50,6 @@ class SupplierPayment extends Model
     const METHOD_PAYPAL = 'paypal';
 
     protected $fillable = [
-        'robux_group_id',
         'method',
         'destination',
         'value',

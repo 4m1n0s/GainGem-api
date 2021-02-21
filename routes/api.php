@@ -20,7 +20,7 @@ use App\Http\Controllers\ResendGiftCardTransactionMailController;
 use App\Http\Controllers\ResendVerificationController;
 use App\Http\Controllers\RobuxAccountController;
 use App\Http\Controllers\RobuxAccountDisabilityController;
-use App\Http\Controllers\RobuxPlaceController;
+use App\Http\Controllers\RobuxGameController;
 use App\Http\Controllers\RobuxSupplierRateController;
 use App\Http\Controllers\SocialMediaTaskController;
 use App\Http\Controllers\StatsController;
@@ -108,7 +108,7 @@ Route::group(['middleware' => 'auth:api'], static function () {
         Route::post('{giftCardTransaction}/mails', [ResendGiftCardTransactionMailController::class, 'store']);
     });
 
-    Route::get('robux-places', [RobuxPlaceController::class, 'index']);
+    Route::get('robux-games', [RobuxGameController::class, 'index']);
 
     Route::group(['prefix' => 'bitcoin'], static function () {
         Route::get('', [BitcoinController::class, 'index'])->middleware('role:super_admin');
