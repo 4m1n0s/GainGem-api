@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $robux_group_id
+ * @property int|null $robux_account_id
  * @property int|null $robux_amount
  * @property string|null $bitcoin_amount
  * @property \Illuminate\Support\Carbon|null $emailed_at
@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read string|null $formatted_provider
  * @property-read bool $has_emailed_in_the_last_hour
  * @property-read \App\Models\GiftCard|null $giftCard
- * @property-read \App\Models\RobuxGroup|null $robuxGroup
+ * @property-read \App\Models\RobuxAccount|null $robuxAccount
  * @property-read \App\Models\User $user
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction newModelQuery()
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction newQuery()
@@ -39,8 +39,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereGiftCardId($value)
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereId($value)
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction wherePoints($value)
+ * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereRobuxAccountId($value)
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereRobuxAmount($value)
- * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereRobuxGroupId($value)
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereSupplier(\App\Models\User $supplier)
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereSupplierWithTrashed(\App\Models\User $supplier)
  * @method static \App\Builders\TransactionBuilder|\App\Models\Transaction whereType($value)
@@ -64,7 +64,7 @@ class Transaction extends Model
         'gift_card_id',
         'destination',
         'value',
-        'robux_group_id',
+        'robux_account_id',
         'robux_amount',
         'bitcoin_amount',
         'emailed_at',
@@ -95,9 +95,9 @@ class Transaction extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function robuxGroup(): BelongsTo
+    public function robuxAccount(): BelongsTo
     {
-        return $this->belongsTo(RobuxGroup::class);
+        return $this->belongsTo(RobuxAccount::class);
     }
 
     public function isTypeGiftCard(): bool

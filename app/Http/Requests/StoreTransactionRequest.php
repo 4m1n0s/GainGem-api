@@ -40,8 +40,10 @@ class StoreTransactionRequest extends FormRequest
             if ($this->input('provider') === Transaction::TYPE_BITCOIN) {
                 $rules['destination'][] = new BitcoinAddress;
             } else {
-                $rules['group_id'] = [
+                $rules['game_id'] = [
+                    'required',
                     'integer',
+                    'min:1',
                 ];
             }
 

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Builders\RobuxGroupBuilder;
+use App\Builders\RobuxAccountBuilder;
 use App\Casts\Encrypt;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,14 +12,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 
 /**
- * App\Models\RobuxGroup.
+ * App\Models\RobuxAccount
  *
  * @property int $id
  * @property int $supplier_user_id
+ * @property int $robux_account_id
+ * @property string $robux_account_username
  * @property string $cookie
- * @property int $robux_group_id
- * @property int $robux_owner_id
- * @property string $robux_owner_username
  * @property int $robux_amount
  * @property \Illuminate\Support\Carbon|null $disabled_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -33,29 +32,28 @@ use Illuminate\Support\Arr;
  * @property-read \App\Models\User $supplierUser
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
  * @property-read int|null $transactions_count
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup bestMatch()
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup newModelQuery()
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup newQuery()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\RobuxGroup onlyTrashed()
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup query()
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereCookie($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereCreatedAt($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereDeletedAt($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereDisabledAt($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereId($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxAmount($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxGroupId($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxOwnerId($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereRobuxOwnerUsername($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereSupplierUserId($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup whereUpdatedAt($value)
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup withTotalEarnings()
- * @method static \App\Builders\RobuxGroupBuilder|\App\Models\RobuxGroup withTotalWithdrawn()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\RobuxGroup withTrashed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\RobuxGroup withoutTrashed()
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount bestMatch()
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount newModelQuery()
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount newQuery()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\RobuxAccount onlyTrashed()
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount query()
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereCookie($value)
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereCreatedAt($value)
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereDeletedAt($value)
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereDisabledAt($value)
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereId($value)
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereRobuxAccountId($value)
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereRobuxAccountUsername($value)
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereRobuxAmount($value)
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereSupplierUserId($value)
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereUpdatedAt($value)
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount withTotalEarnings()
+ * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount withTotalWithdrawn()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\RobuxAccount withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\RobuxAccount withoutTrashed()
  * @mixin \Eloquent
  */
-class RobuxGroup extends Model
+class RobuxAccount extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -64,9 +62,8 @@ class RobuxGroup extends Model
     protected $fillable = [
         'supplier_user_id',
         'cookie',
-        'robux_group_id',
-        'robux_owner_id',
-        'robux_owner_username',
+        'robux_account_id',
+        'robux_account_username',
         'robux_amount',
         'rate',
         'disabled_at',
@@ -87,7 +84,7 @@ class RobuxGroup extends Model
 
     public function newEloquentBuilder($query)
     {
-        return new RobuxGroupBuilder($query);
+        return new RobuxAccountBuilder($query);
     }
 
     public function supplierUser(): BelongsTo

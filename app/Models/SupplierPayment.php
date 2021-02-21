@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read string $formatted_method
  * @property-read string $formatted_status
  * @property-read string $formatted_value
- * @property-read \App\Models\RobuxGroup $robuxGroup
+ * @property-read \App\Models\RobuxAccount $robuxAccount
  * @property-read \App\Models\User $supplierUser
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SupplierPayment newQuery()
@@ -50,7 +50,6 @@ class SupplierPayment extends Model
     const METHOD_PAYPAL = 'paypal';
 
     protected $fillable = [
-        'robux_group_id',
         'method',
         'destination',
         'value',
@@ -69,9 +68,9 @@ class SupplierPayment extends Model
         'value' => 'float',
     ];
 
-    public function robuxGroup(): BelongsTo
+    public function robuxAccount(): BelongsTo
     {
-        return $this->belongsTo(RobuxGroup::class);
+        return $this->belongsTo(RobuxAccount::class);
     }
 
     public function supplierUser(): BelongsTo
