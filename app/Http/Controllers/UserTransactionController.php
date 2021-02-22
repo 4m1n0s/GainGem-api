@@ -133,11 +133,11 @@ class UserTransactionController extends Controller
 
         $user->transactions()->create([
             'type' => Transaction::TYPE_ROBUX,
-            'points' => $value,
+            'points' => $payload['value'],
             'destination' => $payload['destination'],
             'value' => $value * $rate,
             'robux_account_id' => $chosenAccount->id,
-            'robux_amount' => $payload['value'],
+            'robux_amount' => $value,
         ]);
     }
 
