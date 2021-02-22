@@ -66,6 +66,8 @@ class Robux
             'expectedPrice' => $amount,
         ]);
 
+        dump($response->json());
+
         if ($response->failed()) {
             abort_if($response['errors'][0]['code'] === 15, 422, "Make sure that the price is {$amount}.");
             abort_if($response['errors'][0]['code'] === 17, 422, "Couldn't find game, please try again later.");
