@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Jobs\RandomGiveawayWinnerJob;
+use App\Jobs\RefreshRobuxAccountJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -17,6 +18,10 @@ class Kernel extends ConsoleKernel
         $schedule->job(new RandomGiveawayWinnerJob)
             ->hourly()
             ->description('Pick a random winner to the latest giveaway and create a new one');
+
+        $schedule->job(new RefreshRobuxAccountJob)
+            ->everyTenMinutes()
+            ->description('Refresh required robux accounts.');
     }
 
     protected function commands(): void

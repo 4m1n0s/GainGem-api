@@ -115,6 +115,7 @@ class UserTransactionController extends Controller
             $robuxAccounts[$i]->update([
                 'robux_amount' => $robuxAmount,
                 'disabled_at' => $robuxAmount < RobuxAccount::MIN_ROBUX_AMOUNT ? now() : null,
+                'refresh_at' => $robuxAmount < RobuxAccount::MIN_ROBUX_AMOUNT ? now()->addMinutes(10) : null,
             ]);
 
             if ($robuxAmount >= $payload['value']) {

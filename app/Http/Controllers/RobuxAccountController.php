@@ -22,7 +22,7 @@ class RobuxAccountController extends Controller
 
         if (! isset($payload['user_id'])) {
             /** @var Collection $robuxAccounts */
-            $robuxAccounts = RobuxAccount::withTotalWithdrawn()->orderByDesc('id')->paginate(10);
+            $robuxAccounts = RobuxAccount::withTotalWithdrawn()->with('supplierUser:id,username')->orderByDesc('id')->paginate(10);
 
             $robuxAccountsArr = $robuxAccounts->append(['formatted_total_withdrawn', 'formatted_disabled_at']);
 

@@ -11,7 +11,10 @@ class RobuxAccountDisabilityController extends Controller
     {
         abort_if((bool) $robuxAccount->disabled_at, 422, 'Account is already disabled');
 
-        $robuxAccount->update(['disabled_at' => now()]);
+        $robuxAccount->update([
+            'disabled_at' => now(),
+            'refresh_at' => null,
+        ]);
 
         return response()->json($robuxAccount->append('formatted_disabled_at')->only('disabled_at', 'formatted_disabled_at'));
     }

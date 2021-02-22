@@ -66,14 +66,15 @@ class Robux
             'expectedPrice' => $amount,
         ]);
 
-        dump($response->json());
-
         if ($response->failed()) {
             abort_if($response['errors'][0]['code'] === 15, 422, "Make sure that the price is {$amount}.");
             abort_if($response['errors'][0]['code'] === 17, 422, "Couldn't find game, please try again later.");
 
             if ($response['errors'][0]['code'] === 16) {
-                $robuxAccount->update(['disabled_at' => now()]);
+                $robuxAccount->update([
+                    'disabled_at' => now(),
+                    'refresh_at' => now()->addMinutes(10),
+                ]);
             }
         }
 
