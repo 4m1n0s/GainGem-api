@@ -95,7 +95,7 @@ class Robux
         Http::withHeaders([
             'X-CSRF-TOKEN' => $authResponse->headers()['x-csrf-token'],
             'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
-        ])->post("https://games.roblox.com/v1/vip-servers/{$paymentResponse['vipServerId']}/subscription", [
+        ])->patch("https://games.roblox.com/v1/vip-servers/{$paymentResponse['vipServerId']}/subscription", [
             'active' => false,
             'price' => $amount,
         ]);
