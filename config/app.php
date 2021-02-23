@@ -4,6 +4,7 @@ return [
 
     'robux_group_cookie' => env('ROBUX_GROUP_COOKIE'),
     'admin_mail' => env('ADMIN_MAIL'),
+    'proxy_url' => env('PROXY_URL'),
 
     /*
     |--------------------------------------------------------------------------

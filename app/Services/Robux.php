@@ -8,30 +8,17 @@ use Illuminate\Support\Facades\Http;
 
 class Robux
 {
-    public static function getUserByGroupId(int $groupId): array
-    {
-        $response = Http::get("https://groups.roblox.com/v1/groups/{$groupId}");
-
-        abort_if($response->failed(), 422, isset($response['errors']) ? $response['errors'][0]['message'] : 'Group not found!');
-
-        return $response['owner'];
-    }
-
-    public static function getGroupSettingsResponse(string $cookie, int $groupId): Response
-    {
-        return Http::withHeaders([
-            'cookie' => '.ROBLOSECURITY='.$cookie,
-        ])->get("https://groups.roblox.com/v1/groups/{$groupId}/settings");
-    }
-
     /**
      * @param RobuxAccount|array $robuxAccount
      * @return Response
      */
     public static function getCurrencyResponse($robuxAccount): Response
     {
-        return Http::withHeaders([
-            'cookie' => '.ROBLOSECURITY='.$robuxAccount['cookie'],
+        return Http::withOptions([
+            'proxy' => config('app.proxy_url'),
+            'headers' => [
+                'cookie' => '.ROBLOSECURITY='.$robuxAccount['cookie'],
+            ],
         ])->get("https://economy.roblox.com/v1/users/{$robuxAccount['robux_account_id']}/currency");
     }
 
@@ -54,13 +41,19 @@ class Robux
     {
         $game = self::getGameById($gameId)['data'];
 
-        $authResponse = Http::withHeaders([
-            'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
+        $authResponse = Http::withOptions([
+            'proxy' => config('app.proxy_url'),
+            'headers' => [
+                'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
+            ],
         ])->post('https://auth.roblox.com/v2/login');
 
-        $response = Http::withHeaders([
-            'X-CSRF-TOKEN' => $authResponse->headers()['x-csrf-token'],
-            'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
+        $response = Http::withOptions([
+            'proxy' => config('app.proxy_url'),
+            'headers' => [
+                'X-CSRF-TOKEN' => $authResponse->headers()['x-csrf-token'],
+                'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
+            ],
         ])->post("https://games.roblox.com/v1/games/vip-servers/{$gameId}", [
             'name' => $game[0]['name'],
             'expectedPrice' => $amount,
@@ -91,13 +84,19 @@ class Robux
 
     private static function unsubscribePayment(RobuxAccount $robuxAccount, Response $paymentResponse, int $amount): void
     {
-        $authResponse = Http::withHeaders([
-            'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
+        $authResponse = Http::withOptions([
+            'proxy' => config('app.proxy_url'),
+            'headers' => [
+                'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
+            ],
         ])->post('https://auth.roblox.com/v2/login');
 
-        Http::withHeaders([
-            'X-CSRF-TOKEN' => $authResponse->headers()['x-csrf-token'],
-            'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
+        Http::withOptions([
+            'proxy' => config('app.proxy_url'),
+            'headers' => [
+                'X-CSRF-TOKEN' => $authResponse->headers()['x-csrf-token'],
+                'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
+            ],
         ])->patch("https://games.roblox.com/v1/vip-servers/{$paymentResponse['vipServerId']}/subscription", [
             'active' => false,
             'price' => $amount,
@@ -124,7 +123,9 @@ class Robux
 
     public static function getGameById(int $id): array
     {
-        $response = Http::get("https://games.roblox.com/v1/games?universeIds={$id}");
+        $response = Http::withOptions([
+            'proxy' => config('app.proxy_url'),
+        ])->get("https://games.roblox.com/v1/games?universeIds={$id}");
 
         abort_if(! count($response['data']), 422, 'Game not found!');
 
@@ -133,7 +134,9 @@ class Robux
 
     public static function getGamesByUserId(int $id): array
     {
-        $response = Http::get("https://games.roblox.com/v2/users/{$id}/games");
+        $response = Http::withOptions([
+            'proxy' => config('app.proxy_url'),
+        ])->get("https://games.roblox.com/v2/users/{$id}/games");
 
         abort_if(! count($response['data']), 404, 'No places found!');
 
