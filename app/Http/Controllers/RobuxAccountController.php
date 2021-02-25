@@ -10,9 +10,11 @@ use App\Models\User;
 use App\Services\Robux;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Client\Response;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class RobuxAccountController extends Controller
 {
@@ -80,12 +82,21 @@ class RobuxAccountController extends Controller
         $payload = $request->validated();
 
         $robuxUser = Robux::getUserById($payload['robux_account_id']);
-        $robuxAccountCurrencyResponse = Robux::getCurrencyResponse([
-            'robux_account_id' => $payload['robux_account_id'],
-            'cookie' => $payload['cookie'],
-        ]);
 
-        abort_if($robuxAccountCurrencyResponse->failed(), 422, isset($robuxAccountCurrencyResponse['errors']) ? $robuxAccountCurrencyResponse['errors'][0]['message'] : 'Invalid cookie or wrong account id!');
+        try {
+            $robuxAccountCurrencyResponse = Robux::getCurrencyResponse([
+                'robux_account_id' => $payload['robux_account_id'],
+                'cookie' => $payload['cookie'],
+            ]);
+        } catch (RequestException $exception) {
+            Log::error('Get currency failed', [
+                'robux_account_id' => $payload['robux_account_id'],
+                'response' => $exception->response->json(),
+                'status' => $exception->response->status(),
+            ]);
+
+            throw new HttpException(422, isset($exception->response['errors']) ? $exception->response['errors'][0]['message'] : 'Invalid cookie or wrong account id!');
+        }
 
         $robuxAccountCurrency = $robuxAccountCurrencyResponse['robux'];
 

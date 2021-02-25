@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.4",
+        "ext-bcmath": "*",
         "ext-json": "*",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
@@ -20,9 +21,10 @@
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "^4.1",
         "samayo/country-json": "^1.1",
+        "sentry/sentry-laravel": "^2.3",
         "skydiver/laravel-route-blocker": "^1.5",
-        "tymon/jwt-auth": "^1.0",
-        "ext-bcmath": "*"
+        "spatie/laravel-queueable-action": "^2.10",
+        "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.8",
@@ -66,7 +68,9 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
             "@php artisan ide-helper:generate",
-            "@php artisan ide-helper:meta"
+            "@php artisan ide-helper:meta",
+            "php artisan telescope:publish",
+            "php artisan horizon:publish"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

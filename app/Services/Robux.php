@@ -2,15 +2,19 @@
 
 namespace App\Services;
 
+use App\Jobs\RefreshRobuxAccountJob;
 use App\Models\RobuxAccount;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class Robux
 {
     /**
      * @param RobuxAccount|array $robuxAccount
      * @return Response
+     * @throws RequestException
      */
     public static function getCurrencyResponse($robuxAccount): Response
     {
@@ -19,7 +23,7 @@ class Robux
             'headers' => [
                 'cookie' => '.ROBLOSECURITY='.$robuxAccount['cookie'],
             ],
-        ])->get("https://economy.roblox.com/v1/users/{$robuxAccount['robux_account_id']}/currency");
+        ])->get("https://economy.roblox.com/v1/users/{$robuxAccount['robux_account_id']}/currency")->throw();
     }
 
     /**
@@ -28,79 +32,21 @@ class Robux
      */
     public static function getCurrency($robuxAccount): int
     {
-        $response = self::getCurrencyResponse($robuxAccount);
+        try {
+            $response = self::getCurrencyResponse($robuxAccount);
+        } catch (RequestException $exception) {
+            Log::error('Get currency failed', [
+                'robux_account_id' => $robuxAccount['id'],
+                'response' => $exception->response->json(),
+                'status' => $exception->response->status(),
+            ]);
 
-        if ($response->failed()) {
+            RefreshRobuxAccountJob::dispatch($robuxAccount);
+
             return 0;
         }
 
         return $response['robux'];
-    }
-
-    public static function payout(RobuxAccount $robuxAccount, int $gameId, int $amount): void
-    {
-        $game = self::getGameById($gameId)['data'];
-
-        $authResponse = Http::withOptions([
-            'proxy' => config('app.proxy_url'),
-            'headers' => [
-                'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
-            ],
-        ])->post('https://auth.roblox.com/v2/login');
-
-        $response = Http::withOptions([
-            'proxy' => config('app.proxy_url'),
-            'headers' => [
-                'X-CSRF-TOKEN' => $authResponse->headers()['x-csrf-token'],
-                'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
-            ],
-        ])->post("https://games.roblox.com/v1/games/vip-servers/{$gameId}", [
-            'name' => $game[0]['name'],
-            'expectedPrice' => $amount,
-        ]);
-
-        if ($response->failed()) {
-            abort_if($response['errors'][0]['code'] === 15, 422, "Make sure that the price is {$amount}.");
-            abort_if($response['errors'][0]['code'] === 17, 422, "Couldn't find game, please try again later.");
-
-            if ($response['errors'][0]['code'] === 16) {
-                $robuxAccount->update([
-                    'disabled_at' => now(),
-                    'refresh_at' => now()->addMinutes(10),
-                ]);
-            }
-        }
-
-        abort_if($response->status() === 400, 422, 'Game is invalid or does not exist.');
-        abort_if($response->failed(), 422, 'Payout has been failed, please try again later.');
-
-        $robuxAccount->update([
-            'robux_amount' => $robuxAccount->robux_amount - $amount,
-            'disabled_at' => $robuxAccount->robux_amount - $amount < RobuxAccount::MIN_ROBUX_AMOUNT ? now() : null,
-        ]);
-
-        self::unsubscribePayment($robuxAccount, $response, $amount);
-    }
-
-    private static function unsubscribePayment(RobuxAccount $robuxAccount, Response $paymentResponse, int $amount): void
-    {
-        $authResponse = Http::withOptions([
-            'proxy' => config('app.proxy_url'),
-            'headers' => [
-                'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
-            ],
-        ])->post('https://auth.roblox.com/v2/login');
-
-        Http::withOptions([
-            'proxy' => config('app.proxy_url'),
-            'headers' => [
-                'X-CSRF-TOKEN' => $authResponse->headers()['x-csrf-token'],
-                'cookie' => '.ROBLOSECURITY='.$robuxAccount->cookie,
-            ],
-        ])->patch("https://games.roblox.com/v1/vip-servers/{$paymentResponse['vipServerId']}/subscription", [
-            'active' => false,
-            'price' => $amount,
-        ]);
     }
 
     public static function getUserByUsername(string $username): array
@@ -121,17 +67,6 @@ class Robux
         return $response->json();
     }
 
-    public static function getGameById(int $id): array
-    {
-        $response = Http::withOptions([
-            'proxy' => config('app.proxy_url'),
-        ])->get("https://games.roblox.com/v1/games?universeIds={$id}");
-
-        abort_if(! count($response['data']), 422, 'Game not found!');
-
-        return $response->json();
-    }
-
     public static function getGamesByUserId(int $id): array
     {
         $response = Http::withOptions([
@@ -147,7 +82,7 @@ class Robux
     {
         $user = self::getUserByUsername($username);
 
-        return self::getGamesByUserId($user['Id']);
+        return self::getGamesByUserId($user['Id'])['data'];
     }
 
     public static function getPlacesIconsByIds(array $ids): array
@@ -157,6 +92,6 @@ class Robux
 
         abort_if($response->failed(), 422, 'No places found!');
 
-        return $response->json();
+        return $response->json()['data'];
     }
 }

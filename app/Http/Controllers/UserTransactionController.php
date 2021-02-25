@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Domains\Robux\Actions\GetRelevantAccountAction;
+use App\Domains\Robux\Actions\PayoutAction;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Resources\UserResource;
 use App\Models\GiftCard;
@@ -11,8 +13,6 @@ use App\Models\User;
 use App\Notifications\BitcoinTransactionNotification;
 use App\Notifications\GiftCardTransactionNotification;
 use App\Services\Bitcoin;
-use App\Services\Robux;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 
@@ -93,6 +93,7 @@ class UserTransactionController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
+
         $user->loadAvailablePoints();
 
         abort_if($user->available_points < $payload['value'], 422, "You don't have enough points!");
@@ -103,41 +104,20 @@ class UserTransactionController extends Controller
 
         $value = (int) ceil($payload['value'] / 0.7);
 
-        /** @var Collection $robuxAccounts */
-        $robuxAccounts = RobuxAccount::bestMatch()->where('robux_amount', '>', $value)->get();
-        $i = 0;
+        $robuxAccount = (new GetRelevantAccountAction)->execute($value);
 
-        $chosenAccount = null;
+        abort_if(! $robuxAccount, 422, "Couldn't provide enough robux for your requested amount.");
 
-        while (! $chosenAccount && $i < count($robuxAccounts)) {
-            $robuxAmount = Robux::getCurrency($robuxAccounts[$i]);
+        (new PayoutAction)->execute($robuxAccount, $payload['game_id'], $value);
 
-            $robuxAccounts[$i]->update([
-                'robux_amount' => $robuxAmount,
-                'disabled_at' => $robuxAmount < RobuxAccount::MIN_ROBUX_AMOUNT ? now() : null,
-                'refresh_at' => $robuxAmount < RobuxAccount::MIN_ROBUX_AMOUNT ? now()->addMinutes(10) : null,
-            ]);
-
-            if ($robuxAmount >= $payload['value']) {
-                $chosenAccount = $robuxAccounts[$i];
-            }
-
-            $i++;
-        }
-
-        abort_if(! $chosenAccount, 422, "Couldn't provide enough robux for your requested amount.");
-
-        /** @var RobuxAccount $chosenAccount */
-        Robux::payout($chosenAccount, $payload['game_id'], $value);
-
-        $rate = $chosenAccount->supplierUser->robux_rate ?? Cache::get('robux-supplier-rate');
+        $rate = $robuxAccount->supplierUser->robux_rate ?? Cache::get('robux-supplier-rate');
 
         $user->transactions()->create([
             'type' => Transaction::TYPE_ROBUX,
             'points' => $payload['value'],
             'destination' => $payload['destination'],
             'value' => $value * $rate,
-            'robux_account_id' => $chosenAccount->id,
+            'robux_account_id' => $robuxAccount->id,
             'robux_amount' => $value,
         ]);
     }

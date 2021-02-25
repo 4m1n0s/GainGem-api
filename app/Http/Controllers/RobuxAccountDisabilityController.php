@@ -13,7 +13,6 @@ class RobuxAccountDisabilityController extends Controller
 
         $robuxAccount->update([
             'disabled_at' => now(),
-            'refresh_at' => null,
         ]);
 
         return response()->json($robuxAccount->append('formatted_disabled_at')->only('disabled_at', 'formatted_disabled_at'));

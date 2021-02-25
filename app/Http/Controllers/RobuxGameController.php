@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\IndexRobuxPlaceRequest;
 use App\Models\User;
 use App\Services\Robux;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class RobuxGameController extends Controller
 {
-    public function index(IndexRobuxPlaceRequest $request): JsonResponse
+    public function index(IndexRobuxPlaceRequest $request): Collection
     {
         $payload = $request->validated();
 
@@ -20,15 +19,14 @@ class RobuxGameController extends Controller
 
         abort_if($user->available_points < $payload['value'], 422, "You don't have enough points!");
 
-        $games = Robux::getGamesByUsername($payload['username'])['data'];
-        $placesIds = collect($games)->pluck('rootPlace.id')->toArray();
-        $thumbnails = Robux::getPlacesIconsByIds($placesIds)['data'];
+        $games = collect(Robux::getGamesByUsername($payload['username']));
+        $thumbnails = collect(Robux::getPlacesIconsByIds($games->pluck('rootPlace.id')->all()));
 
-        foreach ($games as &$game) {
-            $thumbnail = Arr::first(Arr::where($thumbnails, static fn ($thumbnail) => $thumbnail['targetId'] === $game['rootPlace']['id']));
+        return $games->map(static function (array $game) use ($thumbnails): array {
+            $thumbnail = $thumbnails->firstWhere('targetId', $game['rootPlace']['id']);
             $game['rootPlace']['imageUrl'] = $thumbnail['imageUrl'];
-        }
 
-        return response()->json($games);
+            return $game;
+        });
     }
 }

@@ -25,7 +25,6 @@ use Illuminate\Support\Arr;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $refresh_at
  * @property-read string|null $formatted_disabled_at
  * @property-read string $formatted_robux_amount
  * @property-read string $formatted_total_withdrawn
@@ -44,7 +43,6 @@ use Illuminate\Support\Arr;
  * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereDeletedAt($value)
  * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereDisabledAt($value)
  * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereId($value)
- * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereRefreshAt($value)
  * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereRobuxAccountId($value)
  * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereRobuxAccountUsername($value)
  * @method static \App\Builders\RobuxAccountBuilder|\App\Models\RobuxAccount whereRobuxAmount($value)
@@ -70,14 +68,12 @@ class RobuxAccount extends Model
         'robux_amount',
         'rate',
         'disabled_at',
-        'refresh_at',
     ];
 
     protected $casts = [
         'cookie' => Encrypt::class,
         'rate' => 'float',
         'disabled_at' => 'datetime',
-        'refresh_at' => 'datetime',
     ];
 
     protected $appends = [
@@ -143,18 +139,5 @@ class RobuxAccount extends Model
     public function getFormattedRobuxAmountAttribute(): string
     {
         return currency_format($this->robux_amount);
-    }
-
-    public function refreshData(): void
-    {
-        $currency = Robux::getCurrency($this);
-        $robuxUser = Robux::getUserById($this->robux_account_id);
-
-        $this->update([
-            'robux_amount' => $currency,
-            'robux_account_username' => $robuxUser['Username'],
-            'disabled_at' => $currency >= self::MIN_ROBUX_AMOUNT ? null : now(),
-            'refresh_at' => null,
-        ]);
     }
 }
