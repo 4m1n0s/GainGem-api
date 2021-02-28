@@ -18,6 +18,8 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
+        /** @var User $this */
+
         return [
             'id' => $this->id,
             'username' => $this->username,
@@ -31,6 +33,7 @@ class UserResource extends JsonResource
             'referral_token' => $this->referral_token,
             'banned_at' => optional($this->banned_at)->format('M d Y'),
             'ban_reason' => $this->ban_reason,
+            'froze_at' => optional($this->froze_at)->format('M d Y'),
             'registered_giveaway_at' => $this->registered_giveaway_at,
             'two_factor_enabled_at' => $this->two_factor_enabled_at,
             'created_at' => $this->formatted_created_at,

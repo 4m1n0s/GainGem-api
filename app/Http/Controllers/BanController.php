@@ -18,6 +18,7 @@ class BanController extends Controller
         $user->update([
             'banned_at' => now(),
             'ban_reason' => $payload['ban_reason'],
+            'froze_at' => null,
         ]);
 
         return response()->json([
@@ -32,6 +33,7 @@ class BanController extends Controller
         $user->update([
             'banned_at' => null,
             'ban_reason' => null,
+            'froze_at' => null,
         ]);
 
         return response()->json([

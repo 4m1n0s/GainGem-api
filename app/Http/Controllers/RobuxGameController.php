@@ -17,6 +17,7 @@ class RobuxGameController extends Controller
         $user = auth()->user();
         $user->loadAvailablePoints();
 
+        abort_if(!! $user->froze_at, 422, 'Your account is frozen, please be patient while we treat your case.');
         abort_if($user->available_points < $payload['value'], 422, "You don't have enough points!");
 
         $games = collect(Robux::getGamesByUsername($payload['username']));

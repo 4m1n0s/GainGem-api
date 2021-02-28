@@ -37,6 +37,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property \Illuminate\Support\Carbon|null $two_factor_enabled_at
  * @property string|null $two_factor_code
  * @property \Illuminate\Support\Carbon|null $two_factor_expires_at
+ * @property \Illuminate\Support\Carbon|null $froze_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedTask[] $completedTasks
  * @property-read int|null $completed_tasks_count
  * @property-read float|null $available_points
@@ -44,6 +45,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read string|null $formatted_banned_at
  * @property-read string|null $formatted_created_at
  * @property-read string|null $formatted_email_verified_at
+ * @property-read string|null $formatted_froze_at
  * @property-read float|null $formatted_robux_rate
  * @property-read string $formatted_total_points
  * @property-read string $profile_image_url
@@ -76,6 +78,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \App\Builders\UserBuilder|\App\Models\User whereCreatedAt($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereEmail($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereEmailVerifiedAt($value)
+ * @method static \App\Builders\UserBuilder|\App\Models\User whereFrozeAt($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereId($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User whereIp($value)
  * @method static \App\Builders\UserBuilder|\App\Models\User wherePassword($value)
@@ -123,6 +126,7 @@ class User extends Authenticatable implements JWTSubject
         'two_factor_enabled_at',
         'two_factor_code',
         'two_factor_expires_at',
+        'froze_at',
     ];
 
     protected $hidden = [
@@ -136,6 +140,7 @@ class User extends Authenticatable implements JWTSubject
         'registered_giveaway_at' => 'datetime',
         'two_factor_enabled_at' => 'datetime',
         'two_factor_expires_at' => 'datetime',
+        'froze_at' => 'datetime',
     ];
 
     protected $appends = [
@@ -349,6 +354,11 @@ class User extends Authenticatable implements JWTSubject
     public function getFormattedBannedAtAttribute(): ?string
     {
         return optional($this->banned_at)->format('M d Y');
+    }
+
+    public function getFormattedFrozeAtAttribute(): ?string
+    {
+        return optional($this->froze_at)->format('M d Y');
     }
 
     public function getFormattedRobuxRateAttribute(): ?float

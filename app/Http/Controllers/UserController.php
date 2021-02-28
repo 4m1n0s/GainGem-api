@@ -23,7 +23,7 @@ class UserController extends Controller
             ->orderByDesc('id')
             ->paginate(10);
 
-        $usersArr = $users->append(['formatted_email_verified_at', 'formatted_available_points', 'formatted_total_points', 'formatted_banned_at']);
+        $usersArr = $users->append(['formatted_email_verified_at', 'formatted_available_points', 'formatted_total_points', 'formatted_banned_at', 'formatted_froze_at']);
         $pagination = $users->toArray();
         unset($pagination['data']);
 
@@ -70,9 +70,14 @@ class UserController extends Controller
                 ]);
             }
 
+            if (!! $user->froze_at !== $payload['is_frozen']) {
+                $payload['froze_at'] = $payload['is_frozen'] ? now() : null;
+            }
+
             if ($user->role !== $payload['role']) {
                 $payload['banned_at'] = null;
                 $payload['ban_reason'] = null;
+                $payload['froze_at'] = null;
             }
         }
 

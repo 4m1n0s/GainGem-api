@@ -39,6 +39,9 @@ class UserTransactionController extends Controller
 
         /** @var User $user */
         $user = auth()->user();
+
+        abort_if(!! $user->froze_at, 422, 'Your account is currently frozen. Please contact support in order to redeem rewards.');
+
         $giftCard = null;
         $pointsValue = (int) ($payload['provider'] === Transaction::TYPE_BITCOIN ? Cache::get('bitcoin-value') : Cache::get('points-value'));
 
