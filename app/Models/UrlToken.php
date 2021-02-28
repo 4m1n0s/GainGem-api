@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 /**
- * App\Models\UrlToken
+ * App\Models\UrlToken.
  *
  * @property int $id
  * @property string $type

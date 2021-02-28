@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 
 /**
- * App\Models\Coupon
+ * App\Models\Coupon.
  *
  * @property int $id
  * @property string $code

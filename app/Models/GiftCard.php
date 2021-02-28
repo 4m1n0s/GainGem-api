@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * App\Models\GiftCard
+ * App\Models\GiftCard.
  *
  * @property int $id
  * @property string|null $country

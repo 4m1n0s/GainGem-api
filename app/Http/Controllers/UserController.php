@@ -70,7 +70,7 @@ class UserController extends Controller
                 ]);
             }
 
-            if (!! $user->froze_at !== $payload['is_frozen']) {
+            if ((bool) $user->froze_at !== $payload['is_frozen']) {
                 $payload['froze_at'] = $payload['is_frozen'] ? now() : null;
             }
 
