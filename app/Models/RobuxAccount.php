@@ -13,13 +13,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 
 /**
- * App\Models\RobuxAccount.
+ * App\Models\RobuxAccount
  *
  * @property int $id
  * @property int $supplier_user_id
+ * @property string $cookie
  * @property int $robux_account_id
  * @property string $robux_account_username
- * @property string $cookie
  * @property int $robux_amount
  * @property \Illuminate\Support\Carbon|null $disabled_at
  * @property \Illuminate\Support\Carbon|null $deleted_at

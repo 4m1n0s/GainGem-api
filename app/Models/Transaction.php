@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * App\Models\Transaction.
+ * App\Models\Transaction
  *
  * @property int $id
  * @property string $type
