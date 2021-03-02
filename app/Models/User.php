@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
- * App\Models\User
+ * App\Models\User.
  *
  * @property int $id
  * @property string $username
