@@ -45,6 +45,11 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "hooks": {
+            "pre-commit": [
+                "composer style-fix"
+            ]
         }
     },
     "autoload": {

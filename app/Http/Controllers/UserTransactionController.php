@@ -34,6 +34,8 @@ class UserTransactionController extends Controller
     }
 
     public function store(StoreTransactionRequest $request): JsonResponse
+
+
     {
         $payload = $request->validated();
 
