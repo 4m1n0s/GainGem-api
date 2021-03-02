@@ -48,7 +48,7 @@
             "dont-discover": []
         },
         "hooks": {
-            "pre-commit": [
+            "pre-push": [
                 "php-cs-fixer fix --config=.php_cs --allow-risky=yes"
             ]
         }
