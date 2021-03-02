@@ -50,7 +50,8 @@
         "hooks": {
             "pre-commit": [
                 "composer style-fix"
-            ]
+            ],
+            "commit-msg": "grep -q '[A-Z]+-[0-9]+.*' $1"
         }
     },
     "autoload": {
