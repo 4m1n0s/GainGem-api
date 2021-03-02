@@ -49,9 +49,14 @@
         },
         "hooks": {
             "pre-commit": [
+                "echo committing as $(git config user.name)",
                 "composer style-fix"
             ],
-            "commit-msg": "grep -q '[A-Z]+-[0-9]+.*' $1"
+            "commit-msg": "grep -q '[A-Z]+-[0-9]+.*' $1",
+            "pre-push": [
+                "composer style-lint"
+            ],
+            "post-merge": "composer update"
         }
     },
     "autoload": {
