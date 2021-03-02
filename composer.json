@@ -48,8 +48,8 @@
             "dont-discover": []
         },
         "hooks": {
-            "pre-push": [
-                "php-cs-fixer fix --config=.php_cs --allow-risky=yes"
+            "pre-commit": [
+                "composer style-fix"
             ]
         }
     },
@@ -71,6 +71,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
+        "post-install-cmd": "cghooks add --ignore-lock",
+        "post-update-cmd": "cghooks update",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
