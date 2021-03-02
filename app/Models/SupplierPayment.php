@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * App\Models\SupplierPayment.
+ * App\Models\SupplierPayment
  *
  * @property int $id
  * @property int $supplier_user_id

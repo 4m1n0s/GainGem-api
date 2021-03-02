@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 
 /**
- * App\Models\RobuxAccount.
+ * App\Models\RobuxAccount
  *
  * @property int $id
  * @property int $supplier_user_id

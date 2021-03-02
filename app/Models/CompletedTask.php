@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
 
 /**
- * App\Models\CompletedTask.
+ * App\Models\CompletedTask
  *
  * @property int $id
  * @property string $type
