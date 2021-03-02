@@ -9,6 +9,7 @@ use App\Models\CompletedTask;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -17,7 +18,10 @@ class UserController extends Controller
         $payload = $request->validated();
 
         $users = User::when(isset($payload['username']), static fn ($query) => $query->search(['username'], $payload['username']))
-            ->withAvailablePoints()
+            ->when(isset($payload['filter']), static function ($query) use ($payload) {
+                $query->orderBy(DB::raw("ISNULL({$payload['filter']})"))
+                    ->orderBy($payload['filter'], isset($payload['filter_direction']) ? $payload['filter_direction'] : 'ASC');
+            })->withAvailablePoints()
             ->with('referredBy:id,username')
             ->withCount(['referredUsers as referrals', 'transactions as withdraws'])
             ->orderByDesc('id')
@@ -70,7 +74,7 @@ class UserController extends Controller
                 ]);
             }
 
-            if ((bool) $user->froze_at !== $payload['is_frozen']) {
+            if (isset($payload['is_frozen']) && (bool) $user->froze_at !== $payload['is_frozen']) {
                 $payload['froze_at'] = $payload['is_frozen'] ? now() : null;
             }
 

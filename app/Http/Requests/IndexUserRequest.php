@@ -12,6 +12,13 @@ class IndexUserRequest extends FormRequest
             'username' => [
                 'string',
             ],
+            'filter' => [
+                'in:email_verified_at,banned_at,froze_at',
+            ],
+            'filter_direction' => [
+                'string',
+                'in:ASC,DESC',
+            ],
         ];
     }
 }

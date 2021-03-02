@@ -43,16 +43,16 @@ class UpdateUserRequest extends FormRequest
                 'max:999999',
             ],
             'role' => ['required'],
-            'is_frozen' => [
-                'required',
-                'boolean',
-            ],
         ];
 
         $roles = [User::ROLE_SPONSOR, User::ROLE_SUPPLIER, User::ROLE_USER];
 
         if ($authenticatedUser->isSuperAdminRole()) {
             $roles[] = User::ROLE_ADMIN;
+            $rules['is_frozen'] = [
+                'required',
+                'boolean',
+            ];
         }
 
         $rules['role'][] = Rule::in($roles);
