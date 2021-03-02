@@ -49,8 +49,8 @@
         },
         "hooks": {
             "pre-commit": [
-                "echo committing as $(git config user.name)",
-                "composer style-fix"
+                "composer style-fix",
+                "git add ."
             ],
             "commit-msg": "grep -q '[A-Z]+-[0-9]+.*' $1",
             "pre-push": [
