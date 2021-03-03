@@ -41,6 +41,12 @@ class RefreshRobuxAccountJob implements ShouldQueue
                 'status' => $exception->response->status(),
             ]);
 
+            if (isset($exception->response['errors']) && ($exception->response['errors'][0]['code'] === 0 || $exception->response['errors'][0]['code'] === 1)) {
+                $this->robuxAccount->delete();
+
+                return;
+            }
+
             throw new Exception($exception);
         }
 
@@ -56,5 +62,10 @@ class RefreshRobuxAccountJob implements ShouldQueue
     public function failed(ErrorException $exception): void
     {
         app('sentry')->captureException($exception);
+
+        $this->robuxAccount->update([
+            'robux_amount' => 0,
+            'disabled_at' => now(),
+        ]);
     }
 }
