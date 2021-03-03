@@ -69,9 +69,19 @@ class Robux
 
     public static function getGamesByUserId(int $id): array
     {
-        $response = Http::withOptions([
-            'proxy' => config('app.proxy_url'),
-        ])->get("https://games.roblox.com/v2/users/{$id}/games");
+        try {
+            $response = Http::withOptions([
+                'proxy' => config('app.proxy_url'),
+            ])->get("https://games.roblox.com/v2/users/{$id}/games");
+        } catch (RequestException $exception) {
+            Log::error('Get games by user id failed', [
+                'roblox_account_id' => $id,
+                'response' => $exception->response->json(),
+                'status' => $exception->response->status(),
+            ]);
+
+            abort(404, 'No places found!');
+        }
 
         abort_if(! count($response['data']), 404, 'No places found!');
 
@@ -88,9 +98,18 @@ class Robux
     public static function getPlacesIconsByIds(array $ids): array
     {
         $ids = implode(',', $ids);
-        $response = Http::get("https://thumbnails.roblox.com/v1/places/gameicons?placeIds={$ids}&size=256x256&format=Png&isCircular=false");
 
-        abort_if($response->failed(), 422, 'No places found!');
+        try {
+            $response = Http::get("https://thumbnails.roblox.com/v1/places/gameicons?placeIds={$ids}&size=256x256&format=Png&isCircular=false")->throw();
+        } catch (RequestException $exception) {
+            Log::error('Get places icons by ids failed', [
+                'places_ids' => $ids,
+                'response' => $exception->response->json(),
+                'status' => $exception->response->status(),
+            ]);
+
+            abort(404, 'No places found!');
+        }
 
         return $response->json()['data'];
     }
