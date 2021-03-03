@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Domains\Postback\Actions\FraudAction;
 use App\Http\Requests\StoreLootablyPostbackRequest;
 use App\Http\Requests\StorePostbackRequest;
 use App\Models\CompletedTask;
+use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 
 class PostbackController extends Controller
@@ -46,6 +48,10 @@ class PostbackController extends Controller
 
         CompletedTask::create($data);
 
+        /** @var User $user */
+        $user = User::find($payload['user_id']);
+        (new FraudAction($user))->execute();
+
         return 1;
     }
 
@@ -65,6 +71,10 @@ class PostbackController extends Controller
                 'user_ip' => $payload['user_ip'],
             ],
         ]);
+
+        /** @var User $user */
+        $user = User::find($payload['user_id']);
+        (new FraudAction($user))->execute();
 
         return 1;
     }

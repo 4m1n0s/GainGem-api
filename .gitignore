@@ -15,5 +15,4 @@ yarn-error.log
 dump.rdb
 _ide_helper.php
 .php_cs.cache
-cghooks.lock
-
+horizon.log
