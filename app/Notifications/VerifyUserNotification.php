@@ -37,7 +37,7 @@ class VerifyUserNotification extends Notification implements ShouldQueue
             ->action("I'm a human", $verifyUrl);
     }
 
-    public function toDatabase(User $user): array
+    public function toArray(User $user): array
     {
         return [
             'url_token_id' => $this->urlToken->id,

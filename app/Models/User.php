@@ -52,6 +52,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read float|null $total_points
  * @property-read float $total_supplier_withdrawals
  * @property-read float|null $wasted_points
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\LoginLog[] $loginLog
+ * @property-read int|null $login_log_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SupplierPayment[] $paidSupplierPayments
@@ -234,6 +236,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->supplierPayments()->where('status', SupplierPayment::STATUS_PAID);
     }
 
+    public function loginLog(): HasMany
+    {
+        return $this->hasMany(LoginLog::class);
+    }
+
     public function loadTotalPoints(): self
     {
         return $this->loadSum('completedTasks as total_points', 'points');
@@ -328,6 +335,17 @@ class User extends Authenticatable implements JWTSubject
         $this->update([
             'two_factor_code' => null,
             'two_factor_expires_at' => null,
+        ]);
+    }
+
+    public function storeLoginLog(): void
+    {
+        $ip = get_ip();
+        $previousIp = $this->ip;
+
+        $this->loginLog()->create([
+            'ip' => $ip,
+            'previous_ip' => $previousIp,
         ]);
     }
 

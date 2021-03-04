@@ -20,6 +20,8 @@ class AuthController extends Controller
         $payload = $request->validated();
         $payload['ip'] = get_ip();
 
+        abort_if(User::where('ip', $payload['ip'])->exists(), 403, 'Sorry, there’s only one account allowed per household.');
+
         if (Arr::get($payload, 'referral_token')) {
             $referredBy = User::where('referral_token', $payload['referral_token'])->first();
             $payload['referred_by'] = optional($referredBy)->id;
@@ -43,6 +45,7 @@ class AuthController extends Controller
         ]);
 
         $user->notify(new VerifyUserNotification($urlToken));
+        $user->loginLog()->create(['ip' => $user->ip]);
 
         $token = auth()->login($user);
 
@@ -71,6 +74,8 @@ class AuthController extends Controller
         }
 
         if (! $user->two_factor_enabled_at) {
+            $user->storeLoginLog();
+
             return response()->json([
                 'token' => $token,
                 'user' => new UserResource($user->loadAvailablePoints()),
@@ -86,6 +91,7 @@ class AuthController extends Controller
         abort_if(is_null($faCode) || $user->two_factor_code !== $faCode, 422, '2FA-CODE');
 
         $user->resetTwoFactorCode();
+        $user->storeLoginLog();
 
         return response()->json([
             'token' => $token,

@@ -30,6 +30,7 @@ use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\UserCompletedTaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGiftCardController;
+use App\Http\Controllers\UserLoginLogController;
 use App\Http\Controllers\UserReferralController;
 use App\Http\Controllers\UserTransactionController;
 use App\Http\Controllers\UserVerificationController;
@@ -124,6 +125,7 @@ Route::group(['middleware' => 'auth:api'], static function () {
         Route::get('{user}/activities', [UserCompletedTaskController::class, 'show']);
         Route::get('{user}/referrals', [UserReferralController::class, 'show']);
         Route::get('{user}/referrals/stats', [UserReferralController::class, 'stats']);
+        Route::get('{user}/login-logs', [UserLoginLogController::class, 'show'])->middleware('role:super_admin,admin');
         Route::put('{user}', [UserController::class, 'update']);
         Route::post('{user}/bans', [BanController::class, 'store'])->middleware('role:super_admin,admin');
         Route::delete('{user}/bans', [BanController::class, 'destroy'])->middleware('role:super_admin,admin');

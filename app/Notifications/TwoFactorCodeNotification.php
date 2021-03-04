@@ -15,7 +15,7 @@ class TwoFactorCodeNotification extends Notification implements ShouldQueue
 
     public function via(User $user): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     public function toMail(User $user): MailMessage
@@ -25,5 +25,12 @@ class TwoFactorCodeNotification extends Notification implements ShouldQueue
             ->greeting("Hello, {$user->username}!")
             ->line(new HtmlString("Your two factor code is <strong>{$user->two_factor_code}</strong>."))
             ->line('The code will expire in 10 minutes. If you have not tried to login, ignore this message.');
+    }
+
+    public function toArray(User $user): array
+    {
+        return [
+            'two_factor_code' => $user->two_factor_code,
+        ];
     }
 }
