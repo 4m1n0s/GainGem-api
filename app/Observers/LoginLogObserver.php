@@ -4,6 +4,9 @@ namespace App\Observers;
 
 use App\Models\LoginLog;
 use App\Notifications\LoginLogChangedNotification;
+use Jenssegers\Agent\Agent;
+use Stevebauman\Location\Facades\Location;
+use Stevebauman\Location\Position;
 
 class LoginLogObserver
 {
@@ -16,5 +19,15 @@ class LoginLogObserver
         }
 
         $user->notify(new LoginLogChangedNotification($loginLog));
+    }
+
+    public function creating(LoginLog $loginLog): void
+    {
+        $location = Location::get($loginLog->ip);
+        $agent = new Agent();
+
+        $loginLog->location = $location instanceof Position ? "{$location->regionName}, {$location->cityName}, {$location->countryName}" : null;
+        $loginLog->device = is_string($agent->platform()) ? $agent->platform() : null;
+        $loginLog->browser = is_string($agent->browser()) ? $agent->browser() : null;
     }
 }

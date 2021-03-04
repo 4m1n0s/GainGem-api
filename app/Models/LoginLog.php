@@ -12,16 +12,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $user_id
  * @property string $ip
- * @property string $previous_ip
+ * @property string|null $previous_ip
+ * @property string|null $location
+ * @property string|null $device
+ * @property string|null $browser
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string|null $formatted_created_at
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog whereBrowser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog whereDevice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog whereIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog whereLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog wherePreviousIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LoginLog whereUserId($value)
@@ -35,6 +42,9 @@ class LoginLog extends Model
         'user_id',
         'ip',
         'previous_ip',
+        'location',
+        'device',
+        'browser',
     ];
 
     protected $appends = [

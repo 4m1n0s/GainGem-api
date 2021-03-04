@@ -18,6 +18,9 @@ class CreateLoginLogsTable extends Migration
             $table->foreignId('user_id')->index()->constrained()->onDelete('cascade');
             $table->string('ip');
             $table->string('previous_ip')->nullable();
+            $table->string('location')->nullable();
+            $table->string('device')->nullable();
+            $table->string('browser')->nullable();
             $table->timestamps();
         });
     }
