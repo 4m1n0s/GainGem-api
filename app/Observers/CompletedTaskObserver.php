@@ -39,6 +39,6 @@ class CompletedTaskObserver
             $data['location'] = $location;
         }
 
-        $completedTask->data = array_merge($completedTask->data, $data);
+        $completedTask->data = $completedTask->data ? array_merge($completedTask->data, $data) : $data;
     }
 }
