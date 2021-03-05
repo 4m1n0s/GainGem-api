@@ -1,5 +1,8 @@
 <?php
 
+use Stevebauman\Location\Facades\Location;
+use Stevebauman\Location\Position;
+
 function get_ip(): string
 {
     foreach (['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'] as $key) {
@@ -65,4 +68,11 @@ function convert_satoshi_to_bitcoin(int $satoshi): float
 function convert_satoshi_to_usd(int $satoshi): float
 {
     return convert_satoshi_to_bitcoin($satoshi) / get_bitcoin_value();
+}
+
+function get_full_location(string $ip): ?string
+{
+    $location = Location::get($ip);
+
+    return $location instanceof Position ? "{$location->regionName}, {$location->cityName}, {$location->countryName}" : null;
 }

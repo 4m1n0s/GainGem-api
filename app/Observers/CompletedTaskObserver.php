@@ -27,4 +27,18 @@ class CompletedTaskObserver
             ],
         ]);
     }
+
+    public function creating(CompletedTask $completedTask): void
+    {
+        $ip = isset($completedTask->data['user_ip']) ? $completedTask->data['user_ip'] : get_ip();
+        $location = get_full_location($ip);
+
+        $data = ['user_ip' => $ip];
+
+        if (! is_null($location)) {
+            $data['location'] = $location;
+        }
+
+        $completedTask->data = array_merge($completedTask->data, $data);
+    }
 }
