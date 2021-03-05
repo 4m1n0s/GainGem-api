@@ -29,11 +29,16 @@ class StoreLootablyPostbackRequest extends FormRequest
                 'required',
                 'ip',
             ],
-            'offername' => [
+            'offer_name' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
+            ],
+            'offer_id' => [
+                'required',
+                'integer',
+                'min:1',
             ],
             'transaction_id' => [
                 'required',

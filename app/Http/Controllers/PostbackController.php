@@ -33,7 +33,8 @@ class PostbackController extends Controller
             'points' => $payload['payout'] * $this->postbackValue,
             'data' => [
                 'transaction_id' => $payload['transaction_id'],
-                'offer_name' => $payload['offername'],
+                'offer_name' => $payload['offer_name'],
+                'offer_id' => $payload['offer_id'],
                 'revenue' => $payload['payout'],
                 'user_ip' => $payload['user_ip'],
             ],
@@ -66,7 +67,8 @@ class PostbackController extends Controller
             'points' => $payload['payout'] * $this->postbackValue,
             'data' => [
                 'transaction_id' => $payload['transaction_id'],
-                'offer_name' => $payload['offername'],
+                'offer_name' => $payload['offer_name'],
+                'offer_id' => $payload['offer_id'],
                 'revenue' => $payload['payout'],
                 'user_ip' => $payload['user_ip'],
             ],

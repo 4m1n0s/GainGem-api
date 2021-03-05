@@ -15,7 +15,7 @@ class CompletedTaskController extends Controller
                 ->with('user:id,username,profile_image')
                 ->orderByDesc('updated_at')
                 ->limit(10)
-                ->get(),
+                ->get(['id', 'type', 'provider', 'user_id', 'points', 'created_at']),
         ]);
     }
 }
