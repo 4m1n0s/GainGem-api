@@ -11,9 +11,12 @@ class UserCompletedTaskController extends Controller
     {
         $this->authorize('update', $user);
 
+        /** @var User $authUser */
+        $authUser = auth()->user();
+
         return response()->json([
             'activities' => $user->completedTasks()
-                ->when(auth()->user()->id === $user->id, static function ($query) {
+                ->when($authUser->id === $user->id, static function ($query) {
                     $query->select(['id', 'type', 'provider', 'user_id', 'points', 'created_at']);
                 })
                 ->orderByDesc('id')
