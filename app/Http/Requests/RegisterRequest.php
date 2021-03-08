@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidUsername;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
@@ -12,9 +13,9 @@ class RegisterRequest extends FormRequest
             'username' => [
                 'required',
                 'unique:users',
-                'regex:/^[a-zA-Z0-9]+$/u',
                 'min:6',
                 'max:20',
+                new ValidUsername,
             ],
             'password' => [
                 'required',
@@ -31,13 +32,6 @@ class RegisterRequest extends FormRequest
                 'nullable',
                 'string',
             ],
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'username.regex' => 'Usernames may only contain letters and numbers.',
         ];
     }
 }
