@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune --hours=48')
             ->hourly()
             ->description('Prune old Telescope records.');
+
+        $schedule->command('backup:clean')->daily()->at('01:00');
+        $schedule->command('backup:run')->daily()->at('01:00');
     }
 
     protected function commands(): void
