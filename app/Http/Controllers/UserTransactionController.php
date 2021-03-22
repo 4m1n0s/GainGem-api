@@ -65,6 +65,7 @@ class UserTransactionController extends Controller
     private function storeGiftCardTransaction(array $payload): GiftCard
     {
         $giftCard = GiftCard::doesntHave('transaction')
+            ->whereHas('currency.currencyValue')
             ->where('provider', $payload['provider'])
             ->where('country', $payload['country'])
             ->where('currency_id', $payload['currency_id'])
