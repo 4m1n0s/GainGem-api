@@ -13,9 +13,10 @@ class UserGiftCardController extends Controller
     public function index(): JsonResponse
     {
         $giftCards = GiftCard::doesntHave('transaction')
-            ->groupBy('country', 'provider', 'value')
+            ->whereHas('currency.currencyValue')
+            ->groupBy('country', 'provider', 'value', 'currency_id')
             ->orderBy('country')
-            ->get(['country', 'provider', 'value'])
+            ->get(['country', 'provider', 'value', 'currency_id'])
             ->groupBy('provider');
 
         $robuxAccount = RobuxAccount::whereNull('disabled_at')->exists();

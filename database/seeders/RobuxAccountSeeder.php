@@ -25,7 +25,7 @@ class RobuxAccountSeeder extends Seeder
         RobuxAccount::create([
             'supplier_user_id' => $supplier->id,
             'cookie' => config('app.robux_group_cookie'),
-            'robux_account_id' => 859953059,
+            'robux_account_id' => 1009472577,
             'robux_account_username' => 'itemrestoration',
             'robux_amount' => 3000,
         ]);
@@ -33,7 +33,7 @@ class RobuxAccountSeeder extends Seeder
         RobuxAccount::create([
             'supplier_user_id' => $secondSupplier->id,
             'cookie' => config('app.robux_group_cookie'),
-            'robux_account_id' => 859953059,
+            'robux_account_id' => 1009472577,
             'robux_account_username' => 'itemrestoration',
             'robux_amount' => 3000,
             'created_at' => now()->addHour(),

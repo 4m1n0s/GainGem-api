@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $currency_id
+ * @property-read \App\Models\Currency|null $currency
  * @property-read string $formatted_provider
  * @property-read \App\Models\Transaction|null $transaction
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftCard newModelQuery()
@@ -24,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftCard whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftCard whereCountry($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftCard whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftCard whereCurrencyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftCard whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftCard whereProvider($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftCard whereUpdatedAt($value)
@@ -59,6 +63,7 @@ class GiftCard extends Model
         'code',
         'provider',
         'value',
+        'currency_id',
     ];
 
     protected $appends = [
@@ -68,6 +73,11 @@ class GiftCard extends Model
     public function transaction(): HasOne
     {
         return $this->hasOne(Transaction::class);
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class);
     }
 
     public function getFormattedProviderAttribute(): string

@@ -19,6 +19,11 @@ class StoreTransactionRequest extends FormRequest
                 'nullable',
                 Rule::in(get_countries()),
             ],
+            'currency_id' => [
+                'required',
+                'exists:currencies,id',
+                'exists:currency_values',
+            ],
             'value' => [
                 'required',
                 'integer',

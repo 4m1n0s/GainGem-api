@@ -8,11 +8,12 @@ use App\Http\Controllers\BitcoinValueController;
 use App\Http\Controllers\CompletedTaskController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CouponRedeemController;
+use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\CurrencyValueController;
 use App\Http\Controllers\DailyTaskController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\GiveawayController;
-use App\Http\Controllers\PointsValueController;
 use App\Http\Controllers\PostbackController;
 use App\Http\Controllers\PostbackValueController;
 use App\Http\Controllers\RefreshRobuxAccountController;
@@ -65,11 +66,6 @@ Route::group(['middleware' => 'auth:api'], static function () {
         Route::delete('{coupon:code}', [CouponController::class, 'destroy'])->middleware('role:super_admin,admin');
         Route::put('{coupon}', [CouponController::class, 'update'])->middleware('role:super_admin,admin');
         Route::post('{coupon:code}/redeems', [CouponRedeemController::class, 'store']);
-    });
-
-    Route::group(['prefix' => 'points'], static function () {
-        Route::get('', [PointsValueController::class, 'index']);
-        Route::put('', [PointsValueController::class, 'update'])->middleware('role:super_admin');
     });
 
     Route::group(['prefix' => 'postback/values', 'middleware' => 'role:super_admin'], static function () {
@@ -164,5 +160,14 @@ Route::group(['middleware' => 'auth:api'], static function () {
     Route::group(['prefix' => '2fa'], static function () {
         Route::post('', [TwoFactorController::class, 'store']);
         Route::delete('', [TwoFactorController::class, 'destroy']);
+    });
+
+    Route::group(['prefix' => 'currencies'], static function () {
+        Route::get('', [CurrencyController::class, 'index'])->middleware('role:super_admin,admin');
+        Route::post('', [CurrencyController::class, 'store'])->middleware('role:super_admin');
+        Route::put('{currency}', [CurrencyController::class, 'update'])->middleware('role:super_admin');
+        Route::delete('{currency}', [CurrencyController::class, 'destroy'])->middleware('role:super_admin');
+        Route::get('values', [CurrencyValueController::class, 'index']);
+        Route::put('{currency}/values', [CurrencyValueController::class, 'update'])->middleware('role:super_admin,admin');
     });
 });

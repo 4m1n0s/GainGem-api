@@ -53,6 +53,7 @@ class GiftCardController extends Controller
             $giftCards[] = GiftCard::create([
                 'code' => $code['code'],
                 'country' => $payload['country'],
+                'currency_id' => $payload['currency_id'],
                 'provider' => $payload['provider'],
                 'value' => $payload['value'],
             ]);

@@ -1,9 +1,8 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Cache;
 
-class CreateDefaultPointsPrice extends Migration
+class RemovePointsValuePrice extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +11,7 @@ class CreateDefaultPointsPrice extends Migration
      */
     public function up()
     {
-        Cache::rememberForever('points-value', static fn () => 40);
+        Cache::forget('points-value');
     }
 
     /**
@@ -22,6 +21,6 @@ class CreateDefaultPointsPrice extends Migration
      */
     public function down()
     {
-//        Cache::forget('points-value');
+        //
     }
 }

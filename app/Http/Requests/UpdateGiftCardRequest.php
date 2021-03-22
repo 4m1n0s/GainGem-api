@@ -24,6 +24,11 @@ class UpdateGiftCardRequest extends FormRequest
                 'nullable',
                 Rule::in(get_countries()),
             ],
+            'currency_id' => [
+                'required',
+                'exists:currencies,id',
+                'exists:currency_values',
+            ],
             'provider' => [
                 'required',
                 Rule::in(GiftCard::PROVIDERS),
@@ -34,6 +39,13 @@ class UpdateGiftCardRequest extends FormRequest
                 'min:1',
                 'max:999999',
             ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'currency_id.exists' => 'The selected currency is invalid or has no values.',
         ];
     }
 }

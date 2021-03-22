@@ -6,6 +6,8 @@ use App\Domains\Robux\Actions\GetRelevantAccountAction;
 use App\Domains\Robux\Actions\PayoutAction;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Currency;
+use App\Models\CurrencyValue;
 use App\Models\GiftCard;
 use App\Models\RobuxAccount;
 use App\Models\Transaction;
@@ -43,9 +45,7 @@ class UserTransactionController extends Controller
         abort_if((bool) $user->froze_at, 422, 'Your account is currently frozen. Please contact support in order to redeem rewards.');
 
         $giftCard = null;
-        $pointsValue = (int) ($payload['provider'] === Transaction::TYPE_BITCOIN ? Cache::get('bitcoin-value') : Cache::get('points-value'));
 
-        abort_if(! $pointsValue, 422, 'Error during redeeming the reward!');
 //        abort_if(! $user->email_verified_at, 422, 'You need to verify your email in order to redeem.');
 
         if ($payload['provider'] === Transaction::TYPE_ROBUX) {
@@ -53,9 +53,9 @@ class UserTransactionController extends Controller
 
             $this->storeRobuxTransaction($payload);
         } elseif ($payload['provider'] === Transaction::TYPE_BITCOIN) {
-            $this->storeBitcoinTransaction($payload, $pointsValue);
+            $this->storeBitcoinTransaction($payload);
         } else {
-            $giftCard = $this->storeGiftCardTransaction($payload, $pointsValue);
+            $giftCard = $this->storeGiftCardTransaction($payload);
         }
 
         return response()->json([
@@ -64,24 +64,32 @@ class UserTransactionController extends Controller
         ]);
     }
 
-    private function storeGiftCardTransaction(array $payload, int $pointsValue): GiftCard
+    private function storeGiftCardTransaction(array $payload): GiftCard
     {
         $giftCard = GiftCard::doesntHave('transaction')
             ->where('provider', $payload['provider'])
             ->where('country', $payload['country'])
+            ->where('currency_id', $payload['currency_id'])
             ->where('value', $payload['value'])
+            ->with('currency.currencyValue')
             ->firstOrFail();
 
         /** @var User $user */
         $user = auth()->user();
         $user->loadAvailablePoints();
 
-        abort_if($user->available_points < $giftCard->value * $pointsValue, 422, "You don't have enough points!");
+        /** @var Currency $currency */
+        $currency = $giftCard->currency;
+        /** @var CurrencyValue $currencyValue */
+        $currencyValue = $currency->currencyValue;
+        $giftCardValue = $currencyValue[$payload['provider']];
+
+        abort_if($user->available_points < $giftCard->value * $giftCardValue, 422, "You don't have enough points!");
 
         /** @var Transaction $transaction */
         $transaction = $user->transactions()->create([
             'type' => Transaction::TYPE_GIFT_CARD,
-            'points' => $giftCard->value * $pointsValue,
+            'points' => $giftCard->value * $giftCardValue,
             'gift_card_id' => $giftCard->id,
         ]);
 
@@ -125,13 +133,15 @@ class UserTransactionController extends Controller
         ]);
     }
 
-    private function storeBitcoinTransaction(array $payload, int $pointsValue): void
+    private function storeBitcoinTransaction(array $payload): void
     {
         /** @var User $user */
         $user = auth()->user();
         $user->loadAvailablePoints();
 
-        abort_if($user->available_points < $payload['value'] * $pointsValue, 422, "You don't have enough points!");
+        $bitcoinValue = Cache::get('bitcoin-value');
+
+        abort_if($user->available_points < $payload['value'] * $bitcoinValue, 422, "You don't have enough points!");
 
         $bitcoinAmount = (int) Bitcoin::getCurrency();
         $bitcoin = Cache::get('bitcoin');
@@ -147,7 +157,7 @@ class UserTransactionController extends Controller
         /** @var Transaction $transaction */
         $transaction = $user->transactions()->create([
             'type' => Transaction::TYPE_BITCOIN,
-            'points' => $payload['value'] * $pointsValue,
+            'points' => $payload['value'] * $bitcoinValue,
             'destination' => $payload['destination'],
             'value' => $payload['value'],
             'bitcoin_amount' => $bitcoin,
