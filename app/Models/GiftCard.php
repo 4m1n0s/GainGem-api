@@ -67,6 +67,7 @@ class GiftCard extends Model
     ];
 
     protected $appends = [
+        'formatted_created_at',
         'formatted_provider',
     ];
 
@@ -78,6 +79,11 @@ class GiftCard extends Model
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function getFormattedCreatedAtAttribute(): ?string
+    {
+        return optional($this->created_at)->format('M d Y');
     }
 
     public function getFormattedProviderAttribute(): string
