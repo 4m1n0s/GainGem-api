@@ -33,12 +33,14 @@ class GiftCardTransactionNotification extends Notification implements ShouldQueu
     {
         /** @var GiftCard $giftCard */
         $giftCard = $this->transaction->giftCard;
+        $currency = $giftCard->currency;
+        $symbol = $currency ? $currency->symbol : '$';
 
         return (new MailMessage)
             ->subject("[EzRewards] Successful Reward Claim #{$this->transaction->id}")
             ->greeting("Hello, {$user->username}!")
             ->line('Thank you for using EzRewards!')
-            ->line("You have successfully claimed a \${$giftCard->value} {$this->transaction->formatted_provider} Gift Card for {$this->transaction->points} points. Please see your code below.")
+            ->line("You have successfully claimed a {$symbol}{$giftCard->value} {$this->transaction->formatted_provider} Gift Card for {$this->transaction->points} points. Please see your code below.")
             ->line(new HtmlString("<strong>{$giftCard->code}</strong>"))
             ->line('Share the news with your friends!');
     }
