@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $currency_id
  * @property-read \App\Models\Currency|null $currency
+ * @property-read string|null $formatted_created_at
  * @property-read string $formatted_provider
  * @property-read \App\Models\Transaction|null $transaction
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GiftCard newModelQuery()

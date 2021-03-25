@@ -17,12 +17,8 @@ class StoreTransactionRequest extends FormRequest
         $rules = [
             'country' => [
                 'nullable',
-                Rule::in(get_countries()),
-            ],
-            'currency_id' => [
-                'required',
-                'exists:currencies,id',
-                'exists:currency_values',
+                'present',
+                Rule::in(array_merge(get_continents(), get_countries())),
             ],
             'value' => [
                 'required',
@@ -56,8 +52,12 @@ class StoreTransactionRequest extends FormRequest
         }
 
         $rules['provider'][] = Rule::in(GiftCard::PROVIDERS);
-
         $rules['destination'][] = 'nullable';
+        $rules['currency_id'] = [
+            'required',
+            'exists:currencies,id',
+            'exists:currency_values',
+        ];
 
         return $rules;
     }
@@ -69,6 +69,7 @@ class StoreTransactionRequest extends FormRequest
 
         if ($isTypeRobux) {
             return [
+                'country.present' => 'The :attribute field is required.',
                 'destination.string' => 'You must enter a username!',
                 'destination.required' => 'You must enter a username!',
                 'destination.min' => 'The username must be at least 2 characters.',
@@ -78,6 +79,7 @@ class StoreTransactionRequest extends FormRequest
 
         if ($isTypeBitcoin) {
             return [
+                'country.present' => 'The :attribute field is required.',
                 'destination.string' => 'You must enter a wallet!',
                 'destination.required' => 'You must enter a wallet!',
                 'destination.min' => 'The wallet must be at least 2 characters.',
@@ -86,5 +88,12 @@ class StoreTransactionRequest extends FormRequest
         }
 
         return [];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'country' => 'region',
+        ];
     }
 }

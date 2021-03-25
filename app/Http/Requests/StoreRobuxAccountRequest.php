@@ -26,7 +26,7 @@ class StoreRobuxAccountRequest extends FormRequest
         ];
     }
 
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'robux_account_id' => 'account',

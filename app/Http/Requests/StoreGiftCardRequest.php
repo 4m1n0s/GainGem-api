@@ -24,7 +24,8 @@ class StoreGiftCardRequest extends FormRequest
             ],
             'country' => [
                 'nullable',
-                Rule::in(get_countries()),
+                'present',
+                Rule::in(array_merge(get_continents(), get_countries())),
             ],
             'currency_id' => [
                 'required',
@@ -48,6 +49,14 @@ class StoreGiftCardRequest extends FormRequest
     {
         return [
             'currency_id.exists' => 'The selected currency is invalid or has no values.',
+            'country.present' => 'The :attribute field is required.',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'country' => 'region',
         ];
     }
 }

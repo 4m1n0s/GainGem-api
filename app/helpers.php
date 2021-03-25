@@ -45,6 +45,11 @@ function get_countries(): array
     return array_column(json_decode((string) $file, true), 'country');
 }
 
+function get_continents(): array
+{
+    return ['Asia',  'Antarctica', 'Africa', 'Europe', 'Oceania', 'North America', 'South America'];
+}
+
 function get_bitcoin_value(): float
 {
     $response = Http::get('https://bitpay.com/api/rates');
