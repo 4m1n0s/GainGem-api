@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Models\RobuxAccount;
 use App\Services\Robux;
 use ErrorException;
-use Exception;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -47,7 +46,7 @@ class RefreshRobuxAccountJob implements ShouldQueue
                 return;
             }
 
-            throw new Exception($exception);
+            throw $exception;
         }
 
         $robuxUser = Robux::getUserById($this->robuxAccount->robux_account_id);

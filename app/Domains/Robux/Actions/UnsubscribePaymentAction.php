@@ -26,11 +26,7 @@ class UnsubscribePaymentAction
      */
     public function execute(RobuxAccount $robuxAccount, int $vipServerId, int $amount): void
     {
-        try {
-            $csrfToken = (new AuthenticateAction)->execute($robuxAccount);
-        } catch (RequestException $e) {
-            throw new Exception($e);
-        }
+        $csrfToken = (new AuthenticateAction)->execute($robuxAccount);
 
         Http::withOptions([
             'proxy' => config('app.proxy_url'),
