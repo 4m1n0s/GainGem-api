@@ -291,7 +291,7 @@ class User extends Authenticatable implements JWTSubject
             return null;
         }
 
-        return $this->total_points - $this->wasted_points;
+        return (float) bcsub((string) $this->total_points, (string) $this->wasted_points, 2);
     }
 
     public function getTotalSupplierWithdrawalsAttribute(): float

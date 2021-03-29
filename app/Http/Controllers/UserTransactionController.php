@@ -83,7 +83,7 @@ class UserTransactionController extends Controller
         $currencyValue = $currency->currencyValue;
         $giftCardValue = $currencyValue[$payload['provider']];
 
-        abort_if($user->available_points < $giftCard->value * $giftCardValue, 422, "You don't have enough points!");
+        abort_if(bccomp((string) $user->available_points, (string) ($giftCard->value * $giftCardValue)) === -1, 422, "You don't have enough points!");
 
         /** @var Transaction $transaction */
         $transaction = $user->transactions()->create([
@@ -106,7 +106,7 @@ class UserTransactionController extends Controller
 
         $user->loadAvailablePoints();
 
-        abort_if($user->available_points < $payload['value'], 422, "You don't have enough points!");
+        abort_if(bccomp((string) $user->available_points, (string) $payload['value']) === -1, 422, "You don't have enough points!");
 
         $robuxAccountsExist = RobuxAccount::whereNull('disabled_at')->exists();
 
@@ -140,7 +140,7 @@ class UserTransactionController extends Controller
 
         $bitcoinValue = Cache::get('bitcoin-value');
 
-        abort_if($user->available_points < $payload['value'] * $bitcoinValue, 422, "You don't have enough points!");
+        abort_if(bccomp((string) $user->available_points, (string) ($payload['value'] * $bitcoinValue)) === -1, 422, "You don't have enough points!");
 
         $bitcoinAmount = (int) Bitcoin::getCurrency();
         $bitcoin = Cache::get('bitcoin');
