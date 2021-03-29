@@ -6,7 +6,6 @@ use App\Models\CompletedTask;
 use App\Models\LoginLog;
 use App\Observers\CompletedTaskObserver;
 use App\Observers\LoginLogObserver;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,8 +18,5 @@ class AppServiceProvider extends ServiceProvider
     {
         CompletedTask::observe(CompletedTaskObserver::class);
         LoginLog::observe(LoginLogObserver::class);
-
-        Schema::defaultStringLength(191);
-        date_default_timezone_set(config('app.timezone'));
     }
 }
