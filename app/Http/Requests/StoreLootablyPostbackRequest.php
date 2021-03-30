@@ -37,7 +37,7 @@ class StoreLootablyPostbackRequest extends FormRequest
             ],
             'offer_id' => [
                 'required',
-                'integer',
+                'string',
                 'min:1',
             ],
             'transaction_id' => [
