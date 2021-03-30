@@ -26,8 +26,8 @@ class CompletedTaskBuilder extends Builder
 
     public function hourlyOffers(): self
     {
-        $startOfDay = now()->startOfHour();
-        $endOfDay = now()->endOfHour();
+        $startOfDay = now()->subHour();
+        $endOfDay = now();
 
         $this->where('type', CompletedTask::TYPE_OFFER)->whereBetween('created_at', [$startOfDay, $endOfDay]);
 
