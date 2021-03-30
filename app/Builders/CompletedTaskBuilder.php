@@ -24,12 +24,12 @@ class CompletedTaskBuilder extends Builder
         return $this;
     }
 
-    public function hourlyOffers(): self
+    public function lastHourOffers(): self
     {
-        $startOfDay = now()->subHour();
-        $endOfDay = now();
+        $previousHour = now()->subHour();
+        $now = now();
 
-        $this->where('type', CompletedTask::TYPE_OFFER)->whereBetween('created_at', [$startOfDay, $endOfDay]);
+        $this->where('type', CompletedTask::TYPE_OFFER)->whereBetween('created_at', [$previousHour, $now]);
 
         return $this;
     }

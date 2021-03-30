@@ -27,7 +27,7 @@ use Illuminate\Support\Arr;
  * @property-read int|null $offers_count
  * @property-read \App\Models\User|null $user
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask availableForReferring()
- * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask hourlyOffers()
+ * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask lastHourOffers()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newModelQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask newQuery()
  * @method static \App\Builders\CompletedTaskBuilder|\App\Models\CompletedTask query()

@@ -42,7 +42,7 @@ class GiveawayController extends Controller
         abort_if((bool) $user->registered_giveaway_at, 422, 'Already entered the giveaway!');
 
         if (! $user->isSuperAdminRole() && ! $user->isAdminRole() && ! $user->isSponsorRole()) {
-            $hourlyCompletedOffersCount = $user->completedTasks()->hourlyOffers()->exists();
+            $hourlyCompletedOffersCount = $user->completedTasks()->lastHourOffers()->exists();
 
             abort_if(! $hourlyCompletedOffersCount, 422, 'You need to complete at least one offer in the last hour');
         }
