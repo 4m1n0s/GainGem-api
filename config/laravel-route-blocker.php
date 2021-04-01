@@ -14,7 +14,7 @@
                     '35.165.166.40', // Ayet Studios
                     '35.166.159.131', // Ayet Studios
                     '52.40.3.140', // Ayet Studios
-                    '81.246.146.207', // Personal IP
+                    '80.201.58.66', // Personal IP
                 ],
         ],
 
