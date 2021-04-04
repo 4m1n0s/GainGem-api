@@ -26,6 +26,12 @@ class PostbackController extends Controller
     {
         $payload = $request->validated();
 
+        /** @var User $user */
+        $user = User::find($payload['user_id']);
+        $lock = Cache::lock("postback.{$user->id}", 10);
+
+        abort_if(! $lock->get(), 422);
+
         $data = [
             'type' => CompletedTask::TYPE_OFFER,
             'provider' => $payload['app'],
@@ -49,8 +55,6 @@ class PostbackController extends Controller
 
         CompletedTask::create($data);
 
-        /** @var User $user */
-        $user = User::find($payload['user_id']);
         (new FraudAction($user))->execute();
 
         return 1;
@@ -59,6 +63,12 @@ class PostbackController extends Controller
     public function lootably(StoreLootablyPostbackRequest $request): int
     {
         $payload = $request->validated();
+
+        /** @var User $user */
+        $user = User::find($payload['user_id']);
+        $lock = Cache::lock("postback.{$user->id}", 10);
+
+        abort_if(! $lock->get(), 422);
 
         CompletedTask::create([
             'type' => $payload['payout'] > 0 ? CompletedTask::TYPE_OFFER : CompletedTask::TYPE_CHARGEBACK,
@@ -74,8 +84,6 @@ class PostbackController extends Controller
             ],
         ]);
 
-        /** @var User $user */
-        $user = User::find($payload['user_id']);
         (new FraudAction($user))->execute();
 
         return 1;

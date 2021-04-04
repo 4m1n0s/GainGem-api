@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\CompletedTask;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class SocialMediaTaskController extends Controller
 {
@@ -38,6 +39,10 @@ class SocialMediaTaskController extends Controller
 
         /** @var User $user */
         $user = auth()->user();
+
+        $lock = Cache::lock("{$payload['social_media']}-task.{$user->id}", 10);
+
+        abort_if(! $lock->get(), 422, "You're already in the process of redeeming!");
 
         $hasAlreadyStored = $user->completedTasks()
             ->where('type', CompletedTask::TYPE_SOCIAL_MEDIA)

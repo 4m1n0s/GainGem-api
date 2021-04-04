@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\CompletedTask;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class DailyTaskController extends Controller
 {
@@ -28,6 +29,10 @@ class DailyTaskController extends Controller
 
         /** @var User $user */
         $user = auth()->user();
+
+        $lock = Cache::lock("daily-task-{$payload['offers_count']}.{$user->id}", 10);
+
+        abort_if(! $lock->get(), 422, "You're already in the process of redeeming!");
 
         $todayCompletedOffersCount = $user->completedTasks()->todayOffers()->count();
         $hasAlreadyStored = $user->completedTasks()->todayDailyTasks()->where('data->offers_count', $payload['offers_count'])->exists();

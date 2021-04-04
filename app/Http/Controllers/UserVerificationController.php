@@ -8,6 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Models\CompletedTask;
 use App\Models\UrlToken;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class UserVerificationController extends Controller
 {
@@ -22,6 +23,10 @@ class UserVerificationController extends Controller
             ->firstOrFail();
 
         $user = $urlToken->user;
+
+        $lock = Cache::lock("email-verification.{$user->id}", 10);
+
+        abort_if(! $lock->get(), 422, "You're already in the process of verifying!");
 
         $user->markNotificationAsRead($urlToken->id);
         $user->markEmailAsVerified();

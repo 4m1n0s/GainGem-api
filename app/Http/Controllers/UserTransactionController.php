@@ -41,8 +41,10 @@ class UserTransactionController extends Controller
 
         /** @var User $user */
         $user = auth()->user();
+        $lock = Cache::lock("transaction.{$user->id}", 10);
 
         abort_if((bool) $user->froze_at, 422, 'Your account is currently frozen. Please contact support in order to redeem rewards.');
+        abort_if(! $lock->get(), 422, "You're already in the process of redeeming!");
 
         $giftCard = null;
 
