@@ -59,6 +59,8 @@ class PostbackController extends Controller
 
         (new FraudAction($user))->execute();
 
+        $lock->release();
+
         return 1;
     }
 
@@ -89,6 +91,8 @@ class PostbackController extends Controller
         ]);
 
         (new FraudAction($user))->execute();
+
+        $lock->release();
 
         return 1;
     }
