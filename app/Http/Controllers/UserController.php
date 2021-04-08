@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -58,6 +59,10 @@ class UserController extends Controller
             $profileImage = $request->file('profile_image');
             if ($profileImage) {
                 $payload['profile_image'] = $profileImage->storeAs('profile-images', uniqid().'.png');
+
+                if (Storage::exists($authenticatedUser->profile_image)) {
+                    Storage::delete($authenticatedUser->profile_image);
+                }
             }
 
             if ($user->email !== $payload['email']) {

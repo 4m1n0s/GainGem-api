@@ -8,11 +8,26 @@ use Illuminate\Support\Facades\Validator;
 
 class ImageOrPath implements Rule
 {
+    private string $message;
+
+    public function __construct()
+    {
+        $this->message = 'The :attribute is invalid image';
+    }
+
     public function passes($attribute, $value): bool
     {
         $isImage = Validator::make(['value' => $value], ['value' => 'image'])->passes();
 
         if ($isImage) {
+            $isSize = Validator::make(['value' => $value], ['size' => '5120'])->passes();
+
+            if (! $isSize) {
+                $this->message = 'The :attribute must be smaller than 5MB.';
+
+                return false;
+            }
+
             return true;
         }
 
@@ -25,6 +40,6 @@ class ImageOrPath implements Rule
 
     public function message(): string
     {
-        return 'The :attribute is invalid image';
+        return $this->message;
     }
 }

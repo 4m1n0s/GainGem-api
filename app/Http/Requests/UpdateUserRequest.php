@@ -59,4 +59,11 @@ class UpdateUserRequest extends FormRequest
 
         return $rules;
     }
+
+    public function messages(): array
+    {
+        return [
+            'profile_image.size' => 'The profile image must be smaller than 5MB.',
+        ];
+    }
 }
