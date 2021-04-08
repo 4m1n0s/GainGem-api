@@ -25,9 +25,10 @@ class SupplierController extends Controller
         $suppliersArr = $suppliers->append(['formatted_robux_rate', 'total_supplier_withdrawals']);
 
         $suppliersArr->map(static function (User $supplier) {
-            $supplier['formatted_accounts_total_earnings'] = currency_format($supplier->robuxAccounts->sum('total_earnings'));
+            $totalEarnings = $supplier->robuxAccounts->sum('total_earnings');
+            $supplier['formatted_accounts_total_earnings'] = currency_format($totalEarnings);
             $supplier['formatted_total_supplier_withdrawals'] = currency_format($supplier->total_supplier_withdrawals);
-            $supplier['formatted_accounts_available_earnings'] = currency_format($supplier['formatted_accounts_total_earnings'] - $supplier['formatted_total_supplier_withdrawals']);
+            $supplier['formatted_accounts_available_earnings'] = currency_format($totalEarnings - $supplier->total_supplier_withdrawals);
         });
 
         $pagination = $suppliers->toArray();
