@@ -30,7 +30,7 @@ class PostbackController extends Controller
         $user = User::find($payload['user_id']);
         $lock = Cache::lock("postback.{$user->id}", 10);
 
-        if (! $lock) {
+        if (! $lock->get()) {
             return 0;
         }
 
@@ -70,7 +70,7 @@ class PostbackController extends Controller
         $user = User::find($payload['user_id']);
         $lock = Cache::lock("postback.{$user->id}", 10);
 
-        if (! $lock) {
+        if (! $lock->get()) {
             return 0;
         }
 
