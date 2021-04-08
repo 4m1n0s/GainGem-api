@@ -30,7 +30,9 @@ class PostbackController extends Controller
         $user = User::find($payload['user_id']);
         $lock = Cache::lock("postback.{$user->id}", 10);
 
-        abort_if(! $lock->get(), 422);
+        if (! $lock) {
+            return 0;
+        }
 
         $data = [
             'type' => CompletedTask::TYPE_OFFER,
@@ -68,7 +70,9 @@ class PostbackController extends Controller
         $user = User::find($payload['user_id']);
         $lock = Cache::lock("postback.{$user->id}", 10);
 
-        abort_if(! $lock->get(), 422);
+        if (! $lock) {
+            return 0;
+        }
 
         CompletedTask::create([
             'type' => $payload['payout'] > 0 ? CompletedTask::TYPE_OFFER : CompletedTask::TYPE_CHARGEBACK,
