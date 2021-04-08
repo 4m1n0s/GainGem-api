@@ -60,7 +60,7 @@ class UserController extends Controller
             if ($profileImage) {
                 $payload['profile_image'] = $profileImage->storeAs('profile-images', uniqid().'.png');
 
-                if (Storage::exists($authenticatedUser->profile_image)) {
+                if ($authenticatedUser->profile_image && Storage::exists($authenticatedUser->profile_image)) {
                     Storage::delete($authenticatedUser->profile_image);
                 }
             }
