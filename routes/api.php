@@ -133,9 +133,6 @@ Route::group(['middleware' => 'auth:api'], static function () {
     });
 
     Route::group(['prefix' => 'suppliers'], static function () {
-        Route::get('', [SupplierController::class, 'index'])->middleware('role:super_admin');
-        Route::put('{supplier}', [SupplierController::class, 'update'])->middleware('role:super_admin');
-
         Route::group(['prefix' => 'accounts'], static function () {
             Route::get('', [RobuxAccountController::class, 'index'])->middleware('role:super_admin,supplier');
             Route::post('', [RobuxAccountController::class, 'store'])->middleware('role:super_admin,supplier');
@@ -150,6 +147,10 @@ Route::group(['middleware' => 'auth:api'], static function () {
             Route::post('', [SupplierPaymentController::class, 'store'])->middleware('role:supplier');
             Route::put('{supplierPayment}', [SupplierPaymentController::class, 'update'])->middleware('role:super_admin');
         });
+
+        Route::get('', [SupplierController::class, 'index'])->middleware('role:super_admin');
+        Route::get('{supplier}', [SupplierController::class, 'show'])->middleware('role:super_admin');
+        Route::put('{supplier}', [SupplierController::class, 'update'])->middleware('role:super_admin');
     });
 
     Route::group(['prefix' => 'supplier-rate'], static function () {

@@ -40,6 +40,11 @@ class SupplierController extends Controller
         ]);
     }
 
+    public function show(User $supplier): JsonResponse
+    {
+        return response()->json($supplier);
+    }
+
     public function update(User $supplier, UpdateSupplierRequest $request): JsonResponse
     {
         $payload = $request->validated();
