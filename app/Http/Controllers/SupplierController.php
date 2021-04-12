@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class SupplierController extends Controller
 {
@@ -42,7 +43,13 @@ class SupplierController extends Controller
 
     public function show(User $supplier): JsonResponse
     {
-        return response()->json($supplier);
+        $this->authorize('update', $supplier);
+
+        if (! $supplier->robux_rate) {
+            $supplier->robux_rate = (int) (Cache::get('robux-supplier-rate') * 1000);
+        }
+
+        return response()->json($supplier->only(['id', 'username', 'robux_rate']));
     }
 
     public function update(User $supplier, UpdateSupplierRequest $request): JsonResponse

@@ -149,7 +149,7 @@ Route::group(['middleware' => 'auth:api'], static function () {
         });
 
         Route::get('', [SupplierController::class, 'index'])->middleware('role:super_admin');
-        Route::get('{supplier}', [SupplierController::class, 'show'])->middleware('role:super_admin');
+        Route::get('{supplier}', [SupplierController::class, 'show'])->middleware('role:super_admin,supplier');
         Route::put('{supplier}', [SupplierController::class, 'update'])->middleware('role:super_admin');
     });
 

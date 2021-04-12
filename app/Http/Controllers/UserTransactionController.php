@@ -27,11 +27,17 @@ class UserTransactionController extends Controller
         $transactions = $user->transactions()
             ->with('giftCard:id,provider')
             ->orderByDesc('id')
-            ->get(['id', 'type', 'points', 'gift_card_id', 'destination', 'robux_amount', 'bitcoin_amount', 'created_at', 'emailed_at'])
-            ->append('has_emailed_in_the_last_hour');
+            ->select(['id', 'type', 'points', 'gift_card_id', 'destination', 'robux_amount', 'bitcoin_amount', 'created_at', 'emailed_at'])
+            ->paginate(10);
+
+        $transactionsArr = $transactions->append('has_emailed_in_the_last_hour');
+
+        $pagination = $transactions->toArray();
+        unset($pagination['data']);
 
         return response()->json([
-            'transactions' => $transactions,
+            'transactions' => $transactionsArr,
+            'pagination' => $pagination,
         ]);
     }
 

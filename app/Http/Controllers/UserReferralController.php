@@ -14,13 +14,18 @@ class UserReferralController extends Controller
 
         $referrals = $user->referredUsers()
             ->withTotalPoints()
-            ->get()
-            ->each(static function (User $referredUser) {
-                $referredUser['referral_points'] = currency_format($referredUser->total_points * CompletedTask::COMMISSION_PERCENT_REFERRAL);
-            });
+            ->paginate(10);
+
+        $referralsArr = $referrals->each(static function (User $referredUser) {
+            $referredUser['referral_points'] = currency_format($referredUser->total_points * CompletedTask::COMMISSION_PERCENT_REFERRAL);
+        });
+
+        $pagination = $referrals->toArray();
+        unset($pagination['data']);
 
         return response()->json([
-            'referrals' => $referrals,
+            'referrals' => $referralsArr,
+            'pagination' => $pagination,
         ]);
     }
 

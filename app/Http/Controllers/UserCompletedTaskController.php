@@ -14,13 +14,20 @@ class UserCompletedTaskController extends Controller
         /** @var User $authUser */
         $authUser = auth()->user();
 
+        $completedTasks = $user->completedTasks()
+            ->when($authUser->id === $user->id, static function ($query) {
+                $query->select(['id', 'type', 'provider', 'user_id', 'points', 'created_at']);
+            })
+            ->orderByDesc('id')
+            ->paginate(10);
+
+        $pagination = $completedTasks->toArray();
+        $completedTasksArr = $pagination['data'];
+        unset($pagination['data']);
+
         return response()->json([
-            'activities' => $user->completedTasks()
-                ->when($authUser->id === $user->id, static function ($query) {
-                    $query->select(['id', 'type', 'provider', 'user_id', 'points', 'created_at']);
-                })
-                ->orderByDesc('id')
-                ->get(),
+            'activities' => $completedTasksArr,
+            'pagination' => $pagination,
         ]);
     }
 }
