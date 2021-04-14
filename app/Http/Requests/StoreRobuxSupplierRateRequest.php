@@ -10,7 +10,7 @@ class StoreRobuxSupplierRateRequest extends FormRequest
     {
         return [
             'rate' => [
-                'integer',
+                'numeric',
                 'min:1',
                 'max:100',
             ],

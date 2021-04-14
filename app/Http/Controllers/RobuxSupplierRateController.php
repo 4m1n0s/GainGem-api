@@ -7,17 +7,17 @@ use Illuminate\Support\Facades\Cache;
 
 class RobuxSupplierRateController extends Controller
 {
-    public function index(): int
+    public function index(): float
     {
-        return (int) (Cache::get('robux-supplier-rate') * 1000);
+        return (float) bcmul(Cache::get('robux-supplier-rate'), 1000, 2);
     }
 
-    public function update(StoreRobuxSupplierRateRequest $request): int
+    public function update(StoreRobuxSupplierRateRequest $request): float
     {
         $payload = $request->validated();
 
         Cache::forget('robux-supplier-rate');
 
-        return (int) (Cache::rememberForever('robux-supplier-rate', static fn () => $payload['rate'] / 1000) * 1000);
+        return (float) bcmul(Cache::rememberForever('robux-supplier-rate', static fn () => bcdiv($payload['rate'], 1000, 5)), 1000, 2);
     }
 }

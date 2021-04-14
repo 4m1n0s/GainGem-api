@@ -17,7 +17,6 @@ class SupplierPaymentController extends Controller
 {
     public function index(IndexSupplierPaymentRequest $request): JsonResponse
     {
-        $supplierPayments = null;
         $payload = $request->validated();
 
         $totals = [];
@@ -37,9 +36,10 @@ class SupplierPaymentController extends Controller
                     $query->select(['id', 'supplier_user_id'])->withTotalEarnings()->withTrashed();
                 }])->append(['total_supplier_withdrawals']);
 
-            $totals['total_earnings'] = currency_format($supplier->robuxAccounts->sum('total_earnings'));
+            $totalEarnings = bcdiv(floor(bcmul($supplier->robuxAccounts->sum('total_earnings'), 100)), 100, 2);
+            $totals['total_earnings'] = currency_format($totalEarnings);
             $totals['total_withdrawals'] = currency_format($supplier->total_supplier_withdrawals);
-            $totals['available_earnings'] = currency_format(floor(($supplier->robuxAccounts->sum('total_earnings') - $supplier->total_supplier_withdrawals) * 100) / 100);
+            $totals['available_earnings'] = currency_format($totalEarnings - $supplier->total_supplier_withdrawals);
         }
 
         $pagination = $supplierPayments->toArray();

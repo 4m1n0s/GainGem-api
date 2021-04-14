@@ -11,7 +11,7 @@ class UpdateSupplierRequest extends FormRequest
         return [
             'robux_rate' => [
                 'nullable',
-                'integer',
+                'numeric',
                 'min:1',
                 'max:100',
             ],

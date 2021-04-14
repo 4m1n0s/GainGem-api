@@ -26,7 +26,7 @@ class SupplierController extends Controller
         $suppliersArr = $suppliers->append(['formatted_robux_rate', 'total_supplier_withdrawals']);
 
         $suppliersArr->map(static function (User $supplier) {
-            $totalEarnings = $supplier->robuxAccounts->sum('total_earnings');
+            $totalEarnings = bcdiv(floor(bcmul($supplier->robuxAccounts->sum('total_earnings'), 100)), 100, 2);
             $supplier['formatted_accounts_total_earnings'] = currency_format($totalEarnings);
             $supplier['formatted_total_supplier_withdrawals'] = currency_format($supplier->total_supplier_withdrawals);
             $supplier['formatted_accounts_available_earnings'] = currency_format($totalEarnings - $supplier->total_supplier_withdrawals);
@@ -46,8 +46,10 @@ class SupplierController extends Controller
         $this->authorize('update', $supplier);
 
         if (! $supplier->robux_rate) {
-            $supplier->robux_rate = (int) (Cache::get('robux-supplier-rate') * 1000);
+            $supplier->robux_rate = Cache::get('robux-supplier-rate');
         }
+
+        $supplier->robux_rate = bcmul($supplier->robux_rate, 1000, 2);
 
         return response()->json($supplier->only(['id', 'username', 'robux_rate']));
     }

@@ -33,7 +33,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property \Illuminate\Support\Carbon|null $registered_giveaway_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $robux_rate
+ * @property float|null $robux_rate
  * @property \Illuminate\Support\Carbon|null $two_factor_enabled_at
  * @property string|null $two_factor_code
  * @property \Illuminate\Support\Carbon|null $two_factor_expires_at
@@ -140,6 +140,7 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'banned_at' => 'datetime',
         'registered_giveaway_at' => 'datetime',
+        'robux_rate' => 'float',
         'two_factor_enabled_at' => 'datetime',
         'two_factor_expires_at' => 'datetime',
         'froze_at' => 'datetime',
@@ -383,6 +384,6 @@ class User extends Authenticatable implements JWTSubject
     {
         $rate = $this->robux_rate ?? Cache::get('robux-supplier-rate');
 
-        return $rate * 1000;
+        return bcmul($rate, 1000, 2);
     }
 }
