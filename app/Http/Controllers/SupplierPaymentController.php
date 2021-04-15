@@ -36,7 +36,7 @@ class SupplierPaymentController extends Controller
                     $query->select(['id', 'supplier_user_id'])->withTotalEarnings()->withTrashed();
                 }])->append(['total_supplier_withdrawals']);
 
-            $totalEarnings = bcdiv(floor(bcmul($supplier->robuxAccounts->sum('total_earnings'), 100)), 100, 2);
+            $totalEarnings = (float) bcdiv((string) floor((float) bcmul($supplier->robuxAccounts->sum('total_earnings'), '100')), '100', 2);
             $totals['total_earnings'] = currency_format($totalEarnings);
             $totals['total_withdrawals'] = currency_format($supplier->total_supplier_withdrawals);
             $totals['available_earnings'] = currency_format($totalEarnings - $supplier->total_supplier_withdrawals);

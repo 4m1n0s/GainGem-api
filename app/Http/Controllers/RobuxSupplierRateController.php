@@ -9,7 +9,7 @@ class RobuxSupplierRateController extends Controller
 {
     public function index(): float
     {
-        return (float) bcmul(Cache::get('robux-supplier-rate'), 1000, 2);
+        return (float) bcmul(Cache::get('robux-supplier-rate'), '1000', 2);
     }
 
     public function update(StoreRobuxSupplierRateRequest $request): float
@@ -18,6 +18,6 @@ class RobuxSupplierRateController extends Controller
 
         Cache::forget('robux-supplier-rate');
 
-        return (float) bcmul(Cache::rememberForever('robux-supplier-rate', static fn () => bcdiv($payload['rate'], 1000, 5)), 1000, 2);
+        return (float) bcmul(Cache::rememberForever('robux-supplier-rate', static fn () => bcdiv($payload['rate'], '1000', 5)), '1000', 2);
     }
 }

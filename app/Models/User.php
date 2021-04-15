@@ -384,6 +384,6 @@ class User extends Authenticatable implements JWTSubject
     {
         $rate = $this->robux_rate ?? Cache::get('robux-supplier-rate');
 
-        return bcmul($rate, 1000, 2);
+        return (float) bcmul($rate, '1000', 2);
     }
 }

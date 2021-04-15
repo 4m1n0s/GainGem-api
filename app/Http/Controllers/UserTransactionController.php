@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Notifications\BitcoinTransactionNotification;
 use App\Notifications\GiftCardTransactionNotification;
 use App\Services\Bitcoin;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 
@@ -24,6 +25,7 @@ class UserTransactionController extends Controller
     {
         $this->authorize('update', $user);
 
+        /** @var Collection $transactions */
         $transactions = $user->transactions()
             ->with('giftCard:id,provider')
             ->orderByDesc('id')
