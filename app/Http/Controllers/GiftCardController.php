@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\IndexGiftCardRequest;
 use App\Http\Requests\StoreGiftCardRequest;
 use App\Http\Requests\UpdateGiftCardRequest;
+use App\Models\CurrencyValue;
 use App\Models\GiftCard;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -47,6 +48,11 @@ class GiftCardController extends Controller
     {
         $payload = $request->validated();
 
+        /** @var CurrencyValue $currencyValue */
+        $currencyValue = CurrencyValue::find($payload['currency_id']);
+
+        abort_if($currencyValue[$payload['provider']] === 0, 422, 'Currency value must be greater than 0!');
+
         $giftCards = [];
 
         foreach ($payload['codes'] as $code) {
@@ -65,6 +71,11 @@ class GiftCardController extends Controller
     public function update(GiftCard $giftCard, UpdateGiftCardRequest $request): JsonResponse
     {
         $payload = $request->validated();
+
+        /** @var CurrencyValue $currencyValue */
+        $currencyValue = CurrencyValue::find($payload['currency_id']);
+
+        abort_if($currencyValue[$payload['provider']] === 0, 422, 'Currency value must be greater than 0!');
 
         $giftCard->update($payload);
 

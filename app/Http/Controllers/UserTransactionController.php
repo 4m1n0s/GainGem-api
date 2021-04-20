@@ -93,6 +93,7 @@ class UserTransactionController extends Controller
         $currencyValue = $currency->currencyValue;
         $giftCardValue = $currencyValue[$payload['provider']];
 
+        abort_if(is_null($giftCardValue) || $giftCardValue === 0, 422, 'Please try again later.');
         abort_if(bccomp((string) $user->available_points, (string) ($giftCard->value * $giftCardValue)) === -1, 422, "You don't have enough points!");
 
         /** @var Transaction $transaction */

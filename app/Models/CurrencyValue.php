@@ -21,6 +21,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $discord
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $steam
+ * @property int $fortnite
+ * @property int $valorant
  * @property-read \App\Models\Currency $currency
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue newQuery()
@@ -29,13 +32,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereCurrencyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereDiscord($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereFortnite($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereGooglePlay($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereNetflix($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue wherePsn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereRoblox($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereSpotify($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereSteam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereValorant($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CurrencyValue whereXbox($value)
  * @mixin \Eloquent
  */

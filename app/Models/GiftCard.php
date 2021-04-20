@@ -47,6 +47,9 @@ class GiftCard extends Model
     const PROVIDER_NETFLIX = 'netflix';
     const PROVIDER_SPOTIFY = 'spotify';
     const PROVIDER_DISCORD = 'discord';
+    const PROVIDER_STEAM = 'steam';
+    const PROVIDER_FORTNITE = 'fortnite';
+    const PROVIDER_VALORANT = 'valorant';
 
     const PROVIDERS = [
         self::PROVIDER_APPLE,
@@ -57,6 +60,9 @@ class GiftCard extends Model
         self::PROVIDER_NETFLIX,
         self::PROVIDER_SPOTIFY,
         self::PROVIDER_DISCORD,
+        self::PROVIDER_STEAM,
+        self::PROVIDER_FORTNITE,
+        self::PROVIDER_VALORANT,
     ];
 
     protected $fillable = [
