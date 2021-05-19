@@ -30,9 +30,9 @@ class BitcoinTransactionNotification extends Notification implements ShouldQueue
     public function toMail(User $user): MailMessage
     {
         return (new MailMessage)
-            ->subject("[EzRewards] Successful Reward Claim #{$this->transaction->id}")
+            ->subject("[GainGem] Successful Reward Claim #{$this->transaction->id}")
             ->greeting("Hello, {$user->username}!")
-            ->line('Thank you for using EzRewards!')
+            ->line('Thank you for using GainGem!')
             ->line("You have successfully claimed \${$this->transaction->value} Bitcoin for {$this->transaction->points} points. Please allow some time for the transaction to confirm.")
             ->action('Transaction Status', "https://www.blockchain.com/btc/tx/{$this->hash}")
             ->line('Share the news with your friends!');

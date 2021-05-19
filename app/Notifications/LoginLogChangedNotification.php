@@ -32,12 +32,12 @@ class LoginLogChangedNotification extends Notification implements ShouldQueue
         $timezone = config('app.timezone');
 
         return (new MailMessage)
-            ->subject('[EzRewards] Successful log-in')
+            ->subject('[GainGem] Successful log-in')
             ->greeting("Hello, {$user->username}!")
             ->line("This email was generated because a new log-in has occurred on {$this->loginLog->formatted_created_at} {$timezone} originating from:")
             ->line(new HtmlString($this->formattedOrigins()))
             ->line('If you initiated this log-in, awesome! We just wanted to make sure it’s you.')
-            ->line(new HtmlString("If you did NOT initiate this log-in, you should immediately <a href='{$changePasswordUrl}' target='_blank'>change your EzRewards password</a> to ensure account security."))
+            ->line(new HtmlString("If you did NOT initiate this log-in, you should immediately <a href='{$changePasswordUrl}' target='_blank'>change your GainGem password</a> to ensure account security."))
             ->line(new HtmlString('We <strong>strongly recommend</strong> that you enable two-factor authentication if you haven’t already.'));
     }
 
